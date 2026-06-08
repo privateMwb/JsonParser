@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "Json.h"
-#include "Table.h"
+#include "utils/Table.h"
 
 // ============================================================
 // Benchmark Configuration
