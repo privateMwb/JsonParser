@@ -2,11 +2,15 @@
 
 A lightweight JSON parser and serializer written in modern C++23.
 
+---
+
 ## Overview
 
 Json is a custom JSON library built from scratch to explore parser design, recursive data structures, variant-based value storage, serialization, and modern C++ programming techniques.
 
 The project supports parsing JSON text into native C++ data structures, accessing values through a simple API, and serializing data back into valid JSON.
+
+---
 
 ## Motivation / Goals
 
@@ -24,6 +28,8 @@ This project was created to deepen understanding of:
 - Benchmarking
 
 The goal is educational rather than replacing production-ready libraries such as `nlohmann/json`.
+
+---
 
 ## Features
 
@@ -69,22 +75,29 @@ The goal is educational rather than replacing production-ready libraries such as
 - Object access benchmarks
 - Array access benchmarks
 
+---
+
 ## Design Overview
 
 The parser uses a recursive descent design.
 
 ```text
-JSON Text
-     │
-     ▼
-  Parser
-     │
-     ▼
-   Json
-     │
- ┌───┼────┬────┬────┬────┐
- ▼   ▼    ▼    ▼    ▼
-Null Bool Num String Array/Object
+          JSON Text
+              │
+              ▼
+           Parser
+              │
+              ▼
+            Json
+              │
+    ┌─────────┼─────────┐
+    │         │         │
+    ▼         ▼         ▼
+ Primitive   Array    Object
+    │
+    ├───────────────┬───────────────┬───────────────┐
+    ▼               ▼               ▼               ▼
+  Null            Bool           Number         String
 ```
 
 ### Object Storage
@@ -122,6 +135,8 @@ std::variant<
 | String Access | O(1) |
 | Serialization | O(n) |
 
+---
+
 ## Quick Example
 
 ```cpp
@@ -139,6 +154,8 @@ int main() {
     std::cout << json["age"].asNumber() << '\n';
 }
 ```
+
+---
 
 ## Core API
 
@@ -182,6 +199,8 @@ json[index];
 dump();
 dump(indent);
 ```
+
+---
 
 ## Benchmark Results
 
@@ -228,6 +247,8 @@ Current unit tests cover:
 
 All tests use `assert()` and are located in `tests/test.cpp`.
 
+---
+
 ## Project Structure
 
 ```text
@@ -247,11 +268,16 @@ Json/
 │   └── examples.cpp
 │
 ├── benchmarks/
-│   └── benchmarks.cpp
+│   ├── benchmarks.cpp
+│   └── utils/
+│       ├── Table.h
+│       └── Table.tpp
 │
 ├── README.md
 └── LICENSE
 ```
+
+---
 
 ## Build Instructions
 
@@ -276,6 +302,8 @@ g++ -std=c++23 benchmarks/benchmarks.cpp src/*.cpp -Iinclude -O2 -o benchmarks
 ./benchmarks
 ```
 
+---
+
 ## Notes
 
 - This project is intended for learning purposes.
@@ -283,6 +311,8 @@ g++ -std=c++23 benchmarks/benchmarks.cpp src/*.cpp -Iinclude -O2 -o benchmarks
 - Performance was not prioritized over readability.
 - The implementation focuses on correctness and understanding parser internals.
 - Object key order depends on the underlying container implementation.
+
+---
 
 ## License
 
