@@ -1,5 +1,8 @@
 # Json
 
+![C++](https://img.shields.io/badge/C%2B%2B-23-blue)
+![Status](https://img.shields.io/badge/status-learning-green)
+
 A lightweight JSON parser and serializer written in modern C++23.
 
 ---
@@ -82,22 +85,23 @@ The goal is educational rather than replacing production-ready libraries such as
 The parser uses a recursive descent design.
 
 ```text
-          JSON Text
-              │
-              ▼
-           Parser
-              │
-              ▼
-            Json
-              │
-    ┌─────────┼─────────┐
-    │         │         │
-    ▼         ▼         ▼
- Primitive   Array    Object
+JSON Text
     │
-    ├───────────────┬───────────────┬───────────────┐
-    ▼               ▼               ▼               ▼
-  Null            Bool           Number         String
+    ▼
+ Parser
+    │
+    ▼
+  Json
+    │
+    ▼
+std::variant
+    │
+    ├──► nullptr_t
+    ├──► bool
+    ├──► double
+    ├──► std::string
+    ├──► Array  ─────► std::vector<Json>
+    └──► Object ─────► std::unordered_map<std::string, Json>
 ```
 
 ### Object Storage
