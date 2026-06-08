@@ -205,32 +205,42 @@ dump(indent);
 
 ## Benchmark Results
 
+Benchmarks were run using the included `benchmarks.cpp` program and measure execution time across increasing iteration counts.
+
 ### Parse Benchmark
 
 | Iterations | Time |
-|------------|------|
-| 10,000 | varies by machine |
-| 20,000 | varies by machine |
-| 40,000 | varies by machine |
-| 80,000 | varies by machine |
+|-----------:|-----:|
+| 10,000 | 144 ms |
+| 20,000 | 336 ms |
+| 40,000 | 657 ms |
+| 80,000 | 1332 ms |
 
 ### Object Access Benchmark
 
 | Iterations | Time |
-|------------|------|
-| 10,000 | varies by machine |
-| 20,000 | varies by machine |
-| 40,000 | varies by machine |
-| 80,000 | varies by machine |
+|-----------:|-----:|
+| 10,000 | 2 ms |
+| 20,000 | 5 ms |
+| 40,000 | 12 ms |
+| 80,000 | 24 ms |
 
 ### Array Access Benchmark
 
 | Iterations | Time |
-|------------|------|
-| 10,000 | varies by machine |
-| 20,000 | varies by machine |
-| 40,000 | varies by machine |
-| 80,000 | varies by machine |
+|-----------:|-----:|
+| 10,000 | 0 ms |
+| 20,000 | 1 ms |
+| 40,000 | 3 ms |
+| 80,000 | 6 ms |
+
+> **Note**
+>
+> Benchmark results will vary depending on hardware, operating system, compiler version, compiler flags, system load, and runtime environment.
+>
+> These numbers are intended to provide a rough performance reference rather than an exact measurement for all systems.
+
+--- 
 
 ## Tests
 
