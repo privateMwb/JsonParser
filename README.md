@@ -87,21 +87,18 @@ The parser uses a recursive descent design.
 ```text
 JSON Text
     │
-    ▼
  Parser
     │
-    ▼
   Json
     │
-    ▼
 std::variant
     │
-    ├──► nullptr_t
-    ├──► bool
-    ├──► double
-    ├──► std::string
-    ├──► Array  ─────► std::vector<Json>
-    └──► Object ─────► std::unordered_map<std::string, Json>
+    ├── nullptr_t
+    ├── bool
+    ├── double
+    ├── std::string
+    ├── Array  ───── std::vector<Json>
+    └── Object ───── std::unordered_map<std::string, Json>
 ```
 
 ### Object Storage
