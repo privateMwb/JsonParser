@@ -888,21 +888,21 @@ JsonParser/
 ### Compile & Run Tests
 
 ```bash
-g++ -std=c++23 tests/test.cpp include/Json.cpp include/Parser.cpp -Iinclude -o build/tests
+g++ -std=c++23 tests/test.cpp src/* -Iinclude -o build/test
 ./build/tests
 ```
 
 ### Compile & Run Examples
 
 ```bash
-g++ -std=c++23 examples/examples.cpp include/Json.cpp include/Parser.cpp -Iinclude -o build/examples
+g++ -std=c++23 examples/examples.cpp src/* -Iinclude -o build/examples
 ./build/examples
 ```
 
 ### Compile & Run Benchmarks
 
 ```bash
-g++ -std=c++23 benchmarks/benchmarks.cpp include/Json.cpp include/Parser.cpp -Iinclude -Ibenchmarks/utils -o build/benchmarks
+g++ -std=c++23 benchmarks/benchmarks.cpp src/* -Iinclude -Ibenchmarks/utils -o build/benchmarks
 ./build/benchmarks
 ```
 
