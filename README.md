@@ -854,8 +854,10 @@ Effectively identical. Object access is dominated by the hash map lookup cost �
 JsonParser/
 ├── include/
 │   ├── Json.h         # Json class declaration (types, API, variant storage)
+│   └── Parser.h       # Parser class declaration
+│
+├── src/
 │   ├── Json.cpp       # Json method implementations + dump logic
-│   ├── Parser.h       # Parser class declaration
 │   └── Parser.cpp     # Recursive descent parser implementation
 │
 ├── benchmarks/
