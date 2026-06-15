@@ -1,320 +1,271 @@
+// Json Examples
+// Demonstrates basic usage of the Json class:
+//
+// - basic types (null, bool, number, string)
+// - array construction and access
+// - object construction and access
+// - parsing JSON strings
+// - serialization (dump to string and ostream)
+// - navigation (nested operator[] access)
+// - bounds-checked access (at())
+// - key existence (contains())
+// - comparison (operator== and operator!=)
+// - copy and move semantics
+// - mixed nested structure
+//
+// These examples illustrate the core features and intended usage of Json.
+
 #include <iostream>
-#include <string>
-#include <vector>
+#include <sstream>
 
 #include "Json.h"
 
-// ============================================================
-// Example Utilities
-//
-// Used only by examples.cpp to improve console output.
-// Not part of Json, Parser, or the public library API.
-// ============================================================
-std::string center(
-    const std::string& text,
-    std::size_t width)
-{
-	if(text.size() >= width) {
-		return text;
-	}
+// Basic Types
+// shows direct construction of each Json type
+void basicTypes() {
+    Json null;
+    Json b(true);
+    Json n(3.14);
+    Json i(42);
+    Json s("hello");
 
-	auto left = (width - text.size()) / 2;
-	auto right = width - text.size() - left;
-
-	return std::string(left, ' ')
-	       + text
-	       + std::string(right, ' ');
+    (void)null.isNull();   // true
+    (void)b.isBool();      // true
+    (void)b.asBool();      // true
+    (void)n.isNumber();    // true
+    (void)n.asNumber();    // 3.14
+    (void)i.asNumber();    // 42.0
+    (void)s.isString();    // true
+    (void)s.asString();    // "hello"
 }
 
-std::string repeat(
-    const std::string& line,
-    std::size_t count)
-{
-	std::string lines;
+// Array Usage
+// shows array construction and index access
+void arrayUsage() {
+    Json::ArrayType arr{
+        Json("Coke"),
+        Json("Sprite"),
+        Json("Pepsi")
+    };
 
-	for(std::size_t i = 0; i < count; ++i) {
-		lines += line;
-	}
+    Json j(arr);
 
-	return lines;
+    (void)j.isArray();           // true
+    (void)j.size();              // 3
+    (void)j[0].asString();       // "Coke"
+    (void)j[2].asString();       // "Pepsi"
 }
 
-std::string ln = repeat("─", 30);
+// Object Usage
+// shows object construction and key access
+void objectUsage() {
+    Json::ObjectType obj{
+        { "name",  Json("Claude") },
+        { "age",   Json(2)        },
+        { "smart", Json(true)     }
+    };
 
-void line() {
-	std::cout << ln << "\n";
+    Json j(obj);
+
+    (void)j.isObject();              // true
+    (void)j.size();                  // 3
+    (void)j["name"].asString();      // "Claude"
+    (void)j["age"].asNumber();       // 2
+    (void)j["smart"].asBool();       // true
 }
 
-void title(
-    const std::string& name,
-    std::size_t length = 30)
-{
-	std::cout << center(name, length) << "\n";
+// Parsing
+// shows Json::parse() for each type
+void parsing() {
+    Json null   = Json::parse("null");
+    Json b      = Json::parse("true");
+    Json n      = Json::parse("3.14");
+    Json s      = Json::parse("\"hello\"");
+    Json arr    = Json::parse("[1, 2, 3]");
+    Json obj    = Json::parse("{\"key\": \"value\"}");
+
+    (void)null.isNull();          // true
+    (void)b.asBool();             // true
+    (void)n.asNumber();           // 3.14
+    (void)s.asString();           // "hello"
+    (void)arr.isArray();          // true
+    (void)arr.size();             // 3
+    (void)obj.isObject();         // true
+    (void)obj["key"].asString();  // "value"
 }
 
-void gap() {
-	std::cout << "\n\n";
+// Serialization
+// shows dump() to string and to ostream
+void serialization() {
+    Json::ObjectType obj{
+        { "name", Json("Claude") },
+        { "age",  Json(2)        }
+    };
+
+    Json j(obj);
+
+    // dump to string
+    std::string s = j.dump(0);
+    (void)s;
+
+    // dump to ostream
+    std::ostringstream oss;
+    j.dump(oss, 0);
+    (void)oss.str();
 }
 
-// ============================================================
-// Parsing Examples
-// Demonstrates parsing JSON text into Json objects.
-// ============================================================
-void parse() {
-	line();
-	title("Parsing Examples", 30);
+// Navigation
+// shows nested operator[] traversal
+void navigation() {
+    Json::ObjectType obj{
+        {
+            "user",
+            Json::ObjectType{
+                { "name",   Json("Claude") },
+                { "scores", Json::ArrayType{ Json(90), Json(95), Json(100) } }
+            }
+        }
+    };
 
-	// =========================
-	// String Parsing
-	// =========================
-	line();
-	title("String Parsing\n", 30);
+    Json j(obj);
 
-	std::string t1 = "\"Hello World\"";
-
-	std::cout << "Input : " << t1 << "\n";
-
-	Json v1 = Json::parse(t1);
-
-	std::cout << "Output: " << v1.asString() << "\n\n";
-
-	// =========================
-	// Boolean Parsing
-	// =========================
-	line();
-	title("Bool Parsing\n", 30);
-
-	std::string t2 = "true";
-
-	std::cout << "Input : " << t2 << "\n";
-
-	Json v2 = Json::parse(t2);
-
-	std::cout << "Output: " << (v2.asBool() ? "true" : "false") << "\n\n";
-
-	// =========================
-	// Number Parsing
-	// =========================
-	line();
-	title("Number Parsing\n", 30);
-
-	std::string t3 = "1000";
-
-	std::cout << "Input : " << t3 << "\n";
-
-	Json v3 = Json::parse(t3);
-
-	std::cout << "Output: " << v3.asNumber() << "\n\n";
-
-	// =========================
-	// Array Parsing
-	// =========================
-	line();
-	title("Array Parsing\n", 30);
-
-	std::string t4 = "[1, 2, 3]";
-
-	std::cout << "Input : " << t4 << "\n";
-
-	Json v4 = Json::parse(t4);
-
-	std::cout << "Output:\n";
-	std::cout << v4.dump() << "\n\n";
-
-	// =========================
-	// Object Parsing
-	// =========================
-	line();
-	title("Object Parsing\n", 30);
-
-	std::string t5 =
-	    "{"
-	    "\"name\":\"Mark\","
-	    "\"age\":24"
-	    "}";
-
-	std::cout << "Input:\n";
-	std::cout << t5 << "\n\n";
-
-	Json v5 = Json::parse(t5);
-
-	std::cout << "Parsed:\n";
-	std::cout << v5.dump() << "\n\n";
-
-	line();
-	gap();
+    (void)j["user"]["name"].asString();       // "Claude"
+    (void)j["user"]["scores"][0].asNumber();  // 90
+    (void)j["user"]["scores"][2].asNumber();  // 100
 }
 
-// ============================================================
-// Build Examples
-// Demonstrates constructing Json values programmatically.
-// ============================================================
-void build() {
-	line();
-	title("Build Examples", 30);
+// Bounds-Checked Access
+// shows at() throwing on invalid index and key
+void boundsChecked() {
+    Json::ArrayType arr{ Json(1), Json(2), Json(3) };
+    Json ja(arr);
 
-	// =========================
-	// Primitive Value
-	// =========================
-	line();
-	title("Primitive Value\n", 30);
+    (void)ja.at(0).asNumber(); // 1 — valid
+    (void)ja.at(2).asNumber(); // 3 — valid
 
-	Json jsonStr = "Hello";
-	Json jsonNum = 42;
-	Json jsonPi = 3.14;
-	Json jsonFlag = true;
-	Json jsonNull = nullptr;
+    try {
+        (void)ja.at(99);
+    } catch (const std::out_of_range&) {
+        // index out of range
+    }
 
-	std::cout << jsonStr.dump() << "\n";
-	std::cout << jsonNum.dump() << "\n";
-	std::cout << jsonPi.dump() << "\n";
-	std::cout << jsonFlag.dump() << "\n";
-	std::cout << jsonNull.dump() << "\n\n";
+    Json::ObjectType obj{ { "key", Json("value") } };
+    Json jo(obj);
 
-	// =========================
-	// Arrays
-	// =========================
-	line();
-	title("Arrays\n", 30);
+    (void)jo.at("key").asString(); // "value" — valid
 
-	Json jsonArray = Json::Array{
-		1,
-		2,
-		3,
-		"Hello",
-		true
-	};
-
-	std::cout << jsonArray.dump() << "\n\n";
-
-	// =========================
-	// Objects
-	// =========================
-	line();
-	title("Objects\n", 30);
-
-	Json jsonObject = Json::Object{
-		{"name", "Mark"},
-		{"age", 24},
-		{"student", true}
-	};
-
-	std::cout << jsonObject.dump() << "\n\n";
-
-	// =========================
-	// Nested Structures
-	// =========================
-	line();
-	title("Nested Structures\n", 30);
-
-	Json root = Json::Object{
-		{"name", "Mark"},
-		{"age", 24},
-		{
-			"scores",
-			Json::Array{95, 88, 91}
-		},
-		{
-			"address",
-			Json::Object{
-				{"city", "Manila"},
-				{"country", "Philippines"}
-			}
-		}
-	};
-
-	std::cout << root.dump() << "\n\n";
-
-	line();
-	gap();
+    try {
+        (void)jo.at("missing");
+    } catch (const std::out_of_range&) {
+        // key not found
+    }
 }
 
-// ============================================================
-// Access Examples
-// Demonstrates object lookup, array indexing,
-// nested access, and type conversion.
-// ============================================================
-void access() {
-	line();
-	title("Access Examples", 30);
+// Contains
+// shows key existence check on an object
+void contains() {
+    Json::ObjectType obj{
+        { "name", Json("Claude") },
+        { "age",  Json(2)        }
+    };
 
-	// =========================
-	// Object Member Access
-	// =========================
-	line();
-	title("Object Member Access\n", 30);
+    Json j(obj);
 
-	Json obj = Json::parse(
-	               "{"
-	               "\"name\":\"Mark\","
-	               "\"age\":24"
-	               "}"
-	           );
-
-	std::cout << obj.dump() << "\n\n";
-
-	std::cout << "name: " << obj["name"].asString() << "\n";
-	std::cout << "age: " << obj["age"].asNumber() << "\n\n";
-
-	// =========================
-	// Array Element Access
-	// =========================
-	line();
-	title("Array Element Access\n", 30);
-
-	Json arr = Json::parse("[10, 20, 30, 40]");
-
-	std::cout << arr.dump() << "\n\n";
-
-	std::cout << "arr[0]: " << arr[0].asNumber() << "\n";
-	std::cout << "arr[2]: " << arr[2].asNumber() << "\n\n";
-
-	// =========================
-	// Nested Access
-	// =========================
-	line();
-	title("Nested Access\n", 30);
-
-	Json data = Json::parse(
-	                "{"
-	                "\"user\":{"
-	                "\"name\":\"Mark\","
-	                "\"scores\":[90,95,88]"
-	                "}"
-	                "}"
-	            );
-
-	std::cout << data.dump() << "\n\n";
-
-	std::cout << "user.name: " << data["user"]["name"].asString() << "\n";
-	std::cout << "user.scores[1]: " << data["user"]["scores"][1].asNumber() << "\n\n";
-
-	// =========================
-	// Type Conversion
-	// =========================
-	line();
-	title("Type Conversion\n", 30);
-
-	Json str = Json::parse("\"Hello\"");
-	Json num = Json::parse("42");
-	Json flag = Json::parse("true");
-
-	std::cout << str.asString() << "\n";
-	std::cout << num.asNumber() << "\n";
-	std::cout << flag.asBool() << "\n\n";
-
-	line();
-	gap();
+    (void)j.contains("name");    // true
+    (void)j.contains("missing"); // false
 }
 
+// Comparison
+// shows operator== and operator!=
+void comparison() {
+    Json a(42);
+    Json b(42);
+    Json c(99);
 
+    (void)(a == b); // true
+    (void)(a != c); // true
+    (void)(a == c); // false
+
+    Json s1("hello");
+    Json s2("hello");
+    Json s3("world");
+
+    (void)(s1 == s2); // true
+    (void)(s1 != s3); // true
+}
+
+// Copy and Move
+// shows copy construction, copy assignment, move construction, move assignment
+void copyMove() {
+    Json a("original");
+
+    // copy construction — b is independent
+    Json b(a);
+    (void)b.asString(); // "original"
+
+    // copy assignment
+    Json c;
+    c = a;
+    (void)c.asString(); // "original"
+
+    // move construction — a is now null
+    Json d(std::move(a));
+    (void)d.asString(); // "original"
+    (void)a.isNull();   // true
+
+    // move assignment
+    Json e;
+    e = std::move(b);
+    (void)e.asString(); // "original"
+    (void)b.isNull();   // true
+}
+
+// Mixed Types
+// shows a real-world nested structure with mixed value types
+void mixTypes() {
+    Json::ObjectType obj{
+        {
+            "pokemon",
+            Json::ArrayType{
+                Json::ObjectType{
+                    { "name",   Json("Rayquaza") },
+                    { "health", Json(5000)       },
+                    { "shiny",  Json(true)       },
+                    { "stats",  Json::ArrayType{ Json(100), Json(90), Json(100), Json(95) } }
+                },
+                Json::ObjectType{
+                    { "name",   Json("Groudon") },
+                    { "health", Json(6000)      },
+                    { "shiny",  Json(false)     },
+                    { "stats",  Json::ArrayType{ Json(90), Json(100), Json(100), Json(90) } }
+                }
+            }
+        }
+    };
+
+    Json j(obj);
+
+    (void)j["pokemon"].size();                      // 2
+    (void)j["pokemon"][0]["name"].asString();        // "Rayquaza"
+    (void)j["pokemon"][1]["name"].asString();        // "Groudon"
+    (void)j["pokemon"][0]["shiny"].asBool();         // true
+    (void)j["pokemon"][0]["stats"][0].asNumber();    // 100
+}
+
+// Entry Point
 int main() {
-	parse();
+    basicTypes();
+    arrayUsage();
+    objectUsage();
+    parsing();
+    serialization();
+    navigation();
+    boundsChecked();
+    contains();
+    comparison();
+    copyMove();
+    mixTypes();
 
-	build();
-
-	access();
-
-	return 0;
+    return 0;
 }
 

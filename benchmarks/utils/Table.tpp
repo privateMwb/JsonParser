@@ -1,12 +1,8 @@
-#pragma once
-
 #include "sstream"
 
 namespace Table {
-    
-// =========================
+
 // Text Formatting
-// =========================
 inline std::string center(
     const std::string& text,
     std::size_t width)
@@ -49,29 +45,28 @@ inline std::string repeat(
 	return lines;
 }
 
-template<typename T>
-std::vector<std::string> convert(
-    const std::vector<T>& data,
+template<template<typename...> class Container, typename T>
+Container<std::string> convert(
+    const Container<T>& data,
     const std::string& unit)
 {
-    std::vector<std::string> converted;
-    
-    for(std::size_t i = 0; i < data.size(); ++i) {
-        converted.push_back(format(data[i], unit));
-    }
-    
-    return converted;
+	Container<std::string> converted;
+
+	for (const auto& value : data) {
+		converted.push_back(format(value, unit));
+	}
+
+	return converted;
 }
 
-// =========================
 // Table Rendering
-// =========================
+template<typename LengthContainer>
 inline void border(
     const std::string& left,
     const std::string& middle,
     const std::string& right,
     const std::string& line,
-    const std::vector<std::size_t>& lengths)
+    const LengthContainer& lengths)
 {
 	std::cout << left;
 
@@ -82,10 +77,11 @@ inline void border(
 	std::cout << right << "\n";
 }
 
-inline void table_content(
+template<typename StringContainer, typename LengthContainer>
+inline void content(
     const std::string& side,
-    const std::vector<std::string>& titles,
-    const std::vector<std::size_t>& lengths)
+    const StringContainer& titles,
+    const LengthContainer& lengths)
 {
 	if(titles.size() != lengths.size()) {
 		return;
@@ -98,34 +94,42 @@ inline void table_content(
 	}
 }
 
-inline void table(
+template<template<typename...> class Container>
+void table(
     const std::string& title,
-    const std::vector<std::string>& headers,
-    const TableData& data,
+    const Container<std::string>& headers,
+    const Container<Container<std::string>>& data,
     std::size_t length)
 {
 	std::size_t each = length / data.size();
-	std::size_t margin = ((each * data.size()) + data.size() + 1) - length - 2;
-	std::vector<std::size_t> top = {length + margin};
-	std::vector<std::size_t> section;
-	for(std::size_t i = 0; i < data.size(); ++i) {
+	std::size_t margin =
+	    ((each * data.size()) + data.size() + 1) - length - 2;
+
+	Container<std::size_t> top{ length + margin };
+	Container<std::size_t> section;
+
+	for (std::size_t i = 0; i < data.size(); ++i) {
 		section.push_back(each);
 	}
 
 	border("┌", "─", "┐", "─", top);
-	table_content("│", {title}, top);
+
+	Container<std::string> titleRow{ title };
+	content("│", titleRow, top);
+
 	border("├", "┬", "┤", "─", section);
-	table_content("│", headers, section);
+	content("│", headers, section);
+
 	border("├", "┼", "┤", "─", section);
 
-	for(std::size_t i = 0; i < data[0].size(); ++i) {
-	    std::vector<std::string> d;
-	    
-	    for(std::size_t j = 0; j < data.size(); ++j) {
-	        d.push_back(data[j][i]);
-	    }
-	    
-	    table_content("│", d, section);
+	for (std::size_t i = 0; i < data[0].size(); ++i) {
+		Container<std::string> row;
+
+		for (std::size_t j = 0; j < data.size(); ++j) {
+			row.push_back(data[j][i]);
+		}
+
+		content("│", row, section);
 	}
 
 	border("└", "┴", "┘", "─", section);

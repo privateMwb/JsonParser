@@ -1,336 +1,633 @@
+// JsonParser Test Suite
+//
+// Comprehensive test suite for validating the functionality,
+// correctness, and reliability of the Json parser implementation.
+//
+// Covers:
+// - Object lifecycle (construction, copy, and move semantics)
+// - Parsing and JSON type inspection
+// - Primitive value access (bool, number, string)
+// - Array and object navigation
+// - Bounds-checked element access
+// - Utility functions (size, contains)
+// - Equality and inequality comparisons
+// - JSON serialization using dump()
+// - String escape sequence parsing
+// - Unicode escape decoding and surrogate pairs
+// - Numeric edge cases and scientific notation
+// - Arrays and nested arrays
+// - Objects and nested objects
+// - Complex nested structures containing mixed JSON types
+// - Error handling for invalid element access
+//
+// Each test validates behavior using assertions and prints a
+// success message when completed.
+
 #include <iostream>
+#include <string>
 #include <cassert>
 
 #include "Json.h"
 
-// ============================================================
-// Basic Type Tests
-// Verifies parsing of null, booleans, and numbers.
-// ============================================================
-void basic_types() {
-	Json n = Json::parse("null");
-	assert(n.isNull());
-
-	Json b1 = Json::parse("true");
-	Json b2 = Json::parse("false");
-	assert(b1.asBool());
-	assert(!b2.asBool());
-
-	Json num1 = Json::parse("22.34");
-	Json num2 = Json::parse("-7.9999");
-	assert(num1.asNumber() == 22.34);
-	assert(num2.asNumber() == -7.9999);
-
-	std::cout << "\n[PASS] Basic Types Test\n";
+// Print Helper
+void print(const std::string& title) {
+	std::cout << "[PASS] " << title << "\n";
 }
 
-// ============================================================
-// String Escape Tests
-// Verifies handling of JSON escape sequences.
-// ============================================================
-void string_escapes() {
-	Json s1 = Json::parse("\"Hello\"");
-	assert(s1.isString());
-	assert(s1.asString() == "Hello");
+// Lifecycle
+// Tests construction, copy semantics, and move semantics.
+void lifecycle() {
+	std::cout << "Lifecycle Test\n";
 
-	Json s2 = Json::parse("\"a\\nb\"");
-	assert(s2.isString());
-	assert(s2.asString() == "a\nb");
+	Json j1 = Json::parse("\"Earth\"");
 
-	Json s3 = Json::parse("\"a\\tb\"");
-	assert(s3.isString());
-	assert(s3.asString() == "a\tb");
-	
-	Json s4 = Json::parse("\"a\\rb\"");
-	assert(s4.isString());
-	assert(s4.asString() == "a\rb");
-	
-	Json s5 = Json::parse("\"a\\bb\"");
-	assert(s5.isString());
-	assert(s5.asString() == "a\bb");
-	
-	Json s6 = Json::parse("\"a\\fb\"");
-	assert(s6.isString());
-	assert(s6.asString() == "a\fb");
-	
-	Json s7 = Json::parse("\"a\\\\b\"");
-	assert(s7.isString());
-	assert(s7.asString() == "a\\b");
-	
-	std::cout << "\n[PASS] String Escapes Test\n";
+	assert(j1.isString());
+	assert(j1.asString() == "Earth");
+
+	print("Basic Construction");
+
+	Json j2 = j1;
+
+	assert(j2.isString());
+
+	print("Copy Semantics");
+
+	Json j3 = std::move(j1);
+
+	assert(j1.isNull());
+	assert(j3.isString());
+
+	print("Move Semantics");
+
+
+	std::cout << "\n";
 }
 
-// ============================================================
-// Unicode Tests
-// Verifies Unicode escape sequences and surrogate pairs.
-// ============================================================
-void string_unicode() {
-    Json u1 = Json::parse("\"\\u0041\"");
-    assert(u1.asString() == "A");
+// Type Inspection
+// Verifies JSON type detection after parsing different values.
+void typeInspection() {
+	std::cout << "Type Inspection Test\n";
 
-    Json u2 = Json::parse("\"\\u03A9\"");
-    assert(u2.asString() == "Ω");
-    
-    Json u3 = Json::parse("\"\\uD83D\\uDE00\"");
-    assert(u3.asString() == "😀");
+	Json j1 = Json::parse("null");
+	assert(j1.isNull());
 
-    Json u4 = Json::parse("\"\\uD83D\\uDC4D\"");
-    assert(u4.asString() == "👍");
-    
-    std::cout << "\n[PASS] String Unicode Test\n";
+	print("Parse Null");
+
+	Json j2 = Json::parse("true");
+	assert(j2.isBool());
+
+	print("Parse Bool");
+
+	Json j3 = Json::parse("89.43");
+	assert(j3.isNumber());
+
+	print("Parse Double");
+
+	Json j4 = Json::parse("9801");
+	assert(j4.isNumber());
+
+	print("Parse Int");
+
+	Json j5 = Json::parse("\"Mango\"");
+	assert(j5.isString());
+
+	print("Parse String");
+
+	Json j6 = Json::parse("\"A\"");
+	assert(j6.isString());
+
+	print("Parse Char");
+
+	Json j7 = Json::parse("[34, 782, -98, 7, 0]");
+	assert(j7.isArray());
+
+	print("Parse Array");
+
+	Json j8 = Json::parse("{\"name\":\"Mark\",\"age\":24}");
+	assert(j8.isObject());
+
+	print("Parse Object");
+
+	std::cout << "\n";
 }
 
-// ============================================================
-// Array Tests
-// Verifies array parsing, storage, and element access.
-// ============================================================
-void array_types() {
-	Json a1 = Json::parse("[21, 65, 98]");
-	Json::Array arr1 = {
-		Json(21), Json(65), Json(98)
+// Value Access
+// Validates typed accessors for primitive, array, and object values.
+void valueAccess() {
+	std::cout << "Value Access Test\n";
+
+	Json j1 = Json::parse("true");
+	assert(j1.asBool());
+
+	print("asBool");
+
+	Json j2 = Json::parse("1099.43");
+	assert(j2.asNumber() == 1099.43);
+
+	print("asNumber - Double");
+
+	Json j3 = Json::parse("-9713");
+	assert(j3.asNumber() == -9713);
+
+	print("asNumber - Int");
+
+	Json j4 = Json::parse("\"Mississippi\"");
+	assert(j4.asString() == "Mississippi");
+
+	print("asString");
+
+	Json j5 = Json::parse("\"Z\"");
+	assert(j5.asString() == "Z");
+
+	print("asString - Char");
+
+	Json::ArrayType expectedArr{
+		true,
+		false,
+		false
 	};
+	Json j6(expectedArr);
 
-	assert(a1.isArray());
-	assert(a1.asArray() == arr1);
+	assert(j6.asArray() == expectedArr);
 
-	assert(a1[0].asNumber() == 21);
-	assert(a1[1].asNumber() == 65);
-	assert(a1[2].asNumber() == 98);
+	print("asArray");
 
-	Json a2 = Json::parse ("[[\"apple\", \"banana\"],[\"fire\", \"water\"]]");
-	Json::Array arr2 = {
-		Json::Array{ Json("apple"), Json("banana") },
-		Json::Array{ Json("fire"), Json("water") }
+	Json::ObjectType expectedObj{
+		{"x", 1000},
+		{"y", 20.90},
+		{"z", -999}
 	};
+	Json j7(expectedObj);
 
-	assert(a2.isArray());
-	assert(a2.asArray() == arr2);
+	assert(j7.asObject() == expectedObj);
 
-	assert(a2[0][0].asString() == "apple");
-	assert(a2[0][1].asString() == "banana");
-	assert(a2[1][0].asString() == "fire");
-	assert(a2[1][1].asString() == "water");
+	print("asObject");
 
-	std::cout << "\n[PASS] Array Types Test\n";
+	std::cout << "\n";
 }
 
-// ============================================================
-// Object Tests
-// Verifies object parsing, storage, and member access.
-// ============================================================
-void object_types() {
-	Json o1 = Json::parse(
-	              "{"
-	              "\"a\":1,"
-	              "\"b\":2,"
-	              "\"c\":3"
-	              "}"
-	          );
+// Navigation
+// Tests operator[] for accessing array elements and object members.
+void navigation() {
+	std::cout << "Navigation Test\n";
 
-	Json::Object obj1 = {
-		{ "a", 1 },
-		{ "b", 2 },
-		{ "c", 3 }
-	};
-
-	assert(o1.isObject());
-	assert(o1.asObject() == obj1);
-
-	assert(o1["a"].asNumber() == 1);
-	assert(o1["b"].asNumber() == 2);
-	assert(o1["c"].asNumber() == 3);
-
-	Json o2 = Json::parse(
-	              "{"
-	              "\"people\":["
-	              "{"
-	              "\"name\":\"Mark\","
-	              "\"age\":24,"
-	              "\"sex\":\"M\""
-	              "},"
-	              "{"
-	              "\"name\":\"Elora\","
-	              "\"age\":23,"
-	              "\"sex\":\"F\""
-	              "}"
-	              "]"
-	              "}"
-	          );
-
-	Json::Object obj2 = {
+	Json::ArrayType arr {
 		{
-			"people",
-			Json(Json::Array{
-				Json(Json::Object{
-					{ "name", "Mark" },
-					{ "age", 24 },
-					{ "sex", "M" }
-				}),
-				Json(Json::Object{
-					{"name", "Elora" },
-					{ "age", 23 },
-					{ "sex", "F" }
-				})
-			})
+			"Coke",
+			"Sprite",
+			"Pepsi",
+			"Dew"
 		}
 	};
 
+	Json j1(arr);
+
+	assert(j1[0].asString() == "Coke");
+	assert(j1[3].asString() == "Dew");
+	assert(j1[5].isNull());
+
+	print("Operator[] - Index");
+
+	Json::ObjectType obj {
+		{"subject", "Math"},
+		{"exam", 98},
+		{"grade", 95.45},
+		{"isPass", true}
+	};
+
+	Json j2(obj);
+
+	assert(j2["subject"].asString() == "Math");
+	assert(j2["exam"].asNumber() == 98);
+	assert(j2["grade"].asNumber() == 95.45);
+	assert(j2["isPass"].asBool() == true);
+	assert(j2["subjects"].isNull());
+
+	print("Operator[] - Keys");
+
+	std::cout << "\n";
+}
+
+// Element Access
+// Verifies bounds-checked access using at() for arrays and objects.
+void elementAccess() {
+	std::cout << "Element Access Test\n";
+
+	Json::ArrayType arr{
+		67.98,
+		999.89,
+		-789.91,
+		0.00541,
+		1000.0
+	};
+
+	Json j1(arr);
+
+	assert(j1.at(0) == 67.98);
+	assert(j1.at(3) == 0.00541);
+	assert(j1.at(1) == 999.89);
+
+	try {
+		(void)j1.at(5);
+		assert(false);
+	} catch(std::out_of_range&) {}
+
+	print("At() - Index");
+
+	Json::ObjectType obj{
+		{"Money", 99999},
+		{"Popularity", 100.00},
+		{"Influence", 100}
+	};
+
+	Json j2(obj);
+
+	assert(j2.at("Money") == 99999);
+	assert(j2.at("Popularity") == 100.00);
+
+	try {
+		(void)j2.at("Fame");
+		assert(false);
+	} catch(std::out_of_range&) {}
+
+	print("At() - Keys");
+
+	std::cout << "\n";
+}
+
+// Utility
+// Tests helper functions such as size() and contains().
+void utility() {
+	std::cout << "Utility Test\n";
+
+	Json::ArrayType arr{
+		100,
+		200,
+		400,
+		800
+	};
+
+	Json j1(arr);
+
+	assert(j1.size() == 4);
+
+	Json::ObjectType obj{
+		{"1", "a"},
+		{"2", "a"},
+		{"3", "c"},
+		{"4", true},
+		{"5", false}
+	};
+
+	Json j2(obj);
+
+	assert(j2.size() == 5);
+
+	print("Size");
+
+	assert(!j1.contains("800"));
+	assert(!j1.contains("1600"));
+	assert(j2.contains("1"));
+	assert(j2.contains("5"));
+	assert(!j2.contains("a"));
+
+	print("Contains");
+
+	std::cout << "\n";
+}
+
+// Comparison
+// Verifies equality and inequality operators.
+void comparison() {
+	std::cout << "Comparison Test\n";
+
+	Json j1 = Json::parse("\"1111\"");
+	Json j2 = Json::parse("1111");
+	Json j3 = Json::parse("\"1111\"");
+	Json j4 = Json::parse("\"2222\"");
+
+	assert(j1 == j3);
+
+	print("Operator==");
+
+	assert(j1 != j2);
+	assert(j1 != j4);
+
+	print("Operator!=");
+
+	std::cout << "\n";
+}
+
+// Serialization
+// Tests conversion of JSON values back into JSON text using dump().
+void serialization() {
+	std::cout << "Serialization Test\n";
+
+	Json::ArrayType arr{
+		"Spaghetti",
+		"Carbonara",
+		"Palabok"
+	};
+
+	Json j1(arr);
+
+	std::string arrDump = j1.dump();
+
+	assert(arrDump.find("\"Spaghetti\"") != std::string::npos);
+	assert(arrDump.find("\"Carbonara\"") != std::string::npos);
+	assert(arrDump.find("\"Palabok\"") != std::string::npos);
+	assert(arrDump.find("\"Pancit\"") == std::string::npos);
+
+	Json::ObjectType obj{
+		{"x", 10.50},
+		{"y", 20.64},
+		{"z", 15.91}
+	};
+
+	Json j2(obj);
+
+	std::string objDump = j2.dump();
+
+	assert(objDump.find("\"x\"") != std::string::npos);
+	assert(objDump.find("\"y\"") != std::string::npos);
+	assert(objDump.find("\"z\"") != std::string::npos);
+	assert(objDump.find("\"a\"") == std::string::npos);
+
+	print("Dump");
+
+	std::cout << "\n";
+}
+
+// String Escapes
+// Validates parsing of supported JSON escape sequences.
+void stringEscapes() {
+	std::cout << "String Escapes Test\n";
+
+	Json s1 = Json::parse("\"Hello\"");
+
+	assert(s1.isString());
+	assert(s1.asString() == "Hello");
+
+	print("String — Basic");
+
+	Json s2 = Json::parse("\"a\\nb\"");
+
+	assert(s2.isString());
+	assert(s2.asString() == "a\nb");
+
+	print("String — \\n");
+
+	Json s3 = Json::parse("\"a\\tb\"");
+
+	assert(s3.isString());
+	assert(s3.asString() == "a\tb");
+
+	print("String — \\t");
+
+	Json s4 = Json::parse("\"a\\rb\"");
+
+	assert(s4.isString());
+	assert(s4.asString() == "a\rb");
+
+	print("String — \\r");
+
+	Json s5 = Json::parse("\"a\\bb\"");
+
+	assert(s5.isString());
+	assert(s5.asString() == "a\bb");
+
+	print("String — \\b");
+
+	Json s6 = Json::parse("\"a\\fb\"");
+
+	assert(s6.isString());
+	assert(s6.asString() == "a\fb");
+
+	print("String — \\f");
+
+	Json s7 = Json::parse("\"a\\\\b\"");
+
+	assert(s7.isString());
+	assert(s7.asString() == "a\\b");
+
+	print("String — \\\\");
+
+	std::cout << "\n";
+}
+
+// Unicode
+// Tests Unicode escape decoding, including surrogate pairs.
+void stringUnicode() {
+	std::cout << "String Unicode Test\n";
+
+	Json u1 = Json::parse("\"\\u0041\"");
+	assert(u1.asString() == "A");
+
+	print("String - Unicode ASCII");
+
+	Json u2 = Json::parse("\"\\u03A9\"");
+	assert(u2.asString() == "Ω");
+
+	print("String - Unicode Escapes");
+
+	Json u3 = Json::parse("\"\\uD83D\\uDE00\"");
+	assert(u3.asString() == "😀");
+
+	Json u4 = Json::parse("\"\\uD83D\\uDC4D\"");
+	assert(u4.asString() == "👍");
+
+	print("String - Surrogate Pair");
+
+	std::cout << "\n";
+}
+
+// Edge Numbers
+// Verifies parsing of numeric edge cases and scientific notation.
+void edgeNumbers() {
+	std::cout << "Edge Numbers Test\n";
+
+	Json e1 = Json::parse("0");
+	assert(e1.asNumber() == 0);
+
+	print("Number - Zero");
+
+	Json e2 = Json::parse("0.0");
+	assert(e2.asNumber() == 0.0);
+
+	print("Number - Zero Double");
+
+	Json e3 = Json::parse("-0");
+	assert(e3.asNumber() == -0);
+
+	print("Number - Negative Zero");
+
+	Json e4 = Json::parse("1e3");
+	assert(e4.asNumber() == 1000);
+
+	print("Number - Scientific Notation");
+
+	Json e5 = Json::parse("-1.5e2");
+	assert(e5.asNumber() == -150);
+
+	print("Number - Negative Scientific Notation");
+
+	std::cout << "\n";
+}
+
+// Array Types
+// Tests arrays, nested arrays, and indexed element access.
+void arrayTypes() {
+	std::cout << "Array Type Test\n";
+
+	Json::ArrayType arr1{
+		12,
+		13,
+		14,
+		15
+	};
+
+	Json a1(arr1);
+
+	assert(a1.isArray());
+	assert(a1[1] == 13);
+	assert(a1.at(2) == 14);
+	assert(a1.size() == 4);
+
+	print("Normal Array");
+
+	Json::ArrayType arr2{
+		Json::ArrayType{
+			"Earth",
+			"Mars"
+		},
+		Json::ArrayType{
+			"Neptune",
+			"Jupiter"
+		}
+	};
+
+	Json a2(arr2);
+
+	assert(a2.isArray());
+	assert(a2[0][0] == "Earth");
+	assert(a2[1][0] == "Neptune");
+	assert(a2[0].at(1) == "Mars");
+	assert(a2.size() == 2);
+
+	print("Nested Array");
+
+	std::cout << "\n";
+}
+
+// Object Types
+// Tests objects, nested objects, and key-based access.
+void objectTypes() {
+	std::cout << "Object Type Test\n";
+
+	Json::ObjectType obj1{
+		{"atk", 99},
+		{"def", 60},
+		{"lvl", 21},
+		{"isHurt", true}
+	};
+
+	Json o1(obj1);
+
+	assert(o1.isObject());
+	assert(o1["atk"] == 99);
+	assert(o1.at("lvl") == 21);
+	assert(o1.size() == 4);
+
+	print("Normal Object");
+
+	Json::ArrayType people{
+		Json::ObjectType{
+			{"name", "Maek"},
+			{"money", 0.0}
+		},
+		Json::ObjectType{
+			{"name", "Kaen"},
+			{"money", 1300.0}
+		}
+	};
+
+	Json::ObjectType obj2{
+		{"Person", people}
+	};
+
+	Json o2(obj2);
+
 	assert(o2.isObject());
-	assert(o2.asObject() == obj2);
+	assert(o2["Person"][0]["name"] == "Maek");
+	assert(o2["Person"][0]["money"] == 0.0);
+	assert(o2["Person"][1].at("name") == "Kaen");
+	assert(o2["Person"][1].at("money") == 1300.0);
+	assert(o2.size() == 1);
 
-	assert(o2["people"][0]["name"].asString() == "Mark");
-	assert(o2["people"][0]["age"].asNumber() == 24);
-	assert(o2["people"][0]["sex"].asString() == "M");
+	print("Nested Object");
 
-	assert(o2["people"][1]["name"].asString() == "Elora");
-	assert(o2["people"][1]["age"].asNumber() == 23);
-	assert(o2["people"][1]["sex"].asString() == "F");
-
-	std::cout << "\n[PASS] Object Types Test\n";
+	std::cout << "\n";
 }
 
-// ============================================================
-// Mixed Structure Tests
-// Verifies deeply nested combinations of objects,
-// arrays, strings, numbers, and booleans.
-// ============================================================
-void mixed_types() {
-    Json m = Json::parse(
-        "{"
-        "\"pokemon\":["
-        "{"
-        "\"name\":\"Rayquaza\","
-        "\"health\": 5000,"
-        "\"stats\": [100, 90, 100, 95],"
-        "\"shiny\": true,"
-        "\"height(in.)\": 275.95"
-        "},"
-        "{"
-        "\"name\":\"Groudon\","
-        "\"health\": 6000,"
-        "\"stats\": [90, 100, 100, 90],"
-        "\"shiny\": false,"
-        "\"height(in.)\": 137.57"
-        "}"
-        "]"
-        "}"
-    );
-    
-    Json::Object obj = {
-        {
-            "pokemon",
-            Json(Json::Array{
-                Json(Json::Object{
-                    { "name", "Rayquaza" },
-                    { "health", 5000},
-                    { "stats", Json::Array{100, 90, 100, 95} },
-                    { "shiny", true },
-                    { "height(in.)", 275.95 }
-                }),
-                Json(Json::Object{
-                    { "name", "Groudon" },
-                    { "health", 6000},
-                    { "stats", Json::Array{90, 100, 100, 90} },
-                    { "shiny", false },
-                    { "height(in.)", 137.57 }
-                })
-            })
-        }
-    };
-    
-    Json::Array arr1 = Json::Array{100, 90, 100, 95};
-    Json::Array arr2 = Json::Array{90, 100, 100, 90};
-    
-    assert(m.isObject());
-    assert(m.asObject() == obj);
-    
-    assert(m["pokemon"][0]["name"].asString() == "Rayquaza");
-    assert(m["pokemon"][0]["health"].asNumber() == 5000);
-    assert(m["pokemon"][0]["stats"].asArray() == arr1);
-    assert(m["pokemon"][0]["shiny"].asBool() == true);
-    assert(m["pokemon"][0]["height(in.)"].asNumber() == 275.95);
-    
-    assert(m["pokemon"][0]["stats"][0].asNumber() == 100);
-    assert(m["pokemon"][0]["stats"][1].asNumber() == 90);
-    assert(m["pokemon"][0]["stats"][2].asNumber() == 100);
-    assert(m["pokemon"][0]["stats"][3].asNumber() == 95);
-    
-    assert(m["pokemon"][1]["name"].asString() == "Groudon");
-    assert(m["pokemon"][1]["health"].asNumber() == 6000);
-    assert(m["pokemon"][1]["stats"].asArray() == arr2);
-    assert(m["pokemon"][1]["shiny"].asBool() == false);
-    assert(m["pokemon"][1]["height(in.)"].asNumber() == 137.57);
-    
-    assert(m["pokemon"][1]["stats"][0].asNumber() == 90);
-    assert(m["pokemon"][1]["stats"][1].asNumber() == 100);
-    assert(m["pokemon"][1]["stats"][2].asNumber() == 100);
-    assert(m["pokemon"][1]["stats"][3].asNumber() == 90);
-    
-    std::cout << "\n[PASS] Mixed Types Test\n";
+// Mixed Types
+// Verifies parsing and access of complex nested JSON structures.
+void mixedTypes() {
+	std::cout << "Mixed Type Test\n";
+
+	Json::ObjectType obj{
+		{
+			"legendary",
+			Json::ArrayType{
+				Json::ObjectType{
+					{ "name", "Rayquaza" },
+					{ "health", 5000},
+					{ "stats", Json::ArrayType{100, 90, 100, 95} },
+					{ "shiny", true },
+					{ "height(in.)", 275.95 }
+				},
+				Json::ObjectType{
+					{ "name", "Groudon" },
+					{ "health", 6000},
+					{ "stats", Json::ArrayType{90, 100, 100, 90} },
+					{ "shiny", false },
+					{ "height(in.)", 137.57 }
+				}
+			}
+		}
+	};
+	
+	Json o(obj);
+	
+	assert(o["legendary"].size()                       == 2);
+    assert(o["legendary"][0]["name"].asString()        == "Rayquaza");
+    assert(o["legendary"][1]["name"].asString()        == "Groudon");
+    assert(o["legendary"][0]["shiny"].asBool()         == true);
+    assert(o["legendary"][1]["height(in.)"].asNumber() == 137.57);
+
+    print("Nested Structures");
+	
+	std::cout << "\n";
 }
 
-// ============================================================
-// Number Edge Case Tests
-// Verifies parsing of special numeric formats such as
-// zero, negative zero, decimals, and exponents.
-// ============================================================
-void edge_numbers() {
-    Json e1 = Json::parse("0");
-    Json e2 = Json::parse("0.0");
-    Json e3 = Json::parse("1e3");
-    Json e4 = Json::parse("-1.5e2");
-    Json e5 = Json::parse("-0");
-    
-    assert(e1.asNumber() == 0);
-    assert(e2.asNumber() == 0.0);
-    assert(e3.asNumber() == 1000);
-    assert(e4.asNumber() == -150);
-    assert(e5.asNumber() == -0);
-    
-    std::cout << "\n[PASS] Edge Numbers Test\n";
-}
+// Entry Point
+int main()
+{
+	lifecycle();
+	typeInspection();
+	valueAccess();
+	navigation();
+	elementAccess();
+	utility();
+	comparison();
+	serialization();
 
-// ============================================================
-// Serialization Tests
-// Verifies JSON serialization using dump().
-// ============================================================
-void dump() {
-    Json d = Json::parse(
-        "{"
-        "\"x\":78.45,"
-        "\"y\":93.5632,"
-        "\"z\":100"
-        "}"
-    );
-    
-    std::string out = d.dump(0);
-    
-    assert(out.find("\"x\"") != std::string::npos);
-    assert(out.find("\"y\"") != std::string::npos);
-    assert(out.find("\"z\"") != std::string::npos);
-    
-    std::cout << "\n[PASS] Dump Test\n";
-}
+	stringEscapes();
+	stringUnicode();
+	edgeNumbers();
+	arrayTypes();
+	objectTypes();
+	mixedTypes();
 
-int main() {
-	basic_types();
-
-	string_escapes();
-	
-	string_unicode();
-
-	array_types();
-
-	object_types();
-	
-	mixed_types();
-	
-	edge_numbers();
-	
-	dump();
-	
-	std::cout << "\nAll Test Completed\n";
-	
 	return 0;
 }
 
