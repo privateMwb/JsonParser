@@ -1,10 +1,31 @@
+// ============================================================
+// Json.cpp
+// Implementation for JsonPro::Json.
+// ============================================================
+//
+// Sections:
+//   1. Constructors & Destructor
+//   2. Move Semantics
+//   3. Parsing
+//   4. Type Inspection
+//   5. Value Access
+//   6. Navigation
+//   7. Element Access
+//   8. Utilities
+//   9. Comparison
+//   10. Serialization
+//
+// ============================================================
+
+#include <JsonPro/Json.h>
+#include <JsonPro/Parser.h>
+
+#include <ostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <ostream>
 
-#include "Json.h"
-#include "Parser.h"
+namespace JsonPro {
 
 namespace {
     // returns a string of n spaces for indentation
@@ -13,125 +34,113 @@ namespace {
     }
 }
 
-// Constructors & Destructor
-Json::Json() :
-    type_(Type::Null),
+
+// ============================================================
+// Section 1 — Constructors & Destructor
+// ============================================================
+Json::Json() noexcept :
     value_(nullptr) {}
 
-Json::Json(std::nullptr_t) :
-    type_(Type::Null),
+Json::Json(std::nullptr_t) noexcept :
     value_(nullptr) {}
 
-Json::Json(bool value) :
-    type_(Type::Bool),
+Json::Json(bool value) noexcept :
     value_(value) {}
 
-Json::Json(double value) :
-    type_(Type::Number),
+Json::Json(double value) noexcept :
     value_(value) {}
 
-Json::Json(int value) :
-    type_(Type::Number),
+Json::Json(int value) noexcept :
     value_(static_cast<double>(value)) {}
 
 Json::Json(const std::string& value) :
-    type_(Type::String),
     value_(value) {}
 
-Json::Json(std::string&& value) :
-    type_(Type::String),
+Json::Json(std::string&& value) noexcept :
     value_(std::move(value)) {}
 
 Json::Json(const char* value) :
-    type_(Type::String),
     value_(std::string(value)) {}
 
 Json::Json(const ArrayType& value) :
-    type_(Type::Array),
     value_(value) {}
 
-Json::Json(ArrayType&& value) :
-    type_(Type::Array),
+Json::Json(ArrayType&& value) noexcept :
     value_(std::move(value)) {}
 
 Json::Json(const ObjectType& value) :
-    type_(Type::Object),
     value_(value) {}
 
-Json::Json(ObjectType&& value) :
-    type_(Type::Object),
+Json::Json(ObjectType&& value) noexcept :
     value_(std::move(value)) {}
 
-Json::Json(const Json& other) :
-    type_(other.type_),
-    value_(other.value_) {}
 
-Json& Json::operator=(const Json& other) {
-    if (this != &other) {
-        type_  = other.type_;
-        value_ = other.value_;
-    }
-
-    return *this;
-}
-
+// ============================================================
+// Section 2 — Move Semantics
+// ============================================================
 Json::Json(Json&& other) noexcept :
-    type_(other.type_),
     value_(std::move(other.value_))
 {
-    other.type_  = Type::Null;
     other.value_ = nullptr;
 }
 
 Json& Json::operator=(Json&& other) noexcept {
     if (this != &other) {
-        type_  = other.type_;
         value_ = std::move(other.value_);
-
-        other.type_  = Type::Null;
         other.value_ = nullptr;
     }
 
     return *this;
 }
 
-// Parsing
+
+// ============================================================
+// Section 3 — Parsing
+// ============================================================
 Json Json::parse(std::string_view text) {
     Parser parser{ std::string(text) };
 
     return parser.parse();
 }
 
-// Type Inspection
+
+// ============================================================
+// Section 4 — Type Inspection
+// ============================================================
+// Type is derived directly from the variant's active index — no separate
+// discriminant is stored or kept in sync.
 Json::Type Json::type() const noexcept {
-    return type_;
+    return static_cast<Type>(value_.index());
 }
 
 bool Json::isNull() const noexcept {
-    return type_ == Type::Null;
+    return value_.index() == static_cast<std::size_t>(Type::Null);
 }
 
 bool Json::isBool() const noexcept {
-    return type_ == Type::Bool;
+    return value_.index() == static_cast<std::size_t>(Type::Bool);
 }
 
 bool Json::isNumber() const noexcept {
-    return type_ == Type::Number;
+    return value_.index() == static_cast<std::size_t>(Type::Number);
 }
 
 bool Json::isString() const noexcept {
-    return type_ == Type::String;
+    return value_.index() == static_cast<std::size_t>(Type::String);
 }
 
 bool Json::isArray() const noexcept {
-    return type_ == Type::Array;
+    return value_.index() == static_cast<std::size_t>(Type::Array);
 }
 
 bool Json::isObject() const noexcept {
-    return type_ == Type::Object;
+    return value_.index() == static_cast<std::size_t>(Type::Object);
 }
 
-// Value Access
+
+// ============================================================
+// Section 5 — Value Access
+// ============================================================
 bool Json::asBool() const {
     const auto* p = std::get_if<bool>(&value_);
 
@@ -195,14 +204,17 @@ const Json::ObjectType& Json::asObject() const {
     return *p;
 }
 
-// Navigation
+
+// ============================================================
+// Section 6 — Navigation
+// ============================================================
 Json& Json::operator[](std::size_t index) {
     auto* p = std::get_if<ArrayType>(&value_);
 
     if (!p)
-        throw std::runtime_error("Json: not an object");
+        throw std::runtime_error("Json: not an array");
 
-    return (*p)[index]; 
+    return (*p)[index];
 }
 
 const Json& Json::operator[](std::size_t index) const {
@@ -229,10 +241,18 @@ const Json& Json::operator[](const std::string& key) const {
     if (!p)
         throw std::runtime_error("Json: not an object");
 
-    return p->find(key)->second; 
+    auto it = p->find(key);
+
+    if (it == p->end())
+        throw std::out_of_range("Json: key not found");
+
+    return it->second;
 }
 
-// Element Access
+
+// ============================================================
+// Section 7 — Element Access
+// ============================================================
 Json& Json::at(std::size_t index) {
     auto* p = std::get_if<ArrayType>(&value_);
 
@@ -285,7 +305,10 @@ const Json& Json::at(const std::string& key) const {
     return it->second;
 }
 
-// Utilities
+
+// ============================================================
+// Section 8 — Utilities
+// ============================================================
 std::size_t Json::size() const noexcept {
     if (const auto* p = std::get_if<ArrayType>(&value_))
         return p->size();
@@ -305,12 +328,15 @@ bool Json::contains(const std::string& key) const noexcept {
     return p->contains(key);
 }
 
-// Comparison
+
+// ============================================================
+// Section 9 — Comparison
+// ============================================================
 bool Json::operator==(const Json& other) const {
-    if (type_ != other.type_)
+    if (value_.index() != other.value_.index())
         return false;
 
-    switch (type_) {
+    switch (type()) {
         case Type::Null:   return true;
         case Type::Bool:   return std::get<bool>(value_)        == std::get<bool>(other.value_);
         case Type::Number: return std::get<double>(value_)      == std::get<double>(other.value_);
@@ -326,10 +352,13 @@ bool Json::operator!=(const Json& other) const {
     return !(*this == other);
 }
 
-// Serialization
+
+// ============================================================
+// Section 10 — Serialization
+// ============================================================
 // dump(ostream) writes directly to the stream avoiding per-recursion string allocations
 void Json::dump(std::ostream& os, int indent) const {
-    switch (type_) {
+    switch (type()) {
         case Type::Null:
             os << "null";
             return;
@@ -351,6 +380,10 @@ void Json::dump(std::ostream& os, int indent) const {
 
             if (arr.empty()) { os << "[]"; return; }
 
+            // Newlines are always emitted regardless of indent; indent only
+            // controls how many leading spaces each nested level gets. So
+            // indent=0 still produces multi-line (just unindented) output,
+            // not a single-line compact form.
             os << "[\n";
 
             for (std::size_t i = 0; i < arr.size(); ++i) {
@@ -376,6 +409,9 @@ void Json::dump(std::ostream& os, int indent) const {
 
             bool first = true;
 
+            // Iteration order follows the underlying unordered_map's bucket
+            // order, not insertion order — key order in output isn't stable
+            // across runs or equal to insertion order.
             for (const auto& [key, value] : obj) {
                 if (!first)
                     os << ",\n";
@@ -383,7 +419,8 @@ void Json::dump(std::ostream& os, int indent) const {
                 os << pad(indent + 2)
                    << '"' << key << "\": ";
 
-                value.dump(os, indent + 2);
+                value.dump(os, indent + 2)
+;
 
                 first = false;
             }
@@ -400,3 +437,5 @@ std::string Json::dump(int indent) const {
     dump(oss, indent);
     return oss.str();
 }
+
+} // namespace JsonPro
