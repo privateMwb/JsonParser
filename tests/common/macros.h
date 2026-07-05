@@ -49,17 +49,6 @@
     ++total;                            \
 } while (0)
 
-// Verifies that an expression throws the expected exception type.
-#define CHK_THROWS(expr, exception_type) do {         \
-    bool thrown = false;                              \
-    try {                                             \
-        (void)(expr);                                 \
-    } catch (const exception_type&) {                 \
-        thrown = true;                                \
-    } catch (...) {}                                  \
-                                                       \
-    CHK(thrown);                                      \
-} while (0)
 
 // Registers this file's run_tests with the global registry so it runs
 // automatically at startup. The anonymous namespace gives `registrar`
