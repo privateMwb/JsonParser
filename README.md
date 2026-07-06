@@ -1,10 +1,10 @@
-# JsonParser
+# JsonPro
 
 [![C++23](https://img.shields.io/badge/C%2B%2B-23-blue)](https://en.cppreference.com/w/cpp/23)
-[![Status](https://img.shields.io/badge/status-learning%20project-green)](https://github.com/privateMwb/JsonParser)
+[![Status](https://img.shields.io/badge/status-learning%20project-green)](https://github.com/privateMwb/JsonPro)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A JSON parser and value library implemented from scratch in **C++23**, built to explore recursive descent parsing, `std::variant`-based type-safe value representation, Unicode handling, serialization design, and the tradeoffs between parsing and direct construction.
+**JsonPro** is a from-scratch JSON value type and recursive-descent parser written in modern C++23. It was built as a deep dive into variant-based value representation, zero-copy tokenizer design, and the real cost of RFC 8259 correctness — Unicode surrogate pairs, strict number grammar, nesting-depth guards — on parsing throughput.
 
 ---
 
@@ -13,556 +13,144 @@ A JSON parser and value library implemented from scratch in **C++23**, built to 
 - [Overview](#overview)
 - [Motivation](#motivation)
 - [Features](#features)
-- [Design Overview](#design-overview)
-  - [Internal Structure](#internal-structure)
-  - [Type System](#type-system)
-  - [Parser Architecture](#parser-architecture)
-  - [Recursive Descent](#recursive-descent)
-  - [String Parsing & Unicode](#string-parsing--unicode)
-  - [Serialization Design](#serialization-design)
-  - [operator\[\] vs at()](#operator-vs-at)
-  - [Custom Backend](#custom-backend)
-- [Supported JSON](#supported-json)
-- [Complexity](#complexity)
-- [Quick Example](#quick-example)
-  - [Parsing](#parsing)
-  - [Direct Construction](#direct-construction)
-  - [Type Inspection](#type-inspection)
-  - [Value Access](#value-access)
-  - [Navigation](#navigation)
-  - [Bounds-Checked Access](#bounds-checked-access)
-  - [Serialization](#serialization)
-  - [Comparison](#comparison)
-  - [Copy & Move](#copy--move)
-  - [Mixed Nested Structure](#mixed-nested-structure)
+- [Quick Start](#quick-start)
 - [Core API](#core-api)
-  - [Constructors](#constructors)
-  - [Parsing](#parsing-1)
-  - [Type Inspection](#type-inspection-1)
-  - [Value Access](#value-access-1)
-  - [Navigation](#navigation-1)
-  - [Element Access](#element-access)
-  - [Utilities](#utilities)
-  - [Comparison](#comparison-1)
-  - [Serialization](#serialization-1)
-- [Error Handling](#error-handling)
-- [Benchmark Results](#benchmark-results)
-  - [Parse vs Construct](#parse-vs-construct)
-  - [Array — Parse vs Construct](#array--parse-vs-construct)
-  - [Object — Parse vs Construct](#object--parse-vs-construct)
-  - [Nested — Parse vs Construct](#nested--parse-vs-construct)
-  - [Dump — String vs Stream](#dump--string-vs-stream)
-  - [Array Access — operator\[\] vs at()](#array-access--operator-vs-at)
-  - [Object Access — operator\[\] vs at()](#object-access--operator-vs-at)
-  - [Summary](#summary)
+- [Design Overview](#design-overview)
+- [Complexity](#complexity)
+- [Benchmarks](#benchmarks)
 - [Project Structure](#project-structure)
-- [Build Instructions](#build-instructions)
-- [Notes](#notes)
-- [Contributing](#contributing)
+- [Building from Source](#building-from-source)
+- [Known Limitations](#known-limitations)
 - [License](#license)
 
 ---
 
 ## Overview
 
-JsonParser is a two-component library: a `Json` value class and a `Parser` that produces `Json` values from text. `Json` stores any JSON value — null, bool, number, string, array, or object — in a `std::variant`, with a separate `Type` enum for fast type dispatch. `Parser` is a hand-written recursive descent parser that processes input character-by-character, tracking line and column for error reporting.
+`JsonPro::Json` is a JSON value type backed by `std::variant`, paired with a `Parser` that builds it from text via recursive descent. It focuses on correctly and efficiently solving the hard problems a JSON library faces internally:
 
-The library also supports direct construction of `Json` values in C++ without parsing, full copy/move semantics, `dump()` serialization to string or stream, and an optional custom backend that can swap `std::vector` and `std::unordered_map` for custom containers.
+- Deriving the active type directly from the variant's index — no redundant discriminant
+- A zero-copy raw-pointer parsing cursor with line/column tracking deferred to the error path only
+- Bulk-copy string scanning that only slows down on actual escape sequences
+- Allocation-free number parsing via hand-validated grammar + `std::from_chars`
+- A bounded recursion depth guard against adversarially nested input
+
+On top of this foundation, JsonPro adds full `\u` escape and surrogate-pair decoding, deep structural equality, pretty-printed serialization, and a benchmark suite covering every public operation.
 
 ---
 
 ## Motivation
 
-This project was built to deeply understand:
+This project was built to understand, in depth:
 
-- Recursive descent parsing — how to write a parser that mirrors a grammar directly in code
-- `std::variant` as a type-safe discriminated union
-- Character-level input processing (`peek`, `get`, position tracking)
-- Unicode escape decoding and UTF-8 encoding (`\uXXXX`, surrogate pairs)
-- Serialization design tradeoffs (string concatenation vs stream writing)
-- The cost of parsing vs direct construction
-- Error reporting with line and column context
+- Representing a dynamically-typed value with `std::variant` instead of a hand-rolled tagged union
+- Why a separate type discriminant is redundant when `std::variant::index()` already provides one
+- Recursive-descent parsing: tokenizing and building a tree in a single pass, with no intermediate token stream
+- The cost of correctness — Unicode surrogate pairs, escape decoding, strict number grammar — versus skipping validation for speed
+- Why per-character line/column tracking on the hot path is wasted work when it's only needed for error messages
+- Bulk-copy string scanning vs. character-by-character appending
+- Guarding recursive descent against unbounded input depth (stack-overflow denial of service)
 
 ---
 
 ## Features
 
-- Full JSON parsing via `Json::parse(std::string_view)`
-- All six JSON types: `null`, `bool`, `number`, `string`, `array`, `object`
-- Direct C++ construction for all types (no parsing required)
-- Type inspection: `isNull()`, `isBool()`, `isNumber()`, `isString()`, `isArray()`, `isObject()`
-- Value access: `asBool()`, `asNumber()`, `asString()`, `asArray()`, `asObject()`
-- Navigation: `operator[]` by index (array) and by key (object)
-- Bounds-checked access: `at(index)` and `at(key)` — throws on invalid access
-- `contains(key)` — key existence check on objects
-- `size()` — element count for arrays and objects
-- Full copy & move semantics (Rule of 5)
-- `operator==` / `operator!=` — deep equality comparison
-- `dump(int indent)` — serialize to `std::string`
-- `dump(std::ostream&, int indent)` — serialize directly to any stream
-- Line and column error reporting on parse failure
-- Unicode `\uXXXX` escape decoding with surrogate pair support
-- Pluggable container backend via `#define JSON_USE_CUSTOM`
+| Feature | Description |
+|---|---|
+| Recursive-descent parser | `Json::parse()` builds the full value tree in a single forward pass |
+| RFC 8259 number grammar | No leading zeros, required digits after `.`/`e`, validated by hand before `std::from_chars` |
+| Full string escape support | `\" \\ \/ \n \t \r \b \f`, `\uXXXX`, and surrogate pairs for astral codepoints |
+| Variant-derived `type()` | `Type` is `static_cast` from `value_.index()` — no separate discriminant stored |
+| Zero-copy parsing cursor | Raw pointer cursor; line/column computed lazily, only on error |
+| Bulk-copy string scanning | Unescaped runs copied in one `append(ptr, len)`, not char-by-char |
+| Maximum nesting depth guard | `kMaxDepth = 512` rejects adversarial input before stack overflow |
+| Deep structural equality | `operator==` compares arrays elementwise and objects order-independently |
+| Dual serialization entry points | `dump()` returns a `std::string`; `dump(std::ostream&)` writes directly |
+| Checked & unchecked access | `operator[]` (unchecked) and `at()` (throws on miss) for both arrays and objects |
+| Move-safe value type | Move construction/assignment leave the source as `Null` |
 
 ---
 
-## Design Overview
+## Quick Start
 
-### Internal Structure
-
-```
-Json
-├── type_    (Type enum)
-└── value_   (std::variant<
-                nullptr_t,   ← Null
-                bool,        ← Bool
-                double,      ← Number
-                std::string, ← String
-                ArrayType,   ← Array  (std::vector<Json>)
-                ObjectType   ← Object (std::unordered_map<std::string, Json>)
-              >)
-```
-
-`type_` is stored separately from `value_` for fast type dispatch — `isNull()`, `isBool()`, etc. are simple enum comparisons that never touch the variant. Type-specific access (`asBool()`, `asNumber()`, etc.) uses `std::get_if` for safe extraction.
-
----
-
-### Type System
-
-| JSON Type | C++ Storage      | `Json` constructor         |
-|-----------|------------------|----------------------------|
-| null      | `nullptr_t`      | `Json()` or `Json(nullptr)`|
-| bool      | `bool`           | `Json(bool)`               |
-| number    | `double`         | `Json(double)`, `Json(int)`|
-| string    | `std::string`    | `Json(string)`, `Json(const char*)` |
-| array     | `ArrayType`      | `Json(ArrayType)`          |
-| object    | `ObjectType`     | `Json(ObjectType)`         |
-
-All JSON numbers are stored as `double`. Integer inputs (`Json(42)`) are cast to `double` at construction — consistent with the JSON spec, which defines a single `number` type.
-
----
-
-### Parser Architecture
-
-`Parser` is a separate class from `Json`. It owns a copy of the input string and a position cursor, and exposes only two public methods:
-
-```
-Parser(std::string input)
-Json parse()
-```
-
-`Json::parse(std::string_view)` is a static factory that constructs a `Parser` and calls `parse()` — keeping the parser implementation hidden from the `Json` interface.
-
-The parser state:
-
-```
-Parser
-├── input_   — full input string (owned copy)
-├── pos_     — current character index
-├── line_    — current line number (for error messages)
-└── column_  — current column number (for error messages)
-```
-
-Two primitives drive all parsing:
-
-- `peek()` — returns the character at `pos_` without advancing
-- `get()` — returns the character at `pos_` and advances; tracks `\n` for line counting
-
----
-
-### Recursive Descent
-
-`parseValue()` is the central dispatch function. It inspects the current character and delegates:
-
-```
-parseValue()
-  ├── 'n'        → parseNull()
-  ├── 't' / 'f' → parseBool()
-  ├── '"'        → parseString()
-  ├── '['        → parseArray()
-  ├── '{'        → parseObject()
-  └── digit / '-'→ parseNumber()
-```
-
-`parseArray()` and `parseObject()` call `parseValue()` recursively — this is what makes the parser handle arbitrary nesting without explicit depth tracking.
-
-```
-parseObject()
-  └── for each key-value pair:
-        parseString() → key
-        parseValue()  → value  (may recurse into parseArray/parseObject)
-```
-
----
-
-### String Parsing & Unicode
-
-String parsing handles all JSON escape sequences:
-
-| Escape | Result    |
-|--------|-----------|
-| `\"`   | `"`       |
-| `\\`   | `\`       |
-| `\/`   | `/`       |
-| `\n`   | newline   |
-| `\t`   | tab       |
-| `\r`   | carriage return |
-| `\b`   | backspace |
-| `\f`   | form feed |
-| `\uXXXX` | UTF-8 encoded Unicode codepoint |
-
-**Unicode (`\uXXXX`):** four hex digits are parsed and the codepoint is encoded into UTF-8 via `appendUtf8()`. The encoder handles the full Unicode range:
-
-```
-U+0000–U+007F    → 1-byte UTF-8
-U+0080–U+07FF    → 2-byte UTF-8
-U+0800–U+FFFF    → 3-byte UTF-8
-U+10000–U+10FFFF → 4-byte UTF-8 (via surrogate pair decoding)
-```
-
-**Surrogate pairs (`\uD800\uDCxx`):** when a high surrogate (`D800–DBFF`) is encountered, the parser immediately reads the following `\uXXXX` as the low surrogate (`DC00–DFFF`) and combines them into a codepoint above U+10000.
-
----
-
-### Serialization Design
-
-`dump()` has two overloads with different performance characteristics:
-
-```cpp
-std::string  dump(int indent = 0) const;           // string version
-void         dump(std::ostream& os, int indent = 0) const; // stream version
-```
-
-The stream version writes directly to the output stream, avoiding intermediate string allocations per recursive call. The string version delegates to the stream version via `std::ostringstream` — so both ultimately use the same code path.
-
-Indentation is handled by a local `pad(n)` function that returns `n` spaces. Arrays and objects are formatted with trailing commas on all but the last element, consistent with standard JSON output.
-
----
-
-### operator[] vs at()
-
-| Method          | Out-of-bounds behavior        | Missing key behavior           |
-|-----------------|-------------------------------|--------------------------------|
-| `operator[](i)` | Returns default `Json()` (null) | —                            |
-| `operator[](k)` | —                             | Inserts empty `Json()` (null)  |
-| `at(i)`         | Throws `std::out_of_range`    | —                              |
-| `at(k)`         | —                             | Throws `std::out_of_range`     |
-
-`operator[]` on a missing key silently inserts a null value — the same behavior as `std::unordered_map::operator[]`. Use `at()` when you want an exception on missing keys, or `contains()` to check first.
-
----
-
-### Custom Backend
-
-The array and object types are defined via type aliases that can be swapped at compile time:
-
-```cpp
-#ifdef JSON_USE_CUSTOM
-    // using ArrayType  = VectorPro<Json>;
-    // using ObjectType = HashMap<std::string, Json>;
-#else
-    using ArrayType  = std::vector<Json>;
-    using ObjectType = std::unordered_map<std::string, Json>;
-#endif
-```
-
-Define `JSON_USE_CUSTOM` and uncomment the custom lines to use `VectorPro` and `HashMap` as the backing containers. The rest of the library is unaffected.
-
----
-
-## Supported JSON
-
-| Feature                        | Supported |
-|--------------------------------|:---------:|
-| null                           | ✅        |
-| true / false                   | ✅        |
-| Integer numbers                | ✅        |
-| Floating-point numbers         | ✅        |
-| Negative numbers               | ✅        |
-| Scientific notation (`1e3`)    | ✅        |
-| Strings                        | ✅        |
-| Escape sequences (`\n`, `\t`, etc.) | ✅   |
-| Unicode escapes (`\uXXXX`)     | ✅        |
-| Surrogate pairs (`\uD800\uDCxx`) | ✅      |
-| Arrays                         | ✅        |
-| Nested arrays                  | ✅        |
-| Objects                        | ✅        |
-| Nested objects                 | ✅        |
-| Mixed nested structures        | ✅        |
-| Trailing commas                | ❌        |
-| Comments                       | ❌        |
-| Leading zeros (`007`)          | ❌ (error)|
-| Trailing characters after value | ❌ (error)|
-
----
-
-## Complexity
-
-| Operation              | Complexity | Notes                                               |
-|------------------------|:----------:|-----------------------------------------------------|
-| `parse()` — primitive  | O(n)       | n = input length; linear scan                       |
-| `parse()` — array      | O(n)       | One pass; each element parsed once                  |
-| `parse()` — object     | O(n)       | One pass; each key-value pair parsed once           |
-| `isNull()` / `isBool()` etc. | O(1) | Enum comparison only                              |
-| `asBool()` / `asNumber()` etc. | O(1) | `std::get_if` on variant                        |
-| `operator[](index)`    | O(1)       | Direct vector index                                 |
-| `operator[](key)`      | O(1) avg   | Hash map lookup                                     |
-| `at(index)`            | O(1)       | Bounds check + vector index                         |
-| `at(key)`              | O(1) avg   | Bounds check + hash map lookup                      |
-| `contains(key)`        | O(1) avg   | Hash map lookup                                     |
-| `size()`               | O(1)       | Vector or map size                                  |
-| `dump()` — string      | O(n)       | n = total node count; recursive traversal           |
-| `dump()` — stream      | O(n)       | Same traversal; avoids per-node string allocation   |
-| Copy construction      | O(n)       | Deep copies variant (including nested structures)   |
-| Move construction      | O(1)       | Moves variant; source becomes null                  |
-| `operator==`           | O(n)       | Recursive deep comparison                           |
-
----
-
-## Quick Example
-
-### Parsing
+### Basic usage
 
 ```cpp
 #include "Json.h"
 
-// Primitives
-Json null   = Json::parse("null");
-Json b      = Json::parse("true");
-Json n      = Json::parse("3.14");
-Json s      = Json::parse("\"hello\"");
+using namespace JsonPro;
 
-// Array
-Json arr = Json::parse("[1, 2, 3]");
+int main() {
+    Json doc = Json::parse(R"({
+        "name": "Rain",
+        "active": true,
+        "score": 42.5,
+        "tags": ["cpp", "json"]
+    })");
 
-// Object
-Json obj = Json::parse("{\"name\": \"Claude\", \"age\": 2}");
-
-// Complex nested
-Json data = Json::parse(R"({
-    "users": [
-        {"name": "Alice", "active": true},
-        {"name": "Bob",   "active": false}
-    ]
-})");
-```
-
----
-
-### Direct Construction
-
-```cpp
-// Primitives
-Json null;               // null
-Json b(true);            // bool
-Json n(3.14);            // number (double)
-Json i(42);              // number (int → double)
-Json s("hello");         // string
-
-// Array
-Json::ArrayType arr{ Json(1), Json(2), Json(3) };
-Json ja(std::move(arr));
-
-// Object
-Json::ObjectType obj{
-    { "name", Json("Claude") },
-    { "age",  Json(2)        }
-};
-Json jo(std::move(obj));
-```
-
----
-
-### Type Inspection
-
-```cpp
-Json j = Json::parse("42");
-
-j.isNull();    // false
-j.isBool();    // false
-j.isNumber();  // true
-j.isString();  // false
-j.isArray();   // false
-j.isObject();  // false
-
-// Using type()
-switch (j.type()) {
-    case Json::Type::Null:   break;
-    case Json::Type::Bool:   break;
-    case Json::Type::Number: break;
-    case Json::Type::String: break;
-    case Json::Type::Array:  break;
-    case Json::Type::Object: break;
+    std::cout << doc["name"].asString()    << "\n"; // Rain
+    std::cout << doc["active"].asBool()    << "\n"; // 1
+    std::cout << doc["tags"][0].asString() << "\n"; // cpp
+    std::cout << doc.dump()                << "\n"; // pretty-printed JSON
 }
 ```
 
----
-
-### Value Access
+### Building documents
 
 ```cpp
-Json b = Json::parse("true");
-Json n = Json::parse("99.5");
-Json s = Json::parse("\"hello\"");
+#include "Json.h"
 
-b.asBool();    // true
-n.asNumber();  // 99.5
-s.asString();  // "hello"
+using namespace JsonPro;
 
-// asArray() and asObject() return references
-Json arr = Json::parse("[1, 2, 3]");
-auto& vec = arr.asArray(); // std::vector<Json>&
+int main() {
+    Json::ObjectType profile;
+    profile.insert_or_assign("name", Json("Rain"));
+    profile.insert_or_assign("skills", Json(Json::ArrayType{ Json("C++"), Json("Systems") }));
 
-Json obj = Json::parse("{\"x\": 1}");
-auto& map = obj.asObject(); // std::unordered_map<std::string, Json>&
+    Json profileJson(std::move(profile));
+    std::cout << profileJson.dump() << "\n";
+}
 ```
 
-All accessors throw `std::runtime_error` if the type doesn't match.
-
----
-
-### Navigation
+### Navigating documents
 
 ```cpp
-Json data = Json::parse(R"({
-    "user": {
-        "name": "Alice",
-        "scores": [90, 95, 100]
+#include "Json.h"
+
+using namespace JsonPro;
+
+int main() {
+    Json doc = Json::parse(R"({"address": {"city": "Metropolis"}})");
+
+    for (const auto& [key, value] : doc["address"].asObject())
+        std::cout << key << ": " << value.asString() << "\n";
+
+    if (doc.contains("address") && doc["address"].isObject())
+        std::cout << "address is present and is an object\n";
+}
+```
+
+### Error handling
+
+```cpp
+#include "Json.h"
+
+using namespace JsonPro;
+
+int main() {
+    try {
+        Json::parse(R"({"a": 1, })"); // trailing comma — rejected
+    } catch (const std::runtime_error& e) {
+        std::cout << "Caught: " << e.what() << "\n";
     }
-})");
 
-data["user"]["name"].asString();        // "Alice"
-data["user"]["scores"][0].asNumber();   // 90
-data["user"]["scores"][2].asNumber();   // 100
-
-// Missing key — returns null (operator[] inserts it silently)
-data["user"]["missing"].isNull();       // true
-```
-
----
-
-### Bounds-Checked Access
-
-```cpp
-Json arr = Json::parse("[10, 20, 30]");
-
-arr.at(0).asNumber();  // 10 — valid
-arr.at(2).asNumber();  // 30 — valid
-
-try {
-    arr.at(99); // throws std::out_of_range
-} catch (const std::out_of_range& e) {
-    // "Json::at: index out of range"
-}
-
-Json obj = Json::parse("{\"key\": \"value\"}");
-
-obj.at("key").asString(); // "value" — valid
-
-try {
-    obj.at("missing"); // throws std::out_of_range
-} catch (const std::out_of_range& e) {
-    // "Json::at: key not found"
-}
-```
-
----
-
-### Serialization
-
-```cpp
-Json::ObjectType obj{
-    { "name", Json("Claude") },
-    { "age",  Json(2)        }
-};
-Json j(std::move(obj));
-
-// To string (with indent)
-std::string s = j.dump(2);
-std::cout << s;
-// {
-//   "name": "Claude",
-//   "age": 2
-// }
-
-// To stream (more efficient for large structures)
-j.dump(std::cout, 2);
-```
-
----
-
-### Comparison
-
-```cpp
-Json a(42);
-Json b(42);
-Json c(99);
-
-a == b;  // true
-a != c;  // true
-a == c;  // false
-
-// Deep comparison for arrays and objects
-Json arr1 = Json::parse("[1, 2, 3]");
-Json arr2 = Json::parse("[1, 2, 3]");
-Json arr3 = Json::parse("[1, 2, 4]");
-
-arr1 == arr2;  // true
-arr1 != arr3;  // true
-```
-
----
-
-### Copy & Move
-
-```cpp
-Json a("original");
-
-// Copy — independent from source
-Json b(a);
-b.asString();  // "original"
-
-// Move — source becomes null
-Json c(std::move(a));
-c.asString();  // "original"
-a.isNull();    // true
-
-// Copy assignment
-Json d;
-d = b;
-d.asString();  // "original"
-
-// Move assignment
-Json e;
-e = std::move(b);
-b.isNull();    // true
-```
-
----
-
-### Mixed Nested Structure
-
-```cpp
-Json::ObjectType obj{
-    {
-        "pokemon",
-        Json::ArrayType{
-            Json::ObjectType{
-                { "name",   Json("Rayquaza") },
-                { "health", Json(5000)       },
-                { "shiny",  Json(true)       },
-                { "stats",  Json::ArrayType{ Json(100), Json(90), Json(100), Json(95) } }
-            }
-        }
+    try {
+        Json array(Json::ArrayType{ Json(1) });
+        array.at(10); // out of range
+    } catch (const std::out_of_range& e) {
+        std::cout << "Caught: " << e.what() << "\n";
     }
-};
-
-Json j(std::move(obj));
-
-j["pokemon"].size();                    // 1
-j["pokemon"][0]["name"].asString();     // "Rayquaza"
-j["pokemon"][0]["shiny"].asBool();      // true
-j["pokemon"][0]["stats"][0].asNumber(); // 100
+}
 ```
 
 ---
@@ -572,36 +160,28 @@ j["pokemon"][0]["stats"][0].asNumber(); // 100
 ### Constructors
 
 ```cpp
-Json();                          // null
-Json(std::nullptr_t);            // null
-Json(bool value);                // bool
-Json(double value);              // number
-Json(int value);                 // number (cast to double)
-Json(const std::string& value);  // string
-Json(std::string&& value);       // string (move)
-Json(const char* value);         // string
-Json(const ArrayType& value);    // array
-Json(ArrayType&& value);         // array (move)
-Json(const ObjectType& value);   // object
-Json(ObjectType&& value);        // object (move)
+Json j;                                   // Null
+Json j(nullptr);
 
-Json(const Json& other);         // copy
-Json& operator=(const Json& other);
+Json j(true);                             // Bool
+Json j(3.14);                             // Number
+Json j(42);                               // int -> Number (double)
 
-Json(Json&& other) noexcept;     // move — source becomes null
-Json& operator=(Json&& other) noexcept;
+Json j(std::string("text"));              // String, copy
+Json j(std::move(str));                   // String, move
+Json j("literal");                        // String, from C-string
+
+Json j(arrayType);                        // Array, copy
+Json j(std::move(arrayType));             // Array, move
+
+Json j(objectType);                       // Object, copy
+Json j(std::move(objectType));            // Object, move
+
+Json b(a);                                 // copy construction (deep copy)
+Json b(std::move(a));                      // move construction (a becomes Null)
+b = a;                                      // copy assignment
+b = std::move(a);                           // move assignment
 ```
-
----
-
-### Parsing
-
-```cpp
-// Static factory. Throws std::runtime_error with line/column on failure.
-[[nodiscard]] static Json parse(std::string_view text);
-```
-
----
 
 ### Type Inspection
 
@@ -615,12 +195,10 @@ Json& operator=(Json&& other) noexcept;
 [[nodiscard]] bool isObject() const noexcept;
 ```
 
----
-
 ### Value Access
 
 ```cpp
-// All throw std::runtime_error if the type doesn't match.
+// All throw std::runtime_error on type mismatch.
 [[nodiscard]] bool               asBool()   const;
 [[nodiscard]] double             asNumber() const;
 [[nodiscard]] const std::string& asString() const;
@@ -632,311 +210,425 @@ Json& operator=(Json&& other) noexcept;
 [[nodiscard]] const ObjectType&  asObject() const;
 ```
 
----
-
 ### Navigation
 
 ```cpp
-// Unchecked. Missing key inserts null. Out-of-bounds index returns null.
+// Unchecked. Throws std::runtime_error on wrong type,
+// std::out_of_range on missing key (const overload).
+[[nodiscard]] Json&       operator[](std::size_t index);
+[[nodiscard]] const Json& operator[](std::size_t index) const;
 [[nodiscard]] Json&       operator[](const std::string& key);
 [[nodiscard]] const Json& operator[](const std::string& key) const;
 
-[[nodiscard]] Json&       operator[](std::size_t index);
-[[nodiscard]] const Json& operator[](std::size_t index) const;
-```
-
----
-
-### Element Access
-
-```cpp
-// Bounds-checked. Throws std::out_of_range on invalid access.
-[[nodiscard]] Json&       at(std::size_t index);
+// Bounds/key-checked. Throws std::out_of_range on miss.
+[[nodiscard]] Json& at(std::size_t index);
 [[nodiscard]] const Json& at(std::size_t index) const;
-
-[[nodiscard]] Json&       at(const std::string& key);
+[[nodiscard]] Json& at(const std::string& key);
 [[nodiscard]] const Json& at(const std::string& key) const;
 ```
-
----
 
 ### Utilities
 
 ```cpp
-// Returns element count for arrays and objects. Returns 0 for all other types.
-[[nodiscard]] std::size_t size() const noexcept;
-
-// Returns true if the Json is an object and the key exists. False otherwise.
-[[nodiscard]] bool contains(const std::string& key) const noexcept;
+[[nodiscard]] std::size_t size() const noexcept;                     // 0 for non-containers
+[[nodiscard]] bool contains(const std::string& key) const noexcept;  // false for non-objects
 ```
-
----
 
 ### Comparison
 
 ```cpp
-[[nodiscard]] bool operator==(const Json& other) const; // deep equality
+[[nodiscard]] bool operator==(const Json& other) const; // deep, order-independent for objects
 [[nodiscard]] bool operator!=(const Json& other) const;
 ```
-
----
 
 ### Serialization
 
 ```cpp
-// Serialize to std::string. indent controls spaces per level (0 = compact).
 [[nodiscard]] std::string dump(int indent = 0) const;
-
-// Serialize directly to any std::ostream. More efficient for large structures.
 void dump(std::ostream& os, int indent = 0) const;
 ```
 
----
+### Parsing
 
-## Error Handling
-
-All parse errors throw `std::runtime_error` with a message that includes line and column:
-
-```
-line 3, col 12: expected ':'
-line 1, col 8: invalid escape sequence
-line 2, col 5: unterminated string
-```
-
-Type mismatch errors (wrong `as*()` call) throw `std::runtime_error`:
-
-```
-Json: not a bool
-Json: not a number
-Json: not a string
-Json: not an array
-Json: not an object
-```
-
-Bounds errors from `at()` throw `std::out_of_range`:
-
-```
-Json::at: index out of range
-Json::at: key not found
+```cpp
+[[nodiscard]] static Json Json::parse(std::string_view text);
+// Throws std::runtime_error on any malformed input,
+// including nesting beyond Parser::kMaxDepth (512).
 ```
 
 ---
 
-## Benchmark Results
+## Design Overview
 
-All benchmarks compiled without `-O2`. Times in microseconds (µs).
+`Json` stores a single `std::variant<nullptr_t, bool, double, std::string, ArrayType, ObjectType>` — no separate type tag.
 
----
+### Type derivation
 
-### Parse vs Construct
+Earlier drafts stored a `Type type_` field alongside the variant, kept in sync by every constructor and assignment. That's a second source of truth for information the variant already tracks:
 
-100,000 iterations per type — measures overhead of parsing text vs direct C++ construction.
+```cpp
+Json::Type Json::type() const noexcept {
+    return static_cast<Type>(value_.index());
+}
+```
 
-| Type   | parse() (µs) | construct (µs) | parse overhead |
-|--------|-------------:|---------------:|:--------------:|
-| null   | 77,457       | 16,184         | **4.8×**       |
-| bool   | 76,644       | 17,491         | **4.4×**       |
-| number | 142,726      | 18,216         | **7.8×**       |
-| string | 150,273      | 31,010         | **4.8×**       |
+`Type`'s enumerators are declared in the same order as the variant's alternatives, so `index()` casts directly to the correct `Type`. This removes a member, removes a write on every construction, and makes it impossible for the type to drift out of sync with the value actually held.
 
-Number parsing is the most expensive — `std::stod` carries significant overhead compared to a direct `double` constructor. String parsing is next, due to escape scanning and string building. Null and bool parsing are cheaper since they just do a fixed-length string comparison (`"null"`, `"true"`, `"false"`).
+### Zero-copy parsing cursor
 
-**Takeaway:** if you're constructing known values in C++ code, prefer direct construction. Reserve `parse()` for actual external input.
+`Parser` walks the input with raw pointers (`cur_`, `begin_`, `end_`) rather than an index into a `std::string`, and does **not** track line/column during the hot loop:
 
----
+```cpp
+unsigned char Parser::get() noexcept {
+    if (cur_ >= end_) [[unlikely]] return '\0';
+    return static_cast<unsigned char>(*cur_++);
+}
+```
 
-### Array — Parse vs Construct
+Line and column are only computed — by rescanning `[begin_, cur_)` once — inside `error()`, on the cold, throwing path. Every successful parse pays zero cost for a feature it never uses.
 
-Single parse or construction per size.
+### Fast-path string scanning
 
-| Size   | parse() (µs) | construct (µs) | parse overhead |
-|--------|-------------:|---------------:|:--------------:|
-| 10     | 124          | 9              | **13.8×**      |
-| 100    | 295          | 85             | **3.5×**       |
-| 1,000  | 2,394        | 689            | **3.5×**       |
-| 10,000 | 27,615       | 7,379          | **3.7×**       |
+String parsing scans runs of unescaped bytes and bulk-copies them in one `append(ptr, len)` call, only breaking the run on a backslash or closing quote:
 
-Parsing adds consistent ~3.5× overhead at scale — the extra cost of text scanning, tokenizing, and `std::stod` per element vs direct `Json(int)` construction. The 10-element gap is disproportionally large due to fixed parser setup cost.
+```cpp
+if (c == '\\') [[unlikely]] {
+    result.append(segStart, cur_);
+    ++cur_;
+    // ...handle the escape...
+    segStart = cur_;
+    continue;
+}
+```
 
----
+A string with no escapes is copied in a single bulk operation instead of one `+=` per character.
 
-### Object — Parse vs Construct
+### Numeric parsing via std::from_chars
 
-Single parse or construction per size.
+Numbers are validated by hand against the JSON grammar (sign, no leading zeros, required digits after `.`/`e`) in a single forward pass with no allocation, then the already-validated span is converted with `std::from_chars` — no `substr` allocation, no locale-dependent `std::stod`, no exceptions on the success path.
 
-| Size   | parse() (µs) | construct (µs) | parse overhead |
-|--------|-------------:|---------------:|:--------------:|
-| 10     | 74           | 22             | **3.4×**       |
-| 100    | 420          | 200            | **2.1×**       |
-| 1,000  | 4,251        | 2,008          | **2.1×**       |
-| 10,000 | 46,919       | 22,261         | **2.1×**       |
+### Maximum nesting depth guard
 
-Object parsing adds a consistent ~2× overhead vs construction. Objects are relatively cheaper to parse than arrays per element because key string generation (`"key0"`, `"key1"`, ...) in the construction benchmark also involves `std::to_string` overhead, narrowing the gap.
+`parseArray()` and `parseObject()` increment a `depth_` counter on entry and check it against `kMaxDepth = 512`:
 
----
+```cpp
+if (++depth_ > kMaxDepth) [[unlikely]]
+    error("maximum nesting depth exceeded");
+```
 
-### Nested — Parse vs Construct
-
-Deeply nested arrays (`[[[[42]]]]`) at increasing depth.
-
-| Depth | parse() (µs) | construct (µs) | Notes                    |
-|-------|-------------:|---------------:|:-------------------------|
-| 2     | 26           | 12             | parse faster             |
-| 4     | 9            | 14             | parse faster             |
-| 8     | 15           | 42             | parse ~3× faster         |
-| 16    | 29           | 131            | **parse ~4.5× faster**   |
-
-This is the most surprising result. For deep nesting, `parse()` is significantly faster than manual construction. The reason: parsing builds the structure bottom-up via `std::move` in recursive calls, while the construction benchmark wraps each level in a new `Json::ArrayType{ std::move(j) }` — which involves repeated vector allocation and copy at each depth level. At depth 16, construction is 4.5× slower.
+Without this, input like `"[[[[[[..."` repeated a few hundred thousand times would recurse until the call stack overflows — a denial-of-service vector for any parser exposed to untrusted input.
 
 ---
 
-### Dump — String vs Stream
+## Complexity
 
-| Size   | dump(string) (µs) | dump(stream) (µs) | Notes            |
-|--------|------------------:|------------------:|:-----------------|
-| 10     | 31                | 14                | stream 2.2× faster |
-| 100    | 158               | 133               | stream 1.2× faster |
-| 1,000  | 1,316             | 1,304             | ~tie             |
-| 10,000 | 13,215            | 13,082            | ~tie             |
+### Time complexity
 
-Stream is faster for small structures because `dump(string)` constructs an `ostringstream` internally and then calls `.str()` to extract the result — two allocations vs one. At large sizes, both paths are dominated by the recursive traversal cost and the difference vanishes.
+| Operation | Complexity | Notes |
+|---|---|---|
+| `Json::parse()` | O(n) | Single forward pass over the input |
+| `dump()` | O(n) | n = total serialized size of the tree |
+| `operator[]` / `at()` (array) | O(1) | Direct index into `std::vector` |
+| `operator[]` / `at()` (object) | O(1) avg | Hash map lookup |
+| `operator==` (scalar) | O(1) | Direct value comparison |
+| `operator==` (array) | O(n) | Elementwise, short-circuits on first mismatch |
+| `operator==` (object) | O(n) avg | Key-by-key lookup + compare, order-independent |
+| `size()` | O(1) | `vector::size()` / `unordered_map::size()` |
+| `contains()` | O(1) avg | Hash map lookup |
+| Move construction/assignment | O(1) | Variant move, source reset to `Null` |
+| Copy construction/assignment | O(n) | Deep copy of the entire tree |
 
-**Takeaway:** use `dump(ostream)` when writing to a file or socket. Use `dump(string)` when you need the result as a `std::string`. The difference only matters for small outputs.
+### Space complexity
 
----
-
-### Array Access — operator[] vs at()
-
-1,000-element array, 10,000 accesses.
-
-| Type  | operator[] (µs) | at() (µs) | Overhead      |
-|-------|----------------:|----------:|:-------------:|
-| Array | 1,027           | 1,137     | **~1.1×**     |
-
-The bounds check in `at()` adds ~10% overhead — a size comparison and a throw path that is never taken in the benchmark. In practice this difference is negligible.
+- O(n) for the total size of the value tree
+- No extra discriminant per node — `type()` is derived from the variant, not stored separately
 
 ---
 
-### Object Access — operator[] vs at()
+## Benchmarks
 
-1,000-key object, 10,000 accesses.
+Benchmarks measure JsonPro in isolation — there is no baseline library in this codebase to compare against. All times are total elapsed time for the listed iteration count.
 
-| Type   | operator[] (µs) | at() (µs) | Overhead  |
-|--------|----------------:|----------:|:---------:|
-| Object | 6,694           | 6,826     | **~1.0×** |
+> Compiled without `-O2`. Results may vary depending on hardware, compiler, and optimization level.
 
-Effectively identical. Object access is dominated by the hash map lookup cost — the additional `find` + `end()` check in `at()` is the same operation as `operator[]`'s internal lookup, so the overhead is immeasurable.
+<details>
+<summary>Show benchmark results</summary>
+
+#### Comparison
+
+```
+----------------------------------------------------------------------
+Comparison                              Time           Iteration
+----------------------------------------------------------------------
+Compare number, equal                   6.84 ms         1000000
+Compare number, unequal                 6.88 ms         1000000
+Compare string, equal                   12.75 ms        1000000
+Compare string, unequal                 13.28 ms        1000000
+
+Compare cross-type (index mismatch)     5.66 ms         1000000
+
+Compare array, equal (100 elems)        399.71 ms       500000
+Compare array, mismatch at first        13.64 ms        1000000
+Compare array, mismatch at last         408.48 ms       500000
+
+Compare object, equal (100 keys)        3.28 s          500000
+Compare object, unequal (100 keys)      2.02 s          500000
+----------------------------------------------------------------------
+```
+
+#### Construction
+
+```
+----------------------------------------------------------------------
+Construction                            Time           Iteration
+----------------------------------------------------------------------
+Construct bool                          8.42 ms         1000000
+Construct number                        8.45 ms         1000000
+Construct string (c-string)             20.58 ms        1000000
+
+Construct string, copy                  13.32 ms        1000000
+Construct string, move                  12.76 ms        1000000
+
+Build array, 100 push Back              3.24 s          500000
+
+Build object, insert Or Assign          16.90 s         500000
+Build object, operator[]                19.29 s         500000
+
+Copy-construct array (100 elems)        1.32 s          500000
+Copy then move-construct array          1.20 s          500000
+----------------------------------------------------------------------
+```
+
+#### Navigation
+
+```
+----------------------------------------------------------------------
+Navigation                              Time           Iteration
+----------------------------------------------------------------------
+Array operator[]                        9.27 ms         1000000
+Array at()                              12.33 ms        1000000
+
+Object operator[]                       52.95 ms        1000000
+Object at()                             55.14 ms        1000000
+
+Deep traversal, 3 levels                109.56 ms       1000000
+
+Array access, 100 elements              9.32 ms         1000000
+Object access, 100 keys                 49.27 ms        1000000
+----------------------------------------------------------------------
+```
+
+#### Parsing Scalars
+
+```
+----------------------------------------------------------------------
+Parsing Scalars                         Time           Iteration
+----------------------------------------------------------------------
+Parse null                              39.44 ms        1000000
+
+Parse bool true                         37.76 ms        1000000
+Parse bool false                        40.75 ms        1000000
+
+Parse small integer                     78.57 ms        1000000
+Parse large integer                     113.38 ms       1000000
+
+Parse positive integer                  86.33 ms        1000000
+Parse negative integer                  85.70 ms        1000000
+
+Parse simple float                      100.75 ms       1000000
+Parse high-precision float              168.00 ms       1000000
+
+Parse positive exponent                 158.02 ms       1000000
+Parse negative exponent                 173.80 ms       1000000
+----------------------------------------------------------------------
+```
+
+#### Parsing Strings
+
+```
+----------------------------------------------------------------------
+Parsing Strings                         Time           Iteration
+----------------------------------------------------------------------
+Parse short string                      71.77 ms        1000000
+
+Parse 1000-char string                  1.40 s          500000
+
+Parse string, no escapes                101.24 ms       1000000
+Parse string, with escapes              518.58 ms       1000000
+
+Parse BMP unicode escapes               273.17 ms       1000000
+Parse surrogate pair                    170.64 ms       1000000
+
+Parse string, 200 escapes               3.58 s          500000
+----------------------------------------------------------------------
+```
+
+#### Parsing Structural
+
+```
+----------------------------------------------------------------------
+Parsing Structural                      Time           Iteration
+----------------------------------------------------------------------
+Parse array, 10 elements                2.60 s          1000000
+Parse array, 100 elements               6.94 s          500000
+
+Parse object, 10 keys                   5.42 s          1000000
+Parse object, 100 keys                  30.07 s         500000
+
+Parse nesting, depth 10                 2.02 s          1000000
+Parse nesting, depth 100                2.12 s          100000
+
+Parse mixed document                    5.70 s          1000000
+----------------------------------------------------------------------
+```
+
+#### Serialization
+
+```
+----------------------------------------------------------------------
+Serialization                           Time           Iteration
+----------------------------------------------------------------------
+Dump null                               258.48 ms       1000000
+Dump bool                               310.64 ms       1000000
+Dump number                             892.35 ms       1000000
+Dump string                             382.60 ms       1000000
+
+Dump array, 10 elements                 11.58 s         1000000
+Dump array, 100 elements                110.85 s        500000
+
+Dump object, 10 keys                    25.68 s         1000000
+Dump object, 100 keys                   121.08 s        500000
+
+Dump mixed document                     12.59 s         1000000
+
+Dump via dump(int) -> string            55.47 s         500000
+Dump via dump(ostream&)                 39.03 s         500000
+----------------------------------------------------------------------
+```
+
+#### Summary
+
+**Notable findings:**
+
+- Early-exit dominates comparison cost: array mismatch-at-first (`13.64 ms`) is ~30x faster than mismatch-at-last or equal (`~400 ms`) — `std::vector`'s `operator==` exits on the first differing element instead of scanning the whole container.
+- `insert_or_assign` beats `operator[]` by ~14% building a 100-key object (`16.90 s` vs `19.29 s`) — the single lookup+insert avoids the default-construct-then-assign `operator[]` performs on every new key.
+- `at()` costs a consistent ~25-30% over the unchecked `operator[]` on both arrays and objects — the price of the bounds/key check and potential throw path.
+- Object access is ~5-6x slower than array access at equal size (`49.27 ms` vs `9.32 ms`) — hash computation and bucket lookup vs. a direct index into contiguous memory.
+- Every scalar parse pays for a `std::string` copy of the input inside `Json::parse()` — that fixed allocation cost is why `null`/`true`/`false` all land in the same ~38-41 ms band (1M iterations) regardless of content.
+- Escapes are the dominant cost in string parsing: a string with a handful of escapes (`518.58 ms`) is ~5x slower than the same-length string with none (`101.24 ms`) — each escape forces a segment flush plus a switch dispatch, breaking the bulk-copy fast path.
+- Array and object parsing both scale roughly linearly with element/key count; nesting depth costs less per level than flat element count, since each nesting level is just an open-bracket, a recursive call, and a close-bracket.
+- Every `dump()` call constructs a fresh `std::ostringstream` internally — that allocation is why even a bare `null` (`258.48 ms` / 1M) costs far more than parsing the same literal (`39.44 ms` / 1M).
+
+| Area | Key Finding |
+|---|---|
+| Comparison | Early-exit dominates: mismatch-at-first is ~30x faster than a full scan |
+| Construction | `insert_or_assign` beats `operator[]` by ~14% building a 100-key object |
+| Navigation | `at()` costs ~25-30% over `operator[]`; objects ~5-6x slower than arrays |
+| Parsing Scalars | Fixed per-call `std::string` copy dominates trivial literals |
+| Parsing Strings | Escapes break the bulk-copy fast path — 200 escapes cost ~7 µs/call |
+| Parsing Structural | Array/object parsing scale near-linearly with element/key count |
+| Serialization | `std::ostringstream` construction dominates trivial dumps |
+
+**The recurring theme:** allocation dominates the small cases — a fresh `std::string` copy per `parse()`, a fresh `std::ostringstream` per `dump()` — while the parsing and serialization algorithms themselves scale linearly and cleanly with input size. See [Known Limitations](#known-limitations) for the concrete follow-ups this suggests.
+
+</details>
 
 ---
 
-### Summary
-
-| Benchmark                  | Faster             | Notes                                              |
-|----------------------------|--------------------|----------------------------------------------------|
-| Parse vs construct (null)  | Construct          | 4.8× faster                                       |
-| Parse vs construct (bool)  | Construct          | 4.4× faster                                       |
-| Parse vs construct (number)| Construct          | 7.8× faster — `std::stod` dominates parse cost    |
-| Parse vs construct (string)| Construct          | 4.8× faster                                       |
-| Array parse vs construct   | Construct          | ~3.5× faster at scale                             |
-| Object parse vs construct  | Construct          | ~2× faster at scale                               |
-| Nested parse vs construct  | **Parse** (deep)   | Parse up to 4.5× faster at depth 16               |
-| dump string vs stream      | Stream (small)     | Tie at large sizes; stream ~2× faster for small   |
-| Array operator[] vs at()   | operator[]         | ~10% difference — negligible                      |
-| Object operator[] vs at()  | Tie                | Effectively identical                              |
-
-> Construct directly in C++ when values are known at compile time. Use `parse()` for external input — it's your only option there. For deeply nested structures, `parse()` is actually faster than manual construction due to move semantics in the recursive parser.
-
----
 
 ## Project Structure
 
 ```
-JsonParser/
+HashMap/
 ├── include/
-│   ├── Json.h         # Json class declaration (types, API, variant storage)
-│   └── Parser.h       # Parser class declaration
+│   └── JsonPro/
+│       ├── Json.h
+│       └── Parser.h
 │
 ├── src/
-│   ├── Json.cpp       # Json method implementations + dump logic
-│   └── Parser.cpp     # Recursive descent parser implementation
-│
-├── benchmarks/
-│   ├── benchmarks.cpp # 7 benchmark suites (parse, construct, dump, access)
-│   └── utils/
-│       ├── Table.h    # Benchmark result table formatting
-│       └── Table.tpp
+│   └── JsonPro/
+│       ├── Json.cpp
+│       └── Parser.cpp
 │
 ├── tests/
-│   └── test.cpp       # Unit tests: lifecycle, types, access, unicode, escapes, nesting
-│
+├── benchmarks/
 ├── examples/
-│   └── examples.cpp   # Usage examples for all major features
 │
+├── cmake/
+│   └── JsonProConfig.cmake.in
+│
+├── .gitignore
+├── CMakeLists.txt
 ├── README.md
 └── LICENSE
 ```
 
 ---
 
-## Build Instructions
+## Building from Source
 
 ### Requirements
 
-- C++23-compatible compiler: GCC 13+, Clang 17+, or MSVC 19.38+
-- No external dependencies
+- GCC 16+ or Clang with C++23 support
+- CMake 3.20+
 
-### Compile & Run Tests
-
-```bash
-g++ -std=c++23 tests/test.cpp src/* -Iinclude -o build/test
-./build/tests
-```
-
-### Compile & Run Examples
+### Build
 
 ```bash
-g++ -std=c++23 examples/examples.cpp src/* -Iinclude -o build/examples
-./build/examples
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build .
 ```
 
-### Compile & Run Benchmarks
+### Run tests
 
 ```bash
-g++ -std=c++23 benchmarks/benchmarks.cpp src/* -Iinclude -Ibenchmarks/utils -o build/benchmarks
-./build/benchmarks
+./tests                 # run all test suites
+./tests list            # list available suites
+./tests 1               # run by number
+./tests name            # run by name
 ```
 
-> Use `-O2` or `-O3` for production-representative benchmark results.
+### Run benchmarks
+
+```bash
+./benchmarks            # run all benchmark suites
+./benchmarks list       # list available suites
+./benchmarks 1          # run by number
+./benchmarks name       # run by name
+```
+
+### Run examples
+
+```bash
+./examples              # run all examples
+./examples list         # list available examples
+./examples 1            # run by number
+./examples name         # run by name
+```
 
 ---
 
-## Notes
+## Known Limitations
 
-- **Not production-ready.** This is an educational project — use a battle-tested library like [nlohmann/json](https://github.com/nlohmann/json) or [simdjson](https://github.com/simdjson/simdjson) for real workloads.
-- All JSON numbers are stored as `double`. Very large integers may lose precision beyond 2⁵³.
-- `operator[]` on a missing object key silently inserts a null value — the same footgun as `std::unordered_map::operator[]`. Use `contains()` + `at()` when you don't want silent insertion.
-- `contains()` only works on objects. Calling it on any other type returns `false`.
-- `size()` returns 0 for non-array, non-object types (null, bool, number, string).
-- After a move, the source `Json` becomes null (`type_ == Type::Null`).
-- Trailing commas and comments are not supported — they are not valid JSON per the spec.
-- The `JSON_USE_CUSTOM` backend swap is compile-time only — both containers must satisfy the same interface as `std::vector` and `std::unordered_map` respectively.
+- **`Json::parse()` always copies the input into an owned `std::string`** (`Parser parser{ std::string(text) }`) before parsing. Every scalar-literal benchmark (`~38-41 ms` for 1M iterations of `null`/`true`/`false`) is dominated by this allocation rather than actual tokenizing. Callers who can guarantee buffer lifetime could bypass this via a `std::string_view`-based `Parser` constructor — not currently exposed.
+- **`dump()` constructs a fresh `std::ostringstream` on every call**, which is why even a bare `null` (`258.48 ms` / 1M) costs far more than parsing the same literal (`39.44 ms` / 1M). A pooled/reused stream or a direct `std::string`-append path for the common small-value case is a likely follow-up.
+- **The maximum nesting depth (`kMaxDepth = 512`) is a compile-time constant**, not currently configurable per-parse.
+- **`type()`, `dump()`, and `operator==` rely on `Type`'s six enumerators always matching the variant's six alternatives** — there's no `default` case in their switches, so adding a seventh type to the variant without updating `Type` would silently fall through.
+- **Duplicate object keys resolve to "last one wins"** (`insert_or_assign` semantics) — consistent with most JSON parsers, but not mandated by RFC 8259.
+- **String parsing escape overhead is disproportionate**: a string with a handful of escapes (`518.58 ms` / 1M) is ~5x slower than the same-length string with none (`101.24 ms` / 1M), since every escape breaks the bulk-copy fast path for at least one character.
 
----
+### Fixed during development
 
-## Contributing
-
-Learning-focused PRs and improvements are welcome. Some areas worth exploring:
-
-- `std::int64_t` storage for integer values to avoid `double` precision loss
-- Streaming parser (parse without loading the full string into memory)
-- JSON Pointer support (`/users/0/name`)
-- `merge()` — merge two JSON objects
-- Schema validation
-- CMake build system
-- CI pipeline (GitHub Actions)
+- `const operator[](const std::string&)` previously dereferenced `unordered_map::end()` directly on a missing key — undefined behavior, not a throw. It now checks for `end()` and throws `std::out_of_range`, matching `at()`'s existing behavior.
+- `Json` previously stored a separate `Type type_` member alongside the `std::variant`, manually kept in sync by every constructor and assignment — a redundant, driftable second source of truth. `type()` now derives directly from `value_.index()`, and the member was removed entirely.
+- The parser previously tracked line/column on every character parsed, even on the successful path, purely to support error messages. This is now deferred entirely to `error()`, which rescans `[begin_, cur_)` once, only when a parse actually fails.
+- Number parsing previously used `substr()` (heap allocation) plus `std::stod` (locale-dependent, throws). It now hand-validates the grammar in place and converts with `std::from_chars` directly on the input buffer.
+- String parsing previously appended one character at a time (`result += c`); it now bulk-copies runs of unescaped bytes via `append(ptr, len)`, only breaking the run on an actual escape or the closing quote.
+- Recursive descent had no bound on nesting depth, making deeply nested input (`"[[[[[..."`) a stack-overflow denial-of-service vector. A `depth_` counter checked against `kMaxDepth = 512` was added to `parseArray()`/`parseObject()`.
 
 ---
 
 ## License
 
-[MIT](LICENSE) — free to use, modify, and distribute for educational and personal purposes.
+Licensed under the [MIT License](LICENSE) — free to use, modify, and distribute for educational and personal purposes.
