@@ -27,6 +27,94 @@
 
 namespace JsonPro {
 
+// ============================================================
+// JsonObject — out-of-line members needing a complete Json type
+// ============================================================
+// These can't be defined inline in Json.h: they index/iterate a
+// vector<pair<string, Json>>, and Json is only forward-declared at that
+// point in the header. Defining them here (after Json is fully declared)
+// is the same split the rest of this file already uses for Json's own
+// members (declared in Json.h, defined in Json.cpp).
+JsonObject::JsonObject()                                    = default;
+JsonObject::JsonObject(const JsonObject&)                   = default;
+JsonObject& JsonObject::operator=(const JsonObject&)        = default;
+JsonObject::JsonObject(JsonObject&&) noexcept                = default;
+JsonObject& JsonObject::operator=(JsonObject&&) noexcept     = default;
+JsonObject::~JsonObject()                                    = default;
+
+JsonObject::iterator JsonObject::begin() noexcept { return items_.begin(); }
+JsonObject::iterator JsonObject::end()   noexcept { return items_.end(); }
+JsonObject::const_iterator JsonObject::begin() const noexcept { return items_.begin(); }
+JsonObject::const_iterator JsonObject::end()   const noexcept { return items_.end(); }
+
+bool        JsonObject::empty() const noexcept { return items_.empty(); }
+std::size_t JsonObject::size()  const noexcept { return items_.size(); }
+
+JsonObject::iterator JsonObject::find(const std::string& key) noexcept {
+    auto it = index_.find(key);
+    return it == index_.end() ? items_.end() : items_.begin() + static_cast<std::ptrdiff_t>(it->second);
+}
+
+JsonObject::const_iterator JsonObject::find(const std::string& key) const noexcept {
+    auto it = index_.find(key);
+    return it == index_.end() ? items_.end() : items_.begin() + static_cast<std::ptrdiff_t>(it->second);
+}
+
+bool JsonObject::contains(const std::string& key) const noexcept {
+    return index_.contains(key);
+}
+
+Json& JsonObject::operator[](const std::string& key) {
+    auto it = find(key);
+
+    if (it != end())
+        return it->second;
+
+    index_.emplace(key, items_.size());
+    items_.emplace_back(key, Json());
+    return items_.back().second;
+}
+
+void JsonObject::insert_or_assign(std::string key, Json value) {
+    auto it = index_.find(key);
+
+    if (it != index_.end()) {
+        items_[it->second].second = std::move(value);
+        return;
+    }
+
+    index_.emplace(key, items_.size());
+    items_.emplace_back(std::move(key), std::move(value));
+}
+
+std::pair<JsonObject::iterator, bool> JsonObject::emplace(std::string key, Json value) {
+    auto it = index_.find(key);
+
+    if (it != index_.end())
+        return { items_.begin() + static_cast<std::ptrdiff_t>(it->second), false };
+
+    index_.emplace(key, items_.size());
+    items_.emplace_back(std::move(key), std::move(value));
+    return { items_.end() - 1, true };
+}
+
+bool JsonObject::operator==(const JsonObject& other) const {
+    if (items_.size() != other.items_.size())
+        return false;
+
+    // Objects compare equal if they have the same key/value pairs,
+    // regardless of insertion order (matches the old unordered_map
+    // equality semantics).
+    for (const auto& [key, val] : items_) {
+        auto it = other.find(key);
+
+        if (it == other.end() || !(it->second == val))
+            return false;
+    }
+
+    return true;
+}
+
 namespace {
     // returns a string of n spaces for indentation
     std::string pad(std::size_t n) {
@@ -409,9 +497,8 @@ void Json::dump(std::ostream& os, int indent) const {
 
             bool first = true;
 
-            // Iteration order follows the underlying unordered_map's bucket
-            // order, not insertion order — key order in output isn't stable
-            // across runs or equal to insertion order.
+            // JsonObject preserves insertion order, so keys are emitted in
+            // the order they were first created/parsed.
             for (const auto& [key, value] : obj) {
                 if (!first)
                     os << ",\n";

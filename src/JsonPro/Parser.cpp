@@ -16,6 +16,7 @@
 
 #include <array>
 #include <charconv>
+#include <cstdint>
 #include <cstring>
 #include <stdexcept>
 #include <string>

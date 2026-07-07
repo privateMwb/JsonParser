@@ -10,6 +10,67 @@
 
 namespace JsonPro {
 
+class Json;
+
+// Insertion-order-preserving map used for JSON objects.
+//
+// A plain std::unordered_map does not preserve the order keys were
+// inserted in, so round-tripping an object through parse()/dump() can
+// reorder its keys. JsonObject keeps entries in a vector (insertion
+// order) alongside a hash index (key -> position) so lookups stay
+// O(1) average while iteration/dump order matches insertion order.
+class JsonObject {
+public:
+    using Container      = std::vector<std::pair<std::string, Json>>;
+    using iterator       = Container::iterator;
+    using const_iterator = Container::const_iterator;
+
+    // Defined out-of-line (Json.cpp): the bodies below index/iterate a
+    // vector<pair<string, Json>>, which needs Json to be a complete type.
+    // Json is still only forward-declared at this point in the header,
+    // so these can't be defined inline here the way the rest of this
+    // class's (non-Json-touching) declarations are.
+    JsonObject();
+    JsonObject(const JsonObject&);
+    JsonObject& operator=(const JsonObject&);
+    JsonObject(JsonObject&&) noexcept;
+    JsonObject& operator=(JsonObject&&) noexcept;
+    ~JsonObject();
+
+    [[nodiscard]] iterator       begin()       noexcept;
+    [[nodiscard]] iterator       end()         noexcept;
+    [[nodiscard]] const_iterator begin() const noexcept;
+    [[nodiscard]] const_iterator end()   const noexcept;
+
+    [[nodiscard]] bool        empty() const noexcept;
+    [[nodiscard]] std::size_t size()  const noexcept;
+
+    [[nodiscard]] iterator       find(const std::string& key) noexcept;
+    [[nodiscard]] const_iterator find(const std::string& key) const noexcept;
+
+    [[nodiscard]] bool contains(const std::string& key) const noexcept;
+
+    // Auto-vivifying access: inserts a Null entry at the end (preserving
+    // creation order) if the key doesn't already exist.
+    Json& operator[](const std::string& key);
+
+    // Single lookup + insert-or-replace, without disturbing the position
+    // of an already-existing key. Defined out-of-line for the same reason
+    // as the methods above.
+    void insert_or_assign(std::string key, Json value);
+
+    // Matches std::unordered_map::emplace semantics: inserts only if the
+    // key is absent (existing entries are left untouched, unlike
+    // insert_or_assign). Returns {iterator to element, true if inserted}.
+    std::pair<iterator, bool> emplace(std::string key, Json value);
+
+    [[nodiscard]] bool operator==(const JsonObject& other) const;
+
+private:
+    Container items_;
+    std::unordered_map<std::string, std::size_t> index_;
+};
+
 class Json {
 public:
 
@@ -25,7 +86,7 @@ public:
 
     // Aliases
     using ArrayType  = std::vector<Json>;
-    using ObjectType = std::unordered_map<std::string, Json>;
+    using ObjectType = JsonObject;
 
 private:
 
