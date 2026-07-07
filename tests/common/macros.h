@@ -49,6 +49,20 @@
     ++total;                            \
 } while (0)
 
+// Verifies that evaluating `expr` throws an exception convertible to
+// ExceptionType. Fails via CHK if no exception is thrown, or if a
+// different exception type is thrown.
+#define CHK_THROWS(expr, ExceptionType)     \
+    do {                                    \
+        bool threw = false;                \
+        try {                               \
+            (void)(expr);                  \
+        } catch (const ExceptionType&) {    \
+            threw = true;                   \
+        } catch (...) {                     \
+        }                                    \
+        CHK(threw);                         \
+    } while (0)
 
 // Registers this file's run_tests with the global registry so it runs
 // automatically at startup. The anonymous namespace gives `registrar`
