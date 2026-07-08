@@ -53,11 +53,14 @@ static void run_examples() {
         std::cout << "- " << project.asString() << "\n";
     std::cout << "\n";
 
-    // Iterates over an object's underlying container.
+    // Iterates over an object's underlying container, in the order its
+    // keys were originally inserted.
     setTitle("Iterating an Object");
 
-    for (const auto& [key, value] : doc["address"].asObject())
-        std::cout << key << ": " << value.asString() << "\n";
+    const Json::ObjectType& address = doc["address"].asObject();
+
+    for (const std::string& key : address.insertionOrder())
+        std::cout << key << ": " << address.find(key)->asString() << "\n";
     std::cout << "\n";
 
     // Checks presence and type before accessing, avoiding exceptions entirely.

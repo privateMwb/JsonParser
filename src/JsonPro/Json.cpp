@@ -13,107 +13,19 @@
 //   7. Element Access
 //   8. Utilities
 //   9. Comparison
-//   10. Serialization
+//  10. Serialization
 //
 // ============================================================
-
-#include <JsonPro/Json.h>
-#include <JsonPro/Parser.h>
 
 #include <ostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 
+#include <JsonPro/Json.h>
+#include <JsonPro/Parser.h>
+
 namespace JsonPro {
-
-// ============================================================
-// JsonObject — out-of-line members needing a complete Json type
-// ============================================================
-// These can't be defined inline in Json.h: they index/iterate a
-// vector<pair<string, Json>>, and Json is only forward-declared at that
-// point in the header. Defining them here (after Json is fully declared)
-// is the same split the rest of this file already uses for Json's own
-// members (declared in Json.h, defined in Json.cpp).
-JsonObject::JsonObject()                                    = default;
-JsonObject::JsonObject(const JsonObject&)                   = default;
-JsonObject& JsonObject::operator=(const JsonObject&)        = default;
-JsonObject::JsonObject(JsonObject&&) noexcept                = default;
-JsonObject& JsonObject::operator=(JsonObject&&) noexcept     = default;
-JsonObject::~JsonObject()                                    = default;
-
-JsonObject::iterator JsonObject::begin() noexcept { return items_.begin(); }
-JsonObject::iterator JsonObject::end()   noexcept { return items_.end(); }
-JsonObject::const_iterator JsonObject::begin() const noexcept { return items_.begin(); }
-JsonObject::const_iterator JsonObject::end()   const noexcept { return items_.end(); }
-
-bool        JsonObject::empty() const noexcept { return items_.empty(); }
-std::size_t JsonObject::size()  const noexcept { return items_.size(); }
-
-JsonObject::iterator JsonObject::find(const std::string& key) noexcept {
-    auto it = index_.find(key);
-    return it == index_.end() ? items_.end() : items_.begin() + static_cast<std::ptrdiff_t>(it->second);
-}
-
-JsonObject::const_iterator JsonObject::find(const std::string& key) const noexcept {
-    auto it = index_.find(key);
-    return it == index_.end() ? items_.end() : items_.begin() + static_cast<std::ptrdiff_t>(it->second);
-}
-
-bool JsonObject::contains(const std::string& key) const noexcept {
-    return index_.contains(key);
-}
-
-Json& JsonObject::operator[](const std::string& key) {
-    auto it = find(key);
-
-    if (it != end())
-        return it->second;
-
-    index_.emplace(key, items_.size());
-    items_.emplace_back(key, Json());
-    return items_.back().second;
-}
-
-void JsonObject::insert_or_assign(std::string key, Json value) {
-    auto it = index_.find(key);
-
-    if (it != index_.end()) {
-        items_[it->second].second = std::move(value);
-        return;
-    }
-
-    index_.emplace(key, items_.size());
-    items_.emplace_back(std::move(key), std::move(value));
-}
-
-std::pair<JsonObject::iterator, bool> JsonObject::emplace(std::string key, Json value) {
-    auto it = index_.find(key);
-
-    if (it != index_.end())
-        return { items_.begin() + static_cast<std::ptrdiff_t>(it->second), false };
-
-    index_.emplace(key, items_.size());
-    items_.emplace_back(std::move(key), std::move(value));
-    return { items_.end() - 1, true };
-}
-
-bool JsonObject::operator==(const JsonObject& other) const {
-    if (items_.size() != other.items_.size())
-        return false;
-
-    // Objects compare equal if they have the same key/value pairs,
-    // regardless of insertion order (matches the old unordered_map
-    // equality semantics).
-    for (const auto& [key, val] : items_) {
-        auto it = other.find(key);
-
-        if (it == other.end() || !(it->second == val))
-            return false;
-    }
-
-    return true;
-}
 
 namespace {
     // returns a string of n spaces for indentation
@@ -121,7 +33,6 @@ namespace {
         return std::string(n, ' ');
     }
 }
-
 
 // ============================================================
 // Section 1 — Constructors & Destructor
@@ -329,12 +240,14 @@ const Json& Json::operator[](const std::string& key) const {
     if (!p)
         throw std::runtime_error("Json: not an object");
 
-    auto it = p->find(key);
+    // Unlike the non-const overload, this can't auto-vivify a missing key
+    // (the object is const), so a missing key throws instead.
+    const Json* found = p->find(key);
 
-    if (it == p->end())
+    if (!found)
         throw std::out_of_range("Json: key not found");
 
-    return it->second;
+    return *found;
 }
 
 
@@ -371,12 +284,12 @@ Json& Json::at(const std::string& key) {
     if (!p)
         throw std::runtime_error("Json: not an object");
 
-    auto it = p->find(key);
+    Json* found = p->find(key);
 
-    if (it == p->end())
+    if (!found)
         throw std::out_of_range("Json::at: key not found");
 
-    return it->second;
+    return *found;
 }
 
 const Json& Json::at(const std::string& key) const {
@@ -385,12 +298,12 @@ const Json& Json::at(const std::string& key) const {
     if (!p)
         throw std::runtime_error("Json: not an object");
 
-    auto it = p->find(key);
+    const Json* found = p->find(key);
 
-    if (it == p->end())
+    if (!found)
         throw std::out_of_range("Json::at: key not found");
 
-    return it->second;
+    return *found;
 }
 
 
@@ -468,10 +381,6 @@ void Json::dump(std::ostream& os, int indent) const {
 
             if (arr.empty()) { os << "[]"; return; }
 
-            // Newlines are always emitted regardless of indent; indent only
-            // controls how many leading spaces each nested level gets. So
-            // indent=0 still produces multi-line (just unindented) output,
-            // not a single-line compact form.
             os << "[\n";
 
             for (std::size_t i = 0; i < arr.size(); ++i) {
@@ -495,19 +404,20 @@ void Json::dump(std::ostream& os, int indent) const {
 
             os << "{\n";
 
+            // Iterates via insertionOrder() rather than the container's own
+            // iteration order, so output keys appear in the order they were
+            // inserted rather than in bucket/hash order.
+            const auto& order = obj.insertionOrder();
             bool first = true;
 
-            // JsonObject preserves insertion order, so keys are emitted in
-            // the order they were first created/parsed.
-            for (const auto& [key, value] : obj) {
+            for (const auto& key : order) {
                 if (!first)
                     os << ",\n";
 
                 os << pad(indent + 2)
                    << '"' << key << "\": ";
 
-                value.dump(os, indent + 2)
-;
+                obj.find(key)->dump(os, indent + 2);
 
                 first = false;
             }
