@@ -38,7 +38,7 @@ static void run_examples() {
     Json moved = std::move(original);
 
     std::cout << "moved   : " << moved.dump() << "\n";
-    
+
     // NOLINTNEXTLINE(clang-analyzer-cplusplus.Move)
     std::cout << "original: " << original.dump() << " (now null)\n";
     std::cout << "original.isNull(): " << original.isNull() << "\n\n";
