@@ -6,11 +6,9 @@
 # Sections:
 #   1. C++ Configuration
 #   2. JsonPro Library
-#   3. Tests
-#   4. Benchmarks
-#   5. Examples
-#   6. Installation
-#   7. Packaging
+#   3. Subdirectories
+#   4. Installation
+#   5. Packaging
 #
 # ============================================================
 
@@ -22,135 +20,79 @@ project(
     LANGUAGES CXX
 )
 
-# ============================================================
-# Section 1 — C++ Configuration
-# ============================================================
+# ============================================================================
+# C++ Configuration
+# ============================================================================
 
 # Configure the C++ language standard.
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# ============================================================
-# Section 2 — JsonPro Library
-# ============================================================
+# Place all executables directly in the build directory, regardless of
+# which subdirectory defines them (e.g. build/tests, build/compare).
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+# ============================================================================
+# JsonPro (Header-only Library)
+# ============================================================================
 
 # Collect all library source files.
 file(GLOB_RECURSE LIB_SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/JsonPro/*.cpp"
 )
 
-# Build the JsonPro library.
-add_library(
-    JsonPro
-    ${LIB_SOURCES}
-)
+# Define the header-only JsonPro library.
+add_library(JsonPro STATIC ${LIB_SOURCES})
 
 # Expose the public include directory to consumers.
 target_include_directories(
     JsonPro
     PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
 )
 
 # Require C++23 for all targets that consume JsonPro.
 target_compile_features(
     JsonPro
     PUBLIC
-    cxx_std_23
+        cxx_std_23
 )
 
-# ============================================================
-# Section 3 — Tests
-# ============================================================
+# ============================================================================
+# Subdirectories
+# ============================================================================
 
-# Collect all test source files.
-file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp"
-)
+# Consumers (e.g. vcpkg) should disable these — only the library itself
+# needs to be configured/installed for downstream projects. Defaults to
+# ON so local development and existing CI workflows are unaffected.
+option(JSONPRO_BUILD_TESTS "Build the JsonPro test suite" ON)
+option(JSONPRO_BUILD_BENCHMARKS "Build the JsonPro benchmark suite" ON)
+option(JSONPRO_BUILD_TOOLS "Build the compare/regression benchmark tools" ON)
+option(JSONPRO_BUILD_EXAMPLES "Build the JsonPro examples" ON)
 
-# Build the test executable.
-add_executable(
-    tests
-    ${TEST_SOURCES}
-)
+enable_testing()
 
-# Allow simple test includes.
-target_include_directories(
-    tests
-    PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/tests
-)
+if(JSONPRO_BUILD_TESTS)
+    add_subdirectory(tests tests_build)
+endif()
 
-# Link JsonPro to the test executable.
-target_link_libraries(
-    tests
-    PRIVATE
-    JsonPro
-)
+if(JSONPRO_BUILD_BENCHMARKS)
+    add_subdirectory(benchmarks benchmarks_build)
+endif()
 
-# ============================================================
-# Section 4 — Benchmarks
-# ============================================================
+if(JSONPRO_BUILD_TOOLS)
+    add_subdirectory(tools tools_build)
+endif()
 
-# Collect all benchmark source files.
-file(GLOB_RECURSE BENCH_SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.cpp"
-)
+if(JSONPRO_BUILD_EXAMPLES)
+    add_subdirectory(examples examples_build)
+endif()
 
-# Build the benchmark executable.
-add_executable(
-    benchmarks
-    ${BENCH_SOURCES}
-)
-
-# Allow simple benchmark includes.
-target_include_directories(
-    benchmarks
-    PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks
-)
-
-# Link JsonPro to the benchmark executable.
-target_link_libraries(
-    benchmarks
-    PRIVATE
-    JsonPro
-)
-
-# ============================================================
-# Section 5 — Examples
-# ============================================================
-
-# Collect all example source files.
-file(GLOB_RECURSE EXAMPLE_SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/examples/*.cpp"
-)
-
-# Build the example executable.
-add_executable(
-    examples
-    ${EXAMPLE_SOURCES}
-)
-
-# Allow simple example includes.
-target_include_directories(
-    examples
-    PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples
-)
-
-# Link JsonPro to the example executable.
-target_link_libraries(
-    examples
-    PRIVATE
-    JsonPro
-)
-
-# ============================================================
-# Section 6 — Installation
-# ============================================================
+# ============================================================================
+# Installation
+# ============================================================================
 
 # Install the JsonPro target and export it for downstream projects.
 install(
@@ -172,9 +114,9 @@ install(
     DESTINATION include
 )
 
-# ============================================================
-# Section 7 — Packaging
-# ============================================================
+# ============================================================================
+# Packaging
+# ============================================================================
 
 include(CMakePackageConfigHelpers)
 

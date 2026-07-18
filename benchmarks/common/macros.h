@@ -1,32 +1,89 @@
 #include "helper.h"
 
-// Executes and times a benchmark expression.
-#define BENCH(name, iteration, expr) do {                      \
-auto start = steady_clock::now();                              \
-for (std::size_t i = 0; i < iteration; ++i) {                  \
-        doNotOptimize();                                       \
-        expr();                                                \
-        doNotOptimize();                                       \
-}                                                              \
-auto end  = steady_clock::now();                               \
-auto ns   = duration_cast<nanoseconds>(end - start);           \
-auto raw  = formatDuration(ns);                                \
-std::cout << std::left                                         \
-          << std::setw(40) << prettify(name)                   \
-          << std::setw(25) << timeColor(ns, raw)               \
-          << std::setw(20) << iterColor(iteration)             \
-          << "\n";                                             \
-} while (0)
+// Executes and times a benchmark expression. Still records into
+// benchmark_results() exactly as before, but no longer prints — printing
+// now happens once per comparison pair, in printComparisonRow(), so both
+// sides land on the same line instead of two separate ones.
+// outNs receives the elapsed duration so the caller (BENCH) can use it.
+#define BENCHMARK(name, iteration, expr, outNs, custom)                                            \
+    do {                                                                                           \
+        auto start = steady_clock::now();                                                          \
+        for (std::size_t i = 0; i < iteration; ++i) {                                              \
+            doNotOptimize();                                                                       \
+            expr();                                                                                \
+            doNotOptimize();                                                                       \
+        }                                                                                          \
+        auto end = steady_clock::now();                                                            \
+                                                                                                   \
+        (outNs) = duration_cast<nanoseconds>(end - start);                                         \
+                                                                                                   \
+        if (custom)                                                                                \
+            benchmark_results().push_back(                                                         \
+                {getSuite(), name, static_cast<std::uint64_t>((outNs).count()), iteration,         \
+                 static_cast<double>((outNs).count()) / static_cast<double>(iteration)});          \
+    } while (0)
 
+#define BENCH(name, c_expr, s_expr)                                                                \
+    do {                                                                                           \
+        nanoseconds cNs{}, sNs{};                                                                  \
+                                                                                                   \
+        BENCHMARK(std::string(name), SMALL, c_expr, cNs, true);                                    \
+        BENCHMARK(std::string(name), SMALL, s_expr, sNs, false);                                   \
+        printComparisonRow(name, "10K", cNs, sNs);                                                 \
+                                                                                                   \
+        BENCHMARK(std::string(name), MEDIUM, c_expr, cNs, true);                                   \
+        BENCHMARK(std::string(name), MEDIUM, s_expr, sNs, false);                                  \
+        printComparisonRow(name, "100K", cNs, sNs);                                                \
+                                                                                                   \
+        BENCHMARK(std::string(name), LARGE, c_expr, cNs, true);                                    \
+        BENCHMARK(std::string(name), LARGE, s_expr, sNs, false);                                   \
+        printComparisonRow(name, "1M", cNs, sNs);                                                  \
+    } while (0)
+
+// For benchmarks with no nlohmann::json equivalent (no comparison, no delta).
+// Reuses BENCHMARK exactly like BENCH does — custom=true so it lands in
+// benchmark_results() / the JSON export the same way JsonPro's side of
+// a normal BENCH pair does.
+#define BENCH_SOLO(name, expr)                                                                     \
+    do {                                                                                           \
+        nanoseconds ns{};                                                                          \
+                                                                                                   \
+        BENCHMARK(std::string(name), SMALL, expr, ns, true);                                       \
+        printSoloRow(name, "10K", ns);                                                             \
+                                                                                                   \
+        BENCHMARK(std::string(name), MEDIUM, expr, ns, true);                                      \
+        printSoloRow(name, "100K", ns);                                                            \
+                                                                                                   \
+        BENCHMARK(std::string(name), LARGE, expr, ns, true);                                       \
+        printSoloRow(name, "1M", ns);                                                              \
+    } while (0)
+
+// Like BENCH, but for suites whose payload is too heavy for BENCH's
+// default 10K/100K/1M tiers (e.g. large structures, deep recursion) —
+// at those tiers a single expensive call multiplied out would never
+// finish in reasonable time. Uses 1/10/100 instead.
+#define BENCH_CUSTOM(name, c_expr, s_expr)                                                         \
+    do {                                                                                           \
+        nanoseconds cNs{}, sNs{};                                                                  \
+                                                                                                   \
+        BENCHMARK(std::string(name), 1, c_expr, cNs, true);                                        \
+        BENCHMARK(std::string(name), 1, s_expr, sNs, false);                                       \
+        printComparisonRow(name, "1", cNs, sNs);                                                   \
+                                                                                                   \
+        BENCHMARK(std::string(name), 10, c_expr, cNs, true);                                       \
+        BENCHMARK(std::string(name), 10, s_expr, sNs, false);                                      \
+        printComparisonRow(name, "10", cNs, sNs);                                                  \
+                                                                                                   \
+        BENCHMARK(std::string(name), 100, c_expr, cNs, true);                                      \
+        BENCHMARK(std::string(name), 100, s_expr, sNs, false);                                     \
+        printComparisonRow(name, "100", cNs, sNs);                                                 \
+    } while (0)
 
 // Registers this file's run_benchmarks with the global registry so it
 // runs automatically at startup. The anonymous namespace gives
 // `registrar` internal linkage, preventing duplicate-symbol errors when
 // this macro is expanded in multiple translation units.
-#define REGISTER_BENCH_SUITE()        \
-    namespace {                      \
-        static BenchRegistrar registrar( \
-            __FILE__,                \
-            run_benchmarks                \
-        );                           \
+#define REGISTER_BENCH_SUITE()                                                                     \
+    namespace {                                                                                    \
+    static BenchRegistrar registrar(__FILE__, run_benchmarks);                                     \
     }

@@ -1,11 +1,11 @@
-// JsonPro error handling.
+// Handling JsonPro errors.
 //
 // Demonstrates:
-// - Catching parse errors from malformed JSON
-// - Catching wrong-type access errors
-// - Catching out-of-range access errors
-// - The maximum nesting depth guard rejecting adversarial input
-// - Falling back to a default value on failure
+// - Catching JsonParseError for malformed input
+// - Catching JsonTypeError for wrong-type access
+// - Catching JsonOutOfRange for missing keys / out-of-range indices
+// - The parser's maximum nesting depth guard
+// - Recovering with a default value instead of letting the exception propagate
 
 #include <common/framework.h>
 
@@ -13,41 +13,40 @@ using namespace JsonPro;
 
 static void run_examples() {
 
-    // Catches a parse error from malformed JSON.
+    // Malformed JSON throws JsonParseError.
     setTitle("Malformed JSON");
 
     try {
-        (void)Json::parse(R"({"a": 1, })"); // trailing comma
-    } catch (const std::runtime_error& e) {
+        (void)Json::parse(R"({"a": )");
+    } catch (const JsonParseError& e) {
         std::cout << "Caught: " << e.what() << "\n\n";
     }
 
-    // Catches a wrong-type access error.
+    // Accessing a value as the wrong type throws JsonTypeError.
     setTitle("Wrong-Type Access");
 
     Json number(42);
 
     try {
-        std::string s = number.asString();
-        (void)s;
-    } catch (const std::runtime_error& e) {
+        (void)number.asString();
+    } catch (const JsonTypeError& e) {
         std::cout << "Caught: " << e.what() << "\n\n";
     }
 
-    // Catches an out-of-range access error.
+    // A missing key or out-of-range index throws JsonOutOfRange.
+    // Note: this is JsonOutOfRange, not std::out_of_range — JsonPro's
+    // exceptions all derive from JsonException, not the standard hierarchy.
     setTitle("Out-of-Range Access");
 
-    Json array(Json::ArrayType{ Json(1), Json(2) });
+    Json doc = Json::parse(R"({"name": "Rain"})");
 
     try {
-        Json& element = array.at(10);
-        (void)element;
-    } catch (const std::out_of_range& e) {
+        (void)doc.at("missing_key");
+    } catch (const JsonOutOfRange& e) {
         std::cout << "Caught: " << e.what() << "\n\n";
     }
 
-    // Demonstrates the maximum nesting depth guard, which rejects
-    // adversarially deep input before it can exhaust the call stack.
+    // The parser rejects documents nested beyond its maximum depth.
     setTitle("Maximum Nesting Depth");
 
     std::string deeplyNested(600, '[');
@@ -55,23 +54,21 @@ static void run_examples() {
 
     try {
         (void)Json::parse(deeplyNested);
-    } catch (const std::runtime_error& e) {
+    } catch (const JsonParseError& e) {
         std::cout << "Caught: " << e.what() << "\n\n";
     }
 
-    // Falls back to a default value when access might fail.
+    // Recovering with a default value instead of propagating the exception.
     setTitle("Recovering with a Default Value");
 
-    Json settings = Json::parse(R"({"volume": 80})");
-
-    int timeout;
+    std::string fallback;
     try {
-        timeout = static_cast<int>(settings.at("timeout").asNumber());
-    } catch (const std::out_of_range&) {
-        timeout = 30; // default
+        fallback = doc.at("nickname").asString();
+    } catch (const JsonOutOfRange&) {
+        fallback = "Rain";
     }
 
-    std::cout << "timeout: " << timeout << "\n";
+    std::cout << "nickname: " << fallback << "\n";
 }
 
 REGISTER_EXAMPLE_SUITE();

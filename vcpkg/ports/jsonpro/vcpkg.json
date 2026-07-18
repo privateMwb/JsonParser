@@ -1,0 +1,7 @@
+{
+  "name": "jsonpro",
+  "version": "1.0.0",
+  "description": "High-performance RFC 8259 JSON value type and recursive-descent parser.",
+  "homepage": "https://github.com/privateMwb/JsonParser",
+  "license": "MIT"
+}

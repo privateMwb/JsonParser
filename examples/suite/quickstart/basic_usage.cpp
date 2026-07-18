@@ -20,13 +20,13 @@ static void run_examples() {
     Json boolean(true);
     Json number(3.14);
     Json string("hello");
-    Json array(Json::ArrayType{ Json(1), Json(2), Json(3) });
+    Json array(Json::ArrayType{Json(1), Json(2), Json(3)});
 
-    std::cout << "null    : " << null.dump()    << "\n";
+    std::cout << "null    : " << null.dump() << "\n";
     std::cout << "bool    : " << boolean.dump() << "\n";
-    std::cout << "number  : " << number.dump()  << "\n";
-    std::cout << "string  : " << string.dump()  << "\n";
-    std::cout << "array   : " << array.dump()   << "\n\n";
+    std::cout << "number  : " << number.dump() << "\n";
+    std::cout << "string  : " << string.dump() << "\n";
+    std::cout << "array   : " << array.dump() << "\n\n";
 
     // Parses a JSON document from text.
     setTitle("Parsing");
@@ -45,14 +45,14 @@ static void run_examples() {
 
     std::cout << "doc.type() is Object : " << (doc.type() == Json::Type::Object) << "\n";
     std::cout << "doc[\"name\"].isString() : " << doc["name"].isString() << "\n";
-    std::cout << "doc[\"tags\"].isArray()  : " << doc["tags"].isArray()  << "\n\n";
+    std::cout << "doc[\"tags\"].isArray()  : " << doc["tags"].isArray() << "\n\n";
 
     // Accesses the underlying value once the type is known.
     setTitle("Value Access");
 
-    std::cout << "name   : " << doc["name"].asString()  << "\n";
-    std::cout << "active : " << doc["active"].asBool()  << "\n";
-    std::cout << "score  : " << doc["score"].asNumber()  << "\n";
+    std::cout << "name   : " << doc["name"].asString() << "\n";
+    std::cout << "active : " << doc["active"].asBool() << "\n";
+    std::cout << "score  : " << doc["score"].asNumber() << "\n";
     std::cout << "tags[0]: " << doc["tags"][0].asString() << "\n\n";
 
     // Serializes a value back to a JSON string, with indentation.

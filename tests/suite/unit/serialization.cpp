@@ -20,7 +20,7 @@ static void dump_null() {
 
 // Verifies Bool serializes to "true" / "false".
 static void dump_bool() {
-    CHK(Json(true).dump()  == "true");
+    CHK(Json(true).dump() == "true");
     CHK(Json(false).dump() == "false");
 }
 
@@ -49,13 +49,12 @@ static void dump_empty_object() {
 // Verifies a populated array serializes with one element per line,
 // indented two spaces past the array's own indent level.
 static void dump_populated_array() {
-    Json j(Json::ArrayType{ Json(1), Json(2) });
+    Json j(Json::ArrayType{Json(1), Json(2)});
 
-    std::string expected =
-        "[\n"
-        "  1,\n"
-        "  2\n"
-        "]";
+    std::string expected = "[\n"
+                           "  1,\n"
+                           "  2\n"
+                           "]";
 
     CHK(j.dump(0) == expected);
 }
@@ -67,10 +66,9 @@ static void dump_populated_object_single_key() {
 
     Json j(std::move(obj));
 
-    std::string expected =
-        "{\n"
-        "  \"key\": \"value\"\n"
-        "}";
+    std::string expected = "{\n"
+                           "  \"key\": \"value\"\n"
+                           "}";
 
     CHK(j.dump(0) == expected);
 }
@@ -78,36 +76,34 @@ static void dump_populated_object_single_key() {
 // Verifies nested array-in-object serializes with compounding indentation.
 static void dump_nested_structure() {
     Json::ObjectType obj;
-    obj.emplace("nums", Json(Json::ArrayType{ Json(1), Json(2) }));
+    obj.emplace("nums", Json(Json::ArrayType{Json(1), Json(2)}));
 
     Json j(std::move(obj));
 
-    std::string expected =
-        "{\n"
-        "  \"nums\": [\n"
-        "    1,\n"
-        "    2\n"
-        "  ]\n"
-        "}";
+    std::string expected = "{\n"
+                           "  \"nums\": [\n"
+                           "    1,\n"
+                           "    2\n"
+                           "  ]\n"
+                           "}";
 
     CHK(j.dump(0) == expected);
 }
 
 // Verifies dump(int) respects a non-zero starting indent.
 static void dump_respects_starting_indent() {
-    Json j(Json::ArrayType{ Json(1) });
+    Json j(Json::ArrayType{Json(1)});
 
-    std::string expected =
-        "[\n"
-        "    1\n"
-        "  ]";
+    std::string expected = "[\n"
+                           "    1\n"
+                           "  ]";
 
     CHK(j.dump(2) == expected);
 }
 
 // Verifies dump(std::ostream&) produces output identical to dump(int).
 static void dump_ostream_matches_dump_string() {
-    Json j(Json::ArrayType{ Json(1), Json(Json::ObjectType{}) });
+    Json j(Json::ArrayType{Json(1), Json(Json::ObjectType{})});
 
     std::ostringstream oss;
     j.dump(oss, 0);

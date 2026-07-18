@@ -1,6 +1,7 @@
 #pragma once
 
 #include <JsonPro/Json.h>
+#include <JsonPro/JsonException.h>
 #include <JsonPro/JsonObject.h>
 #include <JsonPro/Parser.h>
 

@@ -1,9 +1,16 @@
+/**
+ * @file Parser.cpp
+ * @brief Parser implementation.
+ *
+ * Contains the implementation of Parser member functions and
+ * internal implementation details.
+ */
+
 // ============================================================
-// Parser.cpp
 // Implementation for JsonPro::Parser.
 // ============================================================
 //
-// Sections:
+//  Sections:
 //   1. Lookup Tables
 //   2. Constructor
 //   3. Character Utilities
@@ -14,64 +21,70 @@
 //
 // ============================================================
 
-#include <array>
-#include <charconv>
-#include <cstdint>
-#include <cstring>
-#include <stdexcept>
-#include <string>
+// clang-format off
+#include <array>    // std::array
+#include <charconv> // std::from_chars
+#include <cstdint>  // std::int8_t
+#include <cstring>  // std::memcmp
+#include <string>   // std::string
 
+#include <JsonPro/JsonException.h>
 #include <JsonPro/Parser.h>
+// clang-format on
 
 namespace JsonPro {
 
 namespace {
 
-    // ============================================================
-    // Section 1 — Lookup Tables
-    // ============================================================
-    // Branchless-lookup classification tables (256 entries, built once at
-    // compile time). Replaces locale-dependent <cctype> calls on the hot path.
-    constexpr std::array<bool, 256> kIsSpace = [] {
-        std::array<bool, 256> t{};
-        t[static_cast<unsigned char>(' ')]  = true;
-        t[static_cast<unsigned char>('\t')] = true;
-        t[static_cast<unsigned char>('\n')] = true;
-        t[static_cast<unsigned char>('\r')] = true;
-        return t;
-    }();
+// ============================================================
+//  Section 1 — Lookup Tables
+// ============================================================
+// Branchless-lookup classification tables (256 entries, built once at
+// compile time). Replaces locale-dependent <cctype> calls on the hot path.
 
-    constexpr std::array<bool, 256> kIsDigit = [] {
-        std::array<bool, 256> t{};
-        for (unsigned char c = '0'; c <= '9'; ++c)
-            t[c] = true;
-        return t;
-    }();
+constexpr std::array<bool, 256> kIsSpace = [] {
+    std::array<bool, 256> t{};
+    t[static_cast<unsigned char>(' ')] = true;
+    t[static_cast<unsigned char>('\t')] = true;
+    t[static_cast<unsigned char>('\n')] = true;
+    t[static_cast<unsigned char>('\r')] = true;
+    return t;
+}();
 
-    constexpr std::array<std::int8_t, 256> kHexValue = [] {
-        std::array<std::int8_t, 256> t{};
-        for (auto& v : t) v = -1;
-        for (unsigned char c = '0'; c <= '9'; ++c) t[c] = static_cast<std::int8_t>(c - '0');
-        for (unsigned char c = 'a'; c <= 'f'; ++c) t[c] = static_cast<std::int8_t>(c - 'a' + 10);
-        for (unsigned char c = 'A'; c <= 'F'; ++c) t[c] = static_cast<std::int8_t>(c - 'A' + 10);
-        return t;
-    }();
+constexpr std::array<bool, 256> kIsDigit = [] {
+    std::array<bool, 256> t{};
+    for (unsigned char c = '0'; c <= '9'; ++c)
+        t[c] = true;
+    return t;
+}();
+
+constexpr std::array<std::int8_t, 256> kHexValue = [] {
+    std::array<std::int8_t, 256> t{};
+    for (auto& v : t)
+        v = -1;
+    for (unsigned char c = '0'; c <= '9'; ++c)
+        t[c] = static_cast<std::int8_t>(c - '0');
+    for (unsigned char c = 'a'; c <= 'f'; ++c)
+        t[c] = static_cast<std::int8_t>(c - 'a' + 10);
+    for (unsigned char c = 'A'; c <= 'F'; ++c)
+        t[c] = static_cast<std::int8_t>(c - 'A' + 10);
+    return t;
+}();
 
 } // namespace
 
 // ============================================================
-// Section 2 — Constructor
+//  Section 2 — Constructor
 // ============================================================
-Parser::Parser(std::string input) :
-    input_(std::move(input)),
-    cur_(input_.data()),
-    begin_(input_.data()),
-    end_(input_.data() + input_.size()) {}
 
+Parser::Parser(std::string input)
+    : input_(std::move(input)), cur_(input_.data()), begin_(input_.data()),
+      end_(input_.data() + input_.size()) {}
 
 // ============================================================
-// Section 3 — Character Utilities
+//  Section 3 — Character Utilities
 // ============================================================
+
 unsigned char Parser::peek() const noexcept {
     return cur_ < end_ ? static_cast<unsigned char>(*cur_) : '\0';
 }
@@ -92,22 +105,25 @@ void Parser::skipWhitespace() noexcept {
 // [begin_, cur_) once, on the cold (throwing) path only.
 [[noreturn]] void Parser::error(std::string_view msg) const {
     std::size_t line = 1;
-    std::size_t col  = 1;
+    std::size_t col = 1;
 
     for (const char* p = begin_; p < cur_; ++p) {
-        if (*p == '\n') { ++line; col = 1; }
-        else             ++col;
+        if (*p == '\n') {
+            ++line;
+            col = 1;
+        } else
+            ++col;
     }
 
-    throw std::runtime_error(
-        "JSON parse error at line " + std::to_string(line) +
-        ", col " + std::to_string(col) + ": " + std::string(msg));
+    throw JsonParseError("JSON parse error at line " + std::to_string(line) + ", col " +
+                             std::to_string(col) + ": " + std::string(msg),
+                         line, col);
 }
 
+// ============================================================
+//  Section 4 — Validation
+// ============================================================
 
-// ============================================================
-// Section 4 — Validation
-// ============================================================
 void Parser::ensureEndOfInput() {
     skipWhitespace();
 
@@ -115,10 +131,10 @@ void Parser::ensureEndOfInput() {
         error("unexpected trailing characters after JSON value");
 }
 
+// ============================================================
+//  Section 5 — Hex and Unicode Helpers
+// ============================================================
 
-// ============================================================
-// Section 5 — Hex and Unicode Helpers
-// ============================================================
 int Parser::hexDigitToInt(unsigned char c) noexcept {
     return kHexValue[c];
 }
@@ -156,26 +172,31 @@ void Parser::appendUtf8(std::string& result, unsigned int codepoint) {
     }
 }
 
+// ============================================================
+//  Section 6 — Internal Parsers
+// ============================================================
 
-// ============================================================
-// Section 6 — Internal Parsers
-// ============================================================
 Json Parser::parseValue() {
     skipWhitespace();
 
     switch (peek()) {
-        case 'n': return parseNull();
-        case 't':
-        case 'f': return parseBool();
-        case '"': return parseString();
-        case '[': return parseArray();
-        case '{': return parseObject();
+    case 'n':
+        return parseNull();
+    case 't':
+    case 'f':
+        return parseBool();
+    case '"':
+        return parseString();
+    case '[':
+        return parseArray();
+    case '{':
+        return parseObject();
 
-        default:
-            if (kIsDigit[peek()] || peek() == '-') [[likely]]
-                return parseNumber();
+    default:
+        if (kIsDigit[peek()] || peek() == '-') [[likely]]
+            return parseNumber();
 
-            error("unexpected character; expected a JSON value");
+        error("unexpected character; expected a JSON value");
     }
 }
 
@@ -287,41 +308,57 @@ std::string Parser::parseRawString() {
             unsigned char esc = static_cast<unsigned char>(*cur_++);
 
             switch (esc) {
-                case '"':  result += '"';  break;
-                case '\\': result += '\\'; break;
-                case '/':  result += '/';  break;
-                case 'n':  result += '\n'; break;
-                case 't':  result += '\t'; break;
-                case 'r':  result += '\r'; break;
-                case 'b':  result += '\b'; break;
-                case 'f':  result += '\f'; break;
+            case '"':
+                result += '"';
+                break;
+            case '\\':
+                result += '\\';
+                break;
+            case '/':
+                result += '/';
+                break;
+            case 'n':
+                result += '\n';
+                break;
+            case 't':
+                result += '\t';
+                break;
+            case 'r':
+                result += '\r';
+                break;
+            case 'b':
+                result += '\b';
+                break;
+            case 'f':
+                result += '\f';
+                break;
 
-                case 'u': {
-                    unsigned int codepoint = readHex4();
+            case 'u': {
+                unsigned int codepoint = readHex4();
 
-                    // Surrogate pairs: a high surrogate must be immediately
-                    // followed by a \u-escaped low surrogate; combine them
-                    // into a single codepoint per UTF-16 surrogate pair rules.
-                    if (codepoint >= 0xD800 && codepoint <= 0xDBFF) {
-                        if (get() != '\\' || get() != 'u') [[unlikely]]
-                            error("expected low surrogate in \\u escape pair");
+                // Surrogate pairs: a high surrogate must be immediately
+                // followed by a \u-escaped low surrogate; combine them
+                // into a single codepoint per UTF-16 surrogate pair rules.
+                if (codepoint >= 0xD800 && codepoint <= 0xDBFF) {
+                    if (get() != '\\' || get() != 'u') [[unlikely]]
+                        error("expected low surrogate in \\u escape pair");
 
-                        unsigned int low = readHex4();
+                    unsigned int low = readHex4();
 
-                        if (low < 0xDC00 || low > 0xDFFF) [[unlikely]]
-                            error("invalid low surrogate");
+                    if (low < 0xDC00 || low > 0xDFFF) [[unlikely]]
+                        error("invalid low surrogate");
 
-                        codepoint = 0x10000 + ((codepoint - 0xD800) << 10) + (low - 0xDC00);
-                    } else if (codepoint >= 0xDC00 && codepoint <= 0xDFFF) [[unlikely]] {
-                        error("unexpected low surrogate without preceding high surrogate");
-                    }
-
-                    appendUtf8(result, codepoint);
-                    break;
+                    codepoint = 0x10000 + ((codepoint - 0xD800) << 10) + (low - 0xDC00);
+                } else if (codepoint >= 0xDC00 && codepoint <= 0xDFFF) [[unlikely]] {
+                    error("unexpected low surrogate without preceding high surrogate");
                 }
 
-                default:
-                    error("invalid escape sequence");
+                appendUtf8(result, codepoint);
+                break;
+            }
+
+            default:
+                error("invalid escape sequence");
             }
 
             segStart = cur_;
@@ -356,6 +393,12 @@ Json Parser::parseArray() {
         --depth_;
         return Json(std::move(arr));
     }
+
+    // A small reservation avoids the first few reallocations on typical
+    // arrays; growth beyond this still just falls back to normal doubling.
+    // Json's move constructor is noexcept, so reallocation moves elements
+    // rather than copying them regardless.
+    arr.reserve(8);
 
     while (true) {
         arr.push_back(parseValue());
@@ -392,6 +435,8 @@ Json Parser::parseObject() {
         return Json(std::move(obj));
     }
 
+    obj.reserve(8);
+
     while (true) {
         skipWhitespace();
 
@@ -412,8 +457,7 @@ Json Parser::parseObject() {
         skipWhitespace();
 
         if (peek() == ',') {
-            
-(void)get();
+            (void)get();
         } else if (peek() == '}') {
             (void)get();
             break;
@@ -426,10 +470,10 @@ Json Parser::parseObject() {
     return Json(std::move(obj));
 }
 
+// ============================================================
+//  Section 7 — Entry Point
+// ============================================================
 
-// ============================================================
-// Section 7 — Entry Point
-// ============================================================
 Json Parser::parse() {
     skipWhitespace();
     Json value = parseValue();
@@ -438,3 +482,9 @@ Json Parser::parse() {
 }
 
 } // namespace JsonPro
+
+/// @brief Short alias so this library can be used as `rain::Parser`, while
+/// its true namespace (and all internal diagnostics) remains `JsonPro`.
+/// See Json.cpp, JsonObject.cpp, and JsonException.h for the same alias
+/// applied to `rain::Json`, `rain::JsonObject`, and the exception types.
+namespace rain = JsonPro;

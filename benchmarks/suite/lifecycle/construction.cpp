@@ -1,135 +1,160 @@
-// JsonPro construction benchmarks.
-//
-// Measures the cost of building Json values directly, without going
-// through the parser.
+// Json Construction Benchmark Suite
+// Measures Json construction performance against nlohmann::json.
 //
 // Covers:
-// - Scalar construction (bool, number, string)
-// - String construction: copy vs move
-// - Array construction via repeated push_back
-// - Object construction: insert_or_assign vs operator[]
-// - Copy-construct vs move-construct of a populated array
+// - default (null) construction
+// - bool construction
+// - number construction
+// - string construction (short / SSO, and long / heap-allocating)
+// - array construction
+// - object construction
 
 #include <common/framework.h>
 
-#include <string>
+#include <nlohmann/json.hpp>
+
+#include <JsonPro/Json.h>
 
 using namespace JsonPro;
 
-// Measures constructing each scalar type.
-static void bench_construct_scalar() {
-    auto b = [&] {
+// Measures default (null) construction performance.
+static void bench_default_construction() {
+    auto jp = [&] {
+        Json j;
+        doNotOptimize(j);
+    };
+
+    auto nj = [&] {
+        nlohmann::json j;
+        doNotOptimize(j);
+    };
+
+    BENCH("default construction", jp, nj);
+}
+
+// Measures bool construction performance.
+static void bench_bool_construction() {
+    auto jp = [&] {
         Json j(true);
         doNotOptimize(j);
     };
-    BENCH("Construct bool", LARGE, b);
 
-    auto n = [&] {
-        Json j(3.14);
+    auto nj = [&] {
+        nlohmann::json j(true);
         doNotOptimize(j);
     };
-    BENCH("Construct number", LARGE, n);
 
-    auto s = [&] {
-        Json j("hello");
-        doNotOptimize(j);
-    };
-    BENCH("Construct string (c-string)", LARGE, s);
+    BENCH("bool construction", jp, nj);
 }
 
-// Measures string construction: copying an lvalue vs moving an rvalue.
-static void bench_construct_string_copy_vs_move() {
-    auto copy = [&] {
-        std::string s = "hello world";
+// Measures number construction performance.
+static void bench_number_construction() {
+    auto jp = [&] {
+        Json j(42.0);
+        doNotOptimize(j);
+    };
+
+    auto nj = [&] {
+        nlohmann::json j(42.0);
+        doNotOptimize(j);
+    };
+
+    BENCH("number construction", jp, nj);
+}
+
+// Measures string construction performance for a short (SSO-sized) string.
+static void bench_short_string_construction() {
+    const std::string s = "short";
+
+    auto jp = [&] {
         Json j(s);
         doNotOptimize(j);
     };
-    BENCH("Construct string, copy", LARGE, copy);
 
-    auto move = [&] {
-        std::string s = "hello world";
-        Json j(std::move(s));
+    auto nj = [&] {
+        nlohmann::json j(s);
         doNotOptimize(j);
     };
-    BENCH("Construct string, move", LARGE, move);
+
+    BENCH("short string construction", jp, nj);
 }
 
-// Measures building an array of 100 elements via repeated push_back.
-static void bench_build_array_push_back() {
-    auto expr = [&] {
-        Json::ArrayType arr;
-        for (int i = 0; i < 100; ++i)
-            arr.push_back(Json(i));
+// Measures string construction performance for a long string that forces a
+// heap allocation (past the small-string-optimization threshold).
+static void bench_long_string_construction() {
+    const std::string s(256, 'x');
 
-        Json j(std::move(arr));
+    auto jp = [&] {
+        Json j(s);
         doNotOptimize(j);
     };
-    BENCH("Build array, 100 push_back", MEDIUM, expr);
+
+    auto nj = [&] {
+        nlohmann::json j(s);
+        doNotOptimize(j);
+    };
+
+    BENCH("long string construction", jp, nj);
 }
 
-// Measures building a 100-key object via insert_or_assign vs operator[].
-// insert_or_assign does a single lookup+insert; operator[] does a
-// default-construct-then-assign (two operations) on first insertion.
-static void bench_build_object_insert_or_assign_vs_bracket() {
-    auto viaInsert = [&] {
+// Measures construction of a small array (5 elements).
+static void bench_array_construction() {
+    auto jp = [&] {
+        Json j(Json::ArrayType{Json(1), Json(2), Json(3), Json(4), Json(5)});
+        doNotOptimize(j);
+    };
+
+    auto nj = [&] {
+        nlohmann::json j = nlohmann::json::array({1, 2, 3, 4, 5});
+        doNotOptimize(j);
+    };
+
+    BENCH("array construction", jp, nj);
+}
+
+// Measures construction of a small object (5 members).
+static void bench_object_construction() {
+    auto jp = [&] {
         Json::ObjectType obj;
-        for (int i = 0; i < 100; ++i)
-            obj.insert_or_assign("k" + std::to_string(i), Json(i));
-
+        obj.insert_or_assign("a", Json(1));
+        obj.insert_or_assign("b", Json(2));
+        obj.insert_or_assign("c", Json(3));
+        obj.insert_or_assign("d", Json(4));
+        obj.insert_or_assign("e", Json(5));
         Json j(std::move(obj));
         doNotOptimize(j);
     };
-    BENCH("Build object, insert_or_assign", MEDIUM, viaInsert);
 
-    auto viaBracket = [&] {
-        Json::ObjectType obj;
-        for (int i = 0; i < 100; ++i)
-            obj[("k" + std::to_string(i))] = Json(i);
-
-        Json j(std::move(obj));
+    auto nj = [&] {
+        nlohmann::json j =
+            nlohmann::json::object({{"a", 1}, {"b", 2}, {"c", 3}, {"d", 4}, {"e", 5}});
         doNotOptimize(j);
     };
-    BENCH("Build object, operator[]", MEDIUM, viaBracket);
+
+    BENCH("object construction", jp, nj);
 }
 
-// Measures copy-construct vs move-construct of a populated 100-element array.
-// The move case also pays for a fresh copy each iteration (to have a
-// distinct source to move from), so it reflects "copy + move" vs
-// "copy" alone rather than move in isolation.
-static void bench_copy_vs_move_populated_array() {
-    Json source(Json::ArrayType{});
-    for (int i = 0; i < 100; ++i)
-        source.asArray().push_back(Json(i));
-
-    auto copy = [&] {
-        Json j(source);
-        doNotOptimize(j);
-    };
-    BENCH("Copy-construct array (100 elems)", MEDIUM, copy);
-
-    auto move = [&] {
-        Json temp = source;
-        Json j(std::move(temp));
-        doNotOptimize(j);
-    };
-    BENCH("Copy then move-construct array", MEDIUM, move);
-}
-
-// Runs all construction benchmarks.
+// Executes all construction benchmark cases.
 static void run_benchmarks() {
-    bench_construct_scalar();
+    bench_default_construction();
     std::cout << "\n";
 
-    bench_construct_string_copy_vs_move();
+    bench_bool_construction();
     std::cout << "\n";
 
-    bench_build_array_push_back();
+    bench_number_construction();
     std::cout << "\n";
 
-    bench_build_object_insert_or_assign_vs_bracket();
+    bench_short_string_construction();
     std::cout << "\n";
 
-    bench_copy_vs_move_populated_array();
+    bench_long_string_construction();
+    std::cout << "\n";
+
+    bench_array_construction();
+    std::cout << "\n";
+
+    bench_object_construction();
 }
 
 REGISTER_BENCH_SUITE();

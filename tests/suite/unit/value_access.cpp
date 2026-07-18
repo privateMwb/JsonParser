@@ -30,7 +30,7 @@ static void as_string_returns_value() {
 
 // Verifies mutable asArray() exposes the underlying container by reference.
 static void as_array_mutable_reference() {
-    Json j(Json::ArrayType{ Json(1) });
+    Json j(Json::ArrayType{Json(1)});
 
     j.asArray().emplace_back(2);
 
@@ -39,7 +39,7 @@ static void as_array_mutable_reference() {
 
 // Verifies const asArray() returns the correct underlying container.
 static void as_array_const_reference() {
-    const Json j(Json::ArrayType{ Json(1), Json(2), Json(3) });
+    const Json j(Json::ArrayType{Json(1), Json(2), Json(3)});
     CHK(j.asArray().size() == 3);
 }
 
@@ -97,7 +97,7 @@ static void as_object_throws_on_wrong_type() {
 static void const_accessors_throw_on_wrong_type() {
     const Json j(nullptr);
     CHK_THROWS(j.asString(), std::runtime_error);
-    CHK_THROWS(j.asArray(),  std::runtime_error);
+    CHK_THROWS(j.asArray(), std::runtime_error);
     CHK_THROWS(j.asObject(), std::runtime_error);
 }
 

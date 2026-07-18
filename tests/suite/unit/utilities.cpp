@@ -10,7 +10,7 @@ using namespace JsonPro;
 
 // Verifies size() returns the element count of an array.
 static void size_of_array() {
-    Json j(Json::ArrayType{ Json(1), Json(2), Json(3) });
+    Json j(Json::ArrayType{Json(1), Json(2), Json(3)});
     CHK(j.size() == 3);
 }
 
@@ -38,10 +38,10 @@ static void size_of_empty_object() {
 
 // Verifies size() returns 0 for non-container types (Null, Bool, Number, String).
 static void size_of_non_container_types() {
-    CHK(Json().size()        == 0);
-    CHK(Json(true).size()    == 0);
-    CHK(Json(1.0).size()     == 0);
-    CHK(Json("text").size()  == 0);
+    CHK(Json().size() == 0);
+    CHK(Json(true).size() == 0);
+    CHK(Json(1.0).size() == 0);
+    CHK(Json("text").size() == 0);
 }
 
 // Verifies contains() returns true for a present key.
@@ -64,9 +64,9 @@ static void contains_missing_key() {
 
 // Verifies contains() returns false (not throws) on non-object types.
 static void contains_on_non_object_returns_false() {
-    CHK(Json().contains("k")           == false);
-    CHK(Json(1.0).contains("k")        == false);
-    CHK(Json("str").contains("k")      == false);
+    CHK(Json().contains("k") == false);
+    CHK(Json(1.0).contains("k") == false);
+    CHK(Json("str").contains("k") == false);
     CHK(Json(Json::ArrayType{}).contains("k") == false);
 }
 

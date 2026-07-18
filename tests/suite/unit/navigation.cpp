@@ -6,7 +6,7 @@
 // - at(size_t) bounds-checked array access
 // - at(const std::string&) bounds-checked object access
 // - Wrong-type access throws std::runtime_error
-// - Out-of-range / missing-key access throws std::out_of_range
+// - Out-of-range / missing-key access throws std::runtime_error (JsonOutOfRange)
 
 #include <common/framework.h>
 
@@ -14,7 +14,7 @@ using namespace JsonPro;
 
 // Verifies mutable operator[](size_t) reads and writes array elements.
 static void array_index_operator_mutable() {
-    Json j(Json::ArrayType{ Json(1), Json(2), Json(3) });
+    Json j(Json::ArrayType{Json(1), Json(2), Json(3)});
 
     CHK(j[1].asNumber() == 2.0);
 
@@ -24,7 +24,7 @@ static void array_index_operator_mutable() {
 
 // Verifies const operator[](size_t) reads array elements.
 static void array_index_operator_const() {
-    const Json j(Json::ArrayType{ Json(10), Json(20) });
+    const Json j(Json::ArrayType{Json(10), Json(20)});
     CHK(j[0].asNumber() == 10.0);
 }
 
@@ -46,7 +46,7 @@ static void object_index_operator_mutable() {
 
     j["y"] = Json(2);
     CHK(j["y"].asNumber() == 2.0);
-    CHK(j.contains("y")   == true);
+    CHK(j.contains("y") == true);
 }
 
 // Verifies const operator[](key) reads existing object values.
@@ -66,20 +66,20 @@ static void object_index_operator_throws_on_wrong_type() {
 
 // Verifies at(size_t) returns the correct element within bounds.
 static void array_at_in_bounds() {
-    Json j(Json::ArrayType{ Json(5), Json(6) });
+    Json j(Json::ArrayType{Json(5), Json(6)});
     CHK(j.at(1).asNumber() == 6.0);
 }
 
-// Verifies at(size_t) throws std::out_of_range past the end.
+// Verifies at(size_t) throws std::runtime_error (JsonOutOfRange) past the end.
 static void array_at_out_of_range() {
-    Json j(Json::ArrayType{ Json(1) });
-    CHK_THROWS(j.at(5), std::out_of_range);
+    Json j(Json::ArrayType{Json(1)});
+    CHK_THROWS(j.at(5), std::runtime_error);
 }
 
 // Verifies at(size_t) throws std::runtime_error on a non-array value.
 static void array_at_throws_on_wrong_type() {
     Json j(true);
-    CHK_THROWS(j.at(std::size_t{ 0 }), std::runtime_error);
+    CHK_THROWS(j.at(std::size_t{0}), std::runtime_error);
 }
 
 // Verifies at(key) returns the correct value for an existing key.
@@ -91,32 +91,32 @@ static void object_at_existing_key() {
     CHK(j.at("name").asString() == "Rain");
 }
 
-// Verifies at(key) throws std::out_of_range for a missing key.
+// Verifies at(key) throws std::runtime_error (JsonOutOfRange) for a missing key.
 static void object_at_missing_key() {
     Json::ObjectType obj;
     obj.emplace("present", Json(1));
 
     Json j(std::move(obj));
-    CHK_THROWS(j.at("absent"), std::out_of_range);
+    CHK_THROWS(j.at("absent"), std::runtime_error);
 }
 
 // Verifies at(key) throws std::runtime_error on a non-object value.
 static void object_at_throws_on_wrong_type() {
     Json j(Json::ArrayType{});
-    CHK_THROWS(j.at(std::string{ "k" }), std::runtime_error);
+    CHK_THROWS(j.at(std::string{"k"}), std::runtime_error);
 }
 
 // Verifies const-qualified at() overloads behave identically.
 static void const_at_overloads() {
-    const Json arr(Json::ArrayType{ Json(1), Json(2) });
+    const Json arr(Json::ArrayType{Json(1), Json(2)});
     CHK(arr.at(0).asNumber() == 1.0);
-    CHK_THROWS(arr.at(9), std::out_of_range);
+    CHK_THROWS(arr.at(9), std::runtime_error);
 
     Json::ObjectType obj;
     obj.emplace("k", Json(7));
     const Json object(std::move(obj));
     CHK(object.at("k").asNumber() == 7.0);
-    CHK_THROWS(object.at("missing"), std::out_of_range);
+    CHK_THROWS(object.at("missing"), std::runtime_error);
 }
 
 // Executes all navigation test cases.
