@@ -319,12 +319,6 @@ Full API reference, generated with Doxygen from `docs/Doxyfile`:
 
 **https://privateMwb.github.io/JsonParser/**
 
-> ⚠️ URL follows VectorPro's pattern (`github.io/<repo>`) but I don't
-> have confirmation there's an actual CI step publishing this to GitHub
-> Pages — `docs/Doxyfile` existing means the docs *can* be generated,
-> not necessarily that they're deployed live yet. Double check before
-> linking people to it.
-
 ## <a id="contributing"></a>🤝 Contributing
 
 Issues and pull requests are welcome. Before submitting a PR:
