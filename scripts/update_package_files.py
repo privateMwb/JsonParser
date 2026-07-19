@@ -13,6 +13,8 @@ parser.add_argument("--package", required=True)
 parser.add_argument("--repo", required=True)
 parser.add_argument("--version", required=True)
 parser.add_argument("--archive", required=True)
+parser.add_argument("--conan-dir", required=True)
+parser.add_argument("--vcpkg-dir", required=True)
 
 args = parser.parse_args()
 
@@ -38,7 +40,7 @@ print(f"SHA512  : {sha512}")
 # Conan
 # ---------------------------------------------------------------------
 
-recipe_dir = pathlib.Path("recipes") / package / "all"
+recipe_dir = pathlib.Path(args.conan_dir)
 
 # conanfile.py
 
@@ -75,7 +77,7 @@ print("✓ Updated conandata.yml")
 # vcpkg
 # ---------------------------------------------------------------------
 
-port_dir = pathlib.Path("vcpkg") / "ports" / package
+port_dir = pathlib.Path(args.vcpkg_dir)
 
 # portfile.cmake
 
