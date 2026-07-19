@@ -1,8 +1,9 @@
 from conan import ConanFile
 from conan.tools.build import check_min_cppstd
-from conan.tools.cmake import CMake, CMakeToolchain, cmake_layout
+from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, get
 import os
+
 
 class JsonProConan(ConanFile):
     name = "jsonpro"
@@ -19,12 +20,27 @@ class JsonProConan(ConanFile):
         "parser",
         "serialization",
         "cpp",
-        "data-structure"
+        "data-structure",
     )
 
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = {"shared": False, "fPIC": True}
+
+    options = {
+        "shared": [True, False],
+        "fPIC": [True, False],
+    }
+
+    default_options = {
+        "shared": False,
+        "fPIC": True,
+    }
+
+    exports_sources = (
+        "CMakeLists.txt",
+        "cmake/*",
+        "include/*",
+        "src/*",
+    )
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -48,23 +64,34 @@ class JsonProConan(ConanFile):
         )
 
     def generate(self):
+        deps = CMakeDeps(self)
+        deps.generate()
+
         tc = CMakeToolchain(self)
         tc.generate()
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure()
+        cmake.configure(
+            variables={
+                "JSONPRO_BUILD_TESTS": "OFF",
+                "JSONPRO_BUILD_BENCHMARKS": "OFF",
+                "JSONPRO_BUILD_TOOLS": "OFF",
+                "JSONPRO_BUILD_EXAMPLES": "OFF",
+            }
+        )
         cmake.build()
 
     def package(self):
+        cmake = CMake(self)
+        cmake.install()
+
         copy(
             self,
             "LICENSE",
             src=self.source_folder,
             dst=os.path.join(self.package_folder, "licenses"),
         )
-        cmake = CMake(self)
-        cmake.install()
 
     def package_info(self):
         self.cpp_info.set_property("cmake_file_name", "JsonPro")

@@ -1,0 +1,134 @@
+# ============================================================
+# .github/workflows/packaging.yml
+# Verifies the Conan recipe and vcpkg port actually build and are
+# consumable, on a real Linux runner (none of PACKAGING.md's Termux
+# workarounds apply here — this is what a real consumer experiences).
+# ============================================================
+
+name: Packaging
+
+on:
+  push:
+    tags:
+      - "v*"
+  pull_request:
+    paths:
+      - "recipes/**"
+      - "ports/**"
+      - "CMakeLists.txt"
+      - "conandata.yml"
+  workflow_dispatch:
+
+jobs:
+  # ------------------------------------------------------------
+  # Conan: conan create, then a separate consumer project links
+  # against the packaged jsonpro/<version> and runs.
+  # ------------------------------------------------------------
+  conan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install Conan
+        run: pip install conan
+
+      - name: Detect default profile
+        run: conan profile detect --force
+
+      - name: Resolve package version
+        id: version
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=1.0.0" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: conan create
+        run: |
+          conan create recipes/jsonpro/all --version ${{ steps.version.outputs.version }} \
+            -s compiler.cppstd=23 --build=missing
+
+      - name: Build and run consumer project
+        run: |
+          mkdir -p /tmp/conan_consumer && cd /tmp/conan_consumer
+
+          cat > conanfile.txt <<'EOF'
+          [requires]
+          jsonpro/${{ steps.version.outputs.version }}
+
+          [generators]
+          CMakeDeps
+          CMakeToolchain
+          EOF
+
+          cat > CMakeLists.txt <<'EOF'
+          cmake_minimum_required(VERSION 3.20)
+          project(TestJsonPro LANGUAGES CXX)
+          find_package(JsonPro CONFIG REQUIRED)
+          add_executable(test main.cpp)
+          target_link_libraries(test PRIVATE JsonPro::JsonPro)
+          EOF
+
+          cat > main.cpp <<'EOF'
+          #include <JsonPro/Json.h>
+          int main() {
+              JsonPro::Json json;
+              return 0;
+          }
+          EOF
+
+          conan install . -s compiler.cppstd=23 --build=missing
+          cmake -B build -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
+          cmake --build build
+          ./build/test
+
+  # ------------------------------------------------------------
+  # vcpkg: bootstrap, install the overlay port, then a separate
+  # consumer project links against it and runs.
+  # ------------------------------------------------------------
+  vcpkg:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Bootstrap vcpkg
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git /tmp/vcpkg
+          /tmp/vcpkg/bootstrap-vcpkg.sh
+
+      - name: vcpkg install (overlay port)
+        run: /tmp/vcpkg/vcpkg install jsonpro --overlay-ports=./ports
+
+      - name: Build and run consumer project
+        run: |
+          mkdir -p /tmp/vcpkg_consumer && cd /tmp/vcpkg_consumer
+
+          cat > CMakeLists.txt <<'EOF'
+          cmake_minimum_required(VERSION 3.20)
+          project(TestJsonPro LANGUAGES CXX)
+          find_package(JsonPro CONFIG REQUIRED)
+          add_executable(test main.cpp)
+          target_link_libraries(test PRIVATE JsonPro::JsonPro)
+          EOF
+
+          cat > main.cpp <<'EOF'
+          #include <JsonPro/Json.h>
+          int main() {
+              JsonPro::Json json;
+              return 0;
+          }
+          EOF
+
+          cmake -B build -DCMAKE_TOOLCHAIN_FILE=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake
+          cmake --build build
+          ./build/test
