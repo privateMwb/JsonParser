@@ -33,14 +33,23 @@ jobs:
       - name: Determine source branch
         id: branch
         run: |
-          BRANCH=$(git branch -r --contains "$GITHUB_SHA" \
-            | grep -v ' -> ' | grep -v 'HEAD' | head -n1 | sed 's#^ *origin/##')
+          CANDIDATES=$(git branch -r --contains "$GITHUB_SHA" \
+            | grep -v ' -> ' | grep -v 'HEAD' | sed 's#^ *origin/##')
 
-          if [ -z "$BRANCH" ]; then
+          if [ -z "$CANDIDATES" ]; then
             echo "No remote branch contains $GITHUB_SHA" >&2
             exit 1
           fi
 
+          DEFAULT="${{ github.event.repository.default_branch }}"
+
+          if echo "$CANDIDATES" | grep -qx "$DEFAULT"; then
+            BRANCH="$DEFAULT"
+          else
+            BRANCH=$(echo "$CANDIDATES" | head -n1)
+          fi
+
+          echo "Candidates: $(echo "$CANDIDATES" | tr '\n' ' ')"
           echo "Source branch: $BRANCH"
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
 
