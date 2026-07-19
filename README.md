@@ -40,19 +40,6 @@
   <img src="https://img.shields.io/badge/AppleClang-support-000000?style=flat&logo=apple" alt="AppleClang - support">
 </p>
 
-<!--
-  VectorPro's README also carries badges for Build/Test, Benchmarks,
-  Coverage, Sanitizers, Clang Tidy, Clang Format, and Docs workflows.
-  I only have direct visibility into Packaging and Update Package Recipes
-  actually existing for JsonPro — add the rest here once confirmed, using
-  the same badge URL pattern.
--->
-
-<p align="center">
-  <img src="https://img.shields.io/badge/GCC-support-B46F1B?style=flat&logo=gnu" alt="GCC - support">
-  <img src="https://img.shields.io/badge/Clang-support-045891?style=flat&logo=llvm" alt="Clang - support">
-  <img src="https://img.shields.io/badge/MSVC-support-5C2D91?style=flat" alt="MSVC - support">
-</p>
 
 A C++23, RFC 8259-compliant JSON value type and recursive-descent parser,
 benchmarked against nlohmann::json.
