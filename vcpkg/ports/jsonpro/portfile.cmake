@@ -1,6 +1,6 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
-    REPO privateMwb/JsonPro
+    REPO privateMwb/JsonParser
     REF v1.0.0
     SHA512 6553965c96f5e0af0783372fa524185e39f7eb2d5edb486bc5cf7b77cf6afafb410b9c8f35f40d7aba926f8b5dae21ec21f76a52e18cd729844538d8a6bcfe3e
 )
