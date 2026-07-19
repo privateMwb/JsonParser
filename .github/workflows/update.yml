@@ -15,9 +15,9 @@ jobs:
     env:
       PACKAGE_NAME: jsonpro
       REPOSITORY: privateMwb/JsonParser
-      CONAN_RECIPE_DIR: recipes/${{ env.PACKAGE_NAME }}/all
-      VCPKG_PORT_DIR: vcpkg/ports/${{ env.PACKAGE_NAME }}
-
+      CONAN_RECIPE_DIR: recipes/jsonpro/all
+      VCPKG_PORT_DIR: vcpkg/ports/jsonpro
+      
     steps:
       - name: Checkout
         uses: actions/checkout@v4
