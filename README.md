@@ -31,6 +31,9 @@
   <a href="https://github.com/privateMwb/JsonParser/actions/workflows/release.yml">
     <img src="https://github.com/privateMwb/JsonParser/actions/workflows/release.yml/badge.svg" alt="Release">
   </a>
+  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/packaging.yml">
+    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/packaging.yml/badge.svg" alt="Packaging">
+  </a>
 </p>
 
 <p align="center">
