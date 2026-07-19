@@ -21,6 +21,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
 
       - name: Extract version
         id: version
@@ -51,17 +54,17 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
+      
           git add \
             "$VCPKG_PORT_DIR/portfile.cmake" \
             "$VCPKG_PORT_DIR/vcpkg.json" \
             "$CONAN_RECIPE_DIR/conanfile.py" \
             "$CONAN_RECIPE_DIR/conandata.yml"
-
+      
           if git diff --cached --quiet; then
             echo "No changes."
             exit 0
           fi
-
+      
           git commit -m "Update package recipes for v${{ steps.version.outputs.version }}"
-          git push
+          git push origin main
