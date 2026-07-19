@@ -266,50 +266,52 @@ vcpkg port and Conan recipe locally.
 
 ## <a id="benchmarks"></a>📊 Benchmarks
 
-Measured against `nlohmann::json`, same build, at 10K/100K/1M iterations
-across 17 benchmark files (`benchmarks/baselines/v1.0.0.json` has the
-full dataset). Being upfront about both sides:
+Measured against `nlohmann::json`, same build, at 10K / 100K / 1M
+iterations (`benchmarks/baselines/v1.0.0.json` has the full dataset).
+Numbers below are the 100K row unless noted — differences are
+consistent across scale for most operations.
 
 **At parity or faster:**
 
-- **Object member access** — `operator[]`/`at()` on an existing key:
-  ~106–152% faster.
-- **Object lookup** — `contains()`/`find()`, both hit and miss:
-  ~95–198% faster.
-- **Parsing**, every document shape tested (flat, array, nested,
-  string-heavy): ~134–285% faster.
-- **Round-trip (parse + dump)**: ~46–101% faster.
-- **Construction, copy, and move**, every value type: ~31–348% faster.
-  The one soft spot is object copy, at "only" +31–35%.
-- **Large/wide object parsing and lookup**: ~9–97% faster, with the gap
-  widening as size increases.
-- **String/array/object destruction**: ~50–136% faster. Destroying a
-  bare bool/number/null is a wash either way — within noise.
+| Operation | JsonPro | nlohmann::json | Difference |
+|---|---|---|---|
+| `Object At()` | 1.07 ms | 2.63 ms | ~145% faster |
+| `Contains() Miss` | 1.47 ms | 4.03 ms | ~174% faster |
+| `Parse Number Array` | 43.26 ms | 161.24 ms | ~273% faster |
+| `Round-trip Number Array` | 137.39 ms | 227.58 ms | ~66% faster |
+| `Short String Copy` | 549.56 μs | 1.97 ms | ~259% faster |
+| `Array Destruction` | 52.61 ms | 113.86 ms | ~116% faster |
 
-**Slower, and worth knowing about:**
+**Slower, and consistent across scale — worth fixing:**
 
-- **Array element access** (`operator[]`, `at()`) and every `asXxx()`
-  typed accessor: ~60–83% slower.
-- **`type()`/`isXxx()`** and **`size()`/`empty()`**: ~46–80% slower.
-- **`dump()`**, every document shape: ~4–44% slower — the one place the
-  parsing win doesn't carry over.
-- **Comparison** is mixed: array comparison is faster (+49–60%);
-  number, string, and object comparison are slower (−6% to −62%).
+| Operation | JsonPro | nlohmann::json | Difference |
+|---|---|---|---|
+| `Array At()` | 188.55 μs | 64.67 μs | ~66% slower |
+| `AsObject()` | 241.38 μs | 118.48 μs | ~51% slower |
+| `Dump Number Array` | 85.90 ms | 55.06 ms | ~36% slower |
+| `Type()` | 97.53 μs | 32.37 μs | ~67% slower |
+| `Object Size()` | 335.75 μs | 182.18 μs | ~46% slower |
+| `Compare Equal Numbers` | 226.19 μs | 138.01 μs | ~39% slower |
+| `Object Empty()` (non-empty) | 235.05 μs | 64.68 μs | ~72% slower |
 
 <details>
 <summary>Why the gap on these specific operations</summary>
 
-Array access, typed accessors, type inspection, and size queries are
-all single-branch operations completing in 15–35 nanoseconds per call —
-at that scale, the benchmark harness's own per-call overhead is a real
-fraction of what's being measured, so these deltas are reported as-is
-rather than attributed to a specific cause without further profiling.
+Array access, typed accessors (`asXxx()`), type inspection, and size
+queries are all single-branch operations completing in 15–35
+nanoseconds per call — at that scale, the benchmark harness's own
+per-call overhead is a real fraction of what's being measured, so
+these deltas are reported as-is rather than attributed to a specific
+cause without further profiling.
 
-The clearer, larger-magnitude story: JsonPro wins decisively on parsing,
-object mutation, and lifecycle operations, where the `JsonObject`
-redesign and `to_chars`-based number handling do the most work, and
-loses on `dump()` and raw scalar access, where nlohmann's more mature
-code path currently has the edge.
+`dump()` is the clearer signal: it's slower across every document
+shape tested (4–44% depending on shape and scale), the one place the
+parsing win doesn't carry over — worth investigating separately from
+the nanosecond-scale accessor gaps above. Comparison is mixed rather
+than uniformly slower: array comparison is actually faster (+43–64%),
+while number, string, and object comparison are slower — see
+`benchmarks/baselines/v1.0.0.json` for the full per-scale breakdown if
+you want to look yourself.
 
 </details>
 
