@@ -41,8 +41,7 @@
 </p>
 
 
-A C++23, RFC 8259-compliant JSON value type and recursive-descent parser,
-benchmarked against nlohmann::json.
+High-performance, RFC 8259-compliant JSON value type and recursive-descent parser for modern C++23, with strict string escaping, locale-independent number serialization, and O(1) average object lookup.
 
 ## 📑 Table of Contents
 
