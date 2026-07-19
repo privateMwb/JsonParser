@@ -1,8 +1,8 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO privateMwb/JsonParser
-    REF v1.0.6
-    SHA512 c83ba644897d155621ec61053f029c2c303f2caf22f6ad763bbf49205dfdf0ecc6bcd8b53d7e7f61940b38fc134fcc9f183e19bf73543034b88fe45766e7110c
+    REF v1.0.0
+    SHA512 ff332d779350c135be0566f6db5fe8186b799a7cd5f5b3fac3549298e2f422c2604baea2e11ad3203abe76fab9ac8b5ef37174f6bc626d52722d3482b587b2a5
 )
 
 # JsonPro consumers only need the library itself, not the tests,

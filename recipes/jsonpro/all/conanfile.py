@@ -7,7 +7,7 @@ import os
 
 class JsonProConan(ConanFile):
     name = "jsonpro"
-    version = "1.0.6"
+    version = "1.0.0"
 
     package_type = "library"
 

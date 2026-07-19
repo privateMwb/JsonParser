@@ -1,4 +1,4 @@
 sources:
-  "1.0.6":
-    url: "https://github.com/privateMwb/JsonParser/archive/refs/tags/v1.0.6.tar.gz"
-    sha256: "6043f589405e702776302290ba803abaa6e983e0c5dc75074025950f07e117c3"
+  "1.0.0":
+    url: "https://github.com/privateMwb/JsonParser/archive/refs/tags/v1.0.0.tar.gz"
+    sha256: "b9e2e59d24bb0cb75db243b1eb040943a6333e0982f34b7e5fc67fa59f611bb3"
