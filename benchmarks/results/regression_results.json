@@ -3,1896 +3,1896 @@
     "suite": "Element Access",
     "operation": "array operator[]",
     "iteration": 10000, 
-    "baseline_ns": 5.72,
-    "current_ns": 23.67,
-    "pct_change": 313.81
+    "baseline_ns": 2.12,
+    "current_ns": 11.15,
+    "pct_change": 425.94
   },
   {
     "suite": "Element Access",
     "operation": "array operator[]",
     "iteration": 100000, 
-    "baseline_ns": 5.80,
-    "current_ns": 13.34,
-    "pct_change": 130.00
+    "baseline_ns": 2.09,
+    "current_ns": 14.07,
+    "pct_change": 573.21
   },
   {
     "suite": "Element Access",
     "operation": "array operator[]",
     "iteration": 1000000, 
-    "baseline_ns": 5.88,
-    "current_ns": 7.80,
-    "pct_change": 32.65
+    "baseline_ns": 2.13,
+    "current_ns": 8.97,
+    "pct_change": 321.13
   },
   {
     "suite": "Element Access",
     "operation": "array at()",
     "iteration": 10000, 
-    "baseline_ns": 7.94,
-    "current_ns": 7.93,
-    "pct_change": -0.13
+    "baseline_ns": 2.27,
+    "current_ns": 6.83,
+    "pct_change": 200.88
   },
   {
     "suite": "Element Access",
     "operation": "array at()",
     "iteration": 100000, 
-    "baseline_ns": 7.87,
-    "current_ns": 7.85,
-    "pct_change": -0.25
+    "baseline_ns": 2.26,
+    "current_ns": 6.86,
+    "pct_change": 203.54
   },
   {
     "suite": "Element Access",
     "operation": "array at()",
     "iteration": 1000000, 
-    "baseline_ns": 8.02,
-    "current_ns": 14.13,
-    "pct_change": 76.18
+    "baseline_ns": 2.32,
+    "current_ns": 7.60,
+    "pct_change": 227.59
   },
   {
     "suite": "Element Access",
     "operation": "object operator[]",
     "iteration": 10000, 
-    "baseline_ns": 59.91,
-    "current_ns": 58.12,
-    "pct_change": -2.99
+    "baseline_ns": 15.26,
+    "current_ns": 45.93,
+    "pct_change": 200.98
   },
   {
     "suite": "Element Access",
     "operation": "object operator[]",
     "iteration": 100000, 
-    "baseline_ns": 55.60,
-    "current_ns": 55.00,
-    "pct_change": -1.08
+    "baseline_ns": 13.83,
+    "current_ns": 54.82,
+    "pct_change": 296.38
   },
   {
     "suite": "Element Access",
     "operation": "object operator[]",
     "iteration": 1000000, 
-    "baseline_ns": 56.48,
-    "current_ns": 55.69,
-    "pct_change": -1.40
+    "baseline_ns": 13.63,
+    "current_ns": 48.66,
+    "pct_change": 257.01
   },
   {
     "suite": "Element Access",
     "operation": "object at()",
     "iteration": 10000, 
-    "baseline_ns": 58.48,
-    "current_ns": 58.98,
-    "pct_change": 0.85
+    "baseline_ns": 13.26,
+    "current_ns": 51.87,
+    "pct_change": 291.18
   },
   {
     "suite": "Element Access",
     "operation": "object at()",
     "iteration": 100000, 
-    "baseline_ns": 59.65,
-    "current_ns": 59.02,
-    "pct_change": -1.06
+    "baseline_ns": 13.32,
+    "current_ns": 51.04,
+    "pct_change": 283.18
   },
   {
     "suite": "Element Access",
     "operation": "object at()",
     "iteration": 1000000, 
-    "baseline_ns": 59.27,
-    "current_ns": 59.29,
-    "pct_change": 0.03
+    "baseline_ns": 13.38,
+    "current_ns": 50.94,
+    "pct_change": 280.72
   },
   {
     "suite": "Lookup",
     "operation": "contains() hit",
     "iteration": 10000, 
-    "baseline_ns": 55.29,
-    "current_ns": 55.15,
-    "pct_change": -0.25
+    "baseline_ns": 13.28,
+    "current_ns": 47.07,
+    "pct_change": 254.44
   },
   {
     "suite": "Lookup",
     "operation": "contains() hit",
     "iteration": 100000, 
-    "baseline_ns": 55.28,
-    "current_ns": 55.18,
-    "pct_change": -0.18
+    "baseline_ns": 11.94,
+    "current_ns": 47.34,
+    "pct_change": 296.48
   },
   {
     "suite": "Lookup",
     "operation": "contains() hit",
     "iteration": 1000000, 
-    "baseline_ns": 54.94,
-    "current_ns": 55.02,
-    "pct_change": 0.15
+    "baseline_ns": 11.96,
+    "current_ns": 47.07,
+    "pct_change": 293.56
   },
   {
     "suite": "Lookup",
     "operation": "contains() miss",
     "iteration": 10000, 
-    "baseline_ns": 72.65,
-    "current_ns": 89.73,
-    "pct_change": 23.51
+    "baseline_ns": 15.66,
+    "current_ns": 61.30,
+    "pct_change": 291.44
   },
   {
     "suite": "Lookup",
     "operation": "contains() miss",
     "iteration": 100000, 
-    "baseline_ns": 71.98,
-    "current_ns": 73.15,
-    "pct_change": 1.63
+    "baseline_ns": 15.86,
+    "current_ns": 61.67,
+    "pct_change": 288.84
   },
   {
     "suite": "Lookup",
     "operation": "contains() miss",
     "iteration": 1000000, 
-    "baseline_ns": 72.05,
-    "current_ns": 72.63,
-    "pct_change": 0.80
+    "baseline_ns": 15.83,
+    "current_ns": 79.01,
+    "pct_change": 399.12
   },
   {
     "suite": "Lookup",
     "operation": "find() hit",
     "iteration": 10000, 
-    "baseline_ns": 59.72,
-    "current_ns": 97.54,
-    "pct_change": 63.33
+    "baseline_ns": 14.06,
+    "current_ns": 49.20,
+    "pct_change": 249.93
   },
   {
     "suite": "Lookup",
     "operation": "find() hit",
     "iteration": 100000, 
-    "baseline_ns": 59.87,
-    "current_ns": 76.15,
-    "pct_change": 27.19
+    "baseline_ns": 13.32,
+    "current_ns": 51.47,
+    "pct_change": 286.41
   },
   {
     "suite": "Lookup",
     "operation": "find() hit",
     "iteration": 1000000, 
-    "baseline_ns": 59.57,
-    "current_ns": 90.14,
-    "pct_change": 51.32
+    "baseline_ns": 13.35,
+    "current_ns": 56.63,
+    "pct_change": 324.19
   },
   {
     "suite": "Lookup",
     "operation": "find() miss",
     "iteration": 10000, 
-    "baseline_ns": 78.43,
-    "current_ns": 82.62,
-    "pct_change": 5.34
+    "baseline_ns": 17.17,
+    "current_ns": 111.11,
+    "pct_change": 547.12
   },
   {
     "suite": "Lookup",
     "operation": "find() miss",
     "iteration": 100000, 
-    "baseline_ns": 76.59,
-    "current_ns": 114.62,
-    "pct_change": 49.65
+    "baseline_ns": 17.14,
+    "current_ns": 93.74,
+    "pct_change": 446.91
   },
   {
     "suite": "Lookup",
     "operation": "find() miss",
     "iteration": 1000000, 
-    "baseline_ns": 75.91,
-    "current_ns": 108.57,
-    "pct_change": 43.02
+    "baseline_ns": 17.23,
+    "current_ns": 82.06,
+    "pct_change": 376.26
   },
   {
     "suite": "Value Access",
     "operation": "asBool()",
     "iteration": 10000, 
-    "baseline_ns": 4.76,
-    "current_ns": 4.77,
-    "pct_change": 0.21
+    "baseline_ns": 2.11,
+    "current_ns": 4.75,
+    "pct_change": 125.12
   },
   {
     "suite": "Value Access",
     "operation": "asBool()",
     "iteration": 100000, 
-    "baseline_ns": 4.26,
-    "current_ns": 4.26,
-    "pct_change": 0.00
+    "baseline_ns": 2.18,
+    "current_ns": 4.24,
+    "pct_change": 94.50
   },
   {
     "suite": "Value Access",
     "operation": "asBool()",
     "iteration": 1000000, 
-    "baseline_ns": 4.70,
-    "current_ns": 4.73,
-    "pct_change": 0.64
-  },
-  {
-    "suite": "Value Access",
-    "operation": "asNumber()",
-    "iteration": 10000, 
-    "baseline_ns": 4.85,
-    "current_ns": 4.87,
-    "pct_change": 0.41
-  },
-  {
-    "suite": "Value Access",
-    "operation": "asNumber()",
-    "iteration": 100000, 
-    "baseline_ns": 4.31,
+    "baseline_ns": 2.11,
     "current_ns": 4.27,
-    "pct_change": -0.93
+    "pct_change": 102.37
+  },
+  {
+    "suite": "Value Access",
+    "operation": "asNumber()",
+    "iteration": 10000, 
+    "baseline_ns": 2.10,
+    "current_ns": 4.18,
+    "pct_change": 99.05
+  },
+  {
+    "suite": "Value Access",
+    "operation": "asNumber()",
+    "iteration": 100000, 
+    "baseline_ns": 2.09,
+    "current_ns": 9.65,
+    "pct_change": 361.72
   },
   {
     "suite": "Value Access",
     "operation": "asNumber()",
     "iteration": 1000000, 
-    "baseline_ns": 4.34,
-    "current_ns": 4.33,
-    "pct_change": -0.23
+    "baseline_ns": 2.11,
+    "current_ns": 5.09,
+    "pct_change": 141.23
   },
   {
     "suite": "Value Access",
     "operation": "asString()",
     "iteration": 10000, 
-    "baseline_ns": 3.91,
-    "current_ns": 4.02,
-    "pct_change": 2.81
+    "baseline_ns": 1.75,
+    "current_ns": 3.25,
+    "pct_change": 85.71
   },
   {
     "suite": "Value Access",
     "operation": "asString()",
     "iteration": 100000, 
-    "baseline_ns": 3.52,
-    "current_ns": 3.53,
-    "pct_change": 0.28
+    "baseline_ns": 2.09,
+    "current_ns": 3.05,
+    "pct_change": 45.93
   },
   {
     "suite": "Value Access",
     "operation": "asString()",
     "iteration": 1000000, 
-    "baseline_ns": 3.52,
-    "current_ns": 3.55,
-    "pct_change": 0.85
+    "baseline_ns": 2.11,
+    "current_ns": 6.13,
+    "pct_change": 190.52
   },
   {
     "suite": "Value Access",
     "operation": "asArray()",
     "iteration": 10000, 
-    "baseline_ns": 5.87,
-    "current_ns": 5.91,
-    "pct_change": 0.68
+    "baseline_ns": 2.11,
+    "current_ns": 5.02,
+    "pct_change": 137.91
   },
   {
     "suite": "Value Access",
     "operation": "asArray()",
     "iteration": 100000, 
-    "baseline_ns": 5.82,
-    "current_ns": 5.82,
-    "pct_change": 0.00
+    "baseline_ns": 2.66,
+    "current_ns": 4.96,
+    "pct_change": 86.47
   },
   {
     "suite": "Value Access",
     "operation": "asArray()",
     "iteration": 1000000, 
-    "baseline_ns": 5.85,
-    "current_ns": 6.79,
-    "pct_change": 16.07
+    "baseline_ns": 2.30,
+    "current_ns": 5.03,
+    "pct_change": 118.70
   },
   {
     "suite": "Value Access",
     "operation": "asObject()",
     "iteration": 10000, 
-    "baseline_ns": 4.58,
-    "current_ns": 4.34,
-    "pct_change": -5.24
+    "baseline_ns": 1.75,
+    "current_ns": 3.72,
+    "pct_change": 112.57
   },
   {
     "suite": "Value Access",
     "operation": "asObject()",
     "iteration": 100000, 
-    "baseline_ns": 3.55,
-    "current_ns": 3.55,
-    "pct_change": 0.00
+    "baseline_ns": 2.09,
+    "current_ns": 3.03,
+    "pct_change": 44.98
   },
   {
     "suite": "Value Access",
     "operation": "asObject()",
     "iteration": 1000000, 
-    "baseline_ns": 3.55,
-    "current_ns": 12.46,
-    "pct_change": 250.99
+    "baseline_ns": 2.13,
+    "current_ns": 3.13,
+    "pct_change": 46.95
   },
   {
     "suite": "Parsing",
     "operation": "parse small object",
     "iteration": 10000, 
-    "baseline_ns": 5310.95,
-    "current_ns": 9250.95,
-    "pct_change": 74.19
+    "baseline_ns": 1149.78,
+    "current_ns": 7643.01,
+    "pct_change": 564.74
   },
   {
     "suite": "Parsing",
     "operation": "parse small object",
     "iteration": 100000, 
-    "baseline_ns": 5301.18,
-    "current_ns": 8113.73,
-    "pct_change": 53.06
+    "baseline_ns": 1145.57,
+    "current_ns": 7094.16,
+    "pct_change": 519.27
   },
   {
     "suite": "Parsing",
     "operation": "parse small object",
     "iteration": 1000000, 
-    "baseline_ns": 7402.79,
-    "current_ns": 7263.57,
-    "pct_change": -1.88
+    "baseline_ns": 1158.82,
+    "current_ns": 11583.08,
+    "pct_change": 899.56
   },
   {
     "suite": "Parsing",
     "operation": "parse number array",
     "iteration": 10000, 
-    "baseline_ns": 5082.52,
-    "current_ns": 5088.38,
-    "pct_change": 0.12
+    "baseline_ns": 440.13,
+    "current_ns": 4381.82,
+    "pct_change": 895.57
   },
   {
     "suite": "Parsing",
     "operation": "parse number array",
     "iteration": 100000, 
-    "baseline_ns": 5372.94,
-    "current_ns": 4005.48,
-    "pct_change": -25.45
+    "baseline_ns": 443.66,
+    "current_ns": 4276.35,
+    "pct_change": 863.88
   },
   {
     "suite": "Parsing",
     "operation": "parse number array",
     "iteration": 1000000, 
-    "baseline_ns": 5057.35,
-    "current_ns": 2745.42,
-    "pct_change": -45.71
+    "baseline_ns": 443.77,
+    "current_ns": 4320.57,
+    "pct_change": 873.61
   },
   {
     "suite": "Parsing",
     "operation": "parse nested object",
     "iteration": 10000, 
-    "baseline_ns": 17529.48,
-    "current_ns": 17570.30,
-    "pct_change": 0.23
+    "baseline_ns": 1600.78,
+    "current_ns": 15968.59,
+    "pct_change": 897.55
   },
   {
     "suite": "Parsing",
     "operation": "parse nested object",
     "iteration": 100000, 
-    "baseline_ns": 17575.19,
-    "current_ns": 12605.41,
-    "pct_change": -28.28
+    "baseline_ns": 1598.68,
+    "current_ns": 16694.76,
+    "pct_change": 944.28
   },
   {
     "suite": "Parsing",
     "operation": "parse nested object",
     "iteration": 1000000, 
-    "baseline_ns": 17527.74,
-    "current_ns": 16627.11,
-    "pct_change": -5.14
+    "baseline_ns": 1615.29,
+    "current_ns": 16090.21,
+    "pct_change": 896.12
   },
   {
     "suite": "Parsing",
     "operation": "parse string-heavy object",
     "iteration": 10000, 
-    "baseline_ns": 11256.00,
-    "current_ns": 11506.02,
-    "pct_change": 2.22
+    "baseline_ns": 1079.50,
+    "current_ns": 10417.23,
+    "pct_change": 865.01
   },
   {
     "suite": "Parsing",
     "operation": "parse string-heavy object",
     "iteration": 100000, 
-    "baseline_ns": 11315.22,
-    "current_ns": 11202.51,
-    "pct_change": -1.00
+    "baseline_ns": 1091.63,
+    "current_ns": 10387.14,
+    "pct_change": 851.53
   },
   {
     "suite": "Parsing",
     "operation": "parse string-heavy object",
     "iteration": 1000000, 
-    "baseline_ns": 11408.59,
-    "current_ns": 11240.05,
-    "pct_change": -1.48
+    "baseline_ns": 1091.62,
+    "current_ns": 10309.43,
+    "pct_change": 844.42
   },
   {
     "suite": "Round Trip",
     "operation": "round-trip small object",
     "iteration": 10000, 
-    "baseline_ns": 32897.91,
-    "current_ns": 31764.99,
-    "pct_change": -3.44
+    "baseline_ns": 2538.34,
+    "current_ns": 29912.85,
+    "pct_change": 1078.44
   },
   {
     "suite": "Round Trip",
     "operation": "round-trip small object",
     "iteration": 100000, 
-    "baseline_ns": 32659.75,
-    "current_ns": 31805.35,
-    "pct_change": -2.62
+    "baseline_ns": 2500.80,
+    "current_ns": 29441.64,
+    "pct_change": 1077.29
   },
   {
     "suite": "Round Trip",
     "operation": "round-trip small object",
     "iteration": 1000000, 
-    "baseline_ns": 32487.55,
-    "current_ns": 32213.52,
-    "pct_change": -0.84
+    "baseline_ns": 2504.61,
+    "current_ns": 29318.80,
+    "pct_change": 1070.59
   },
   {
     "suite": "Round Trip",
     "operation": "round-trip number array",
     "iteration": 10000, 
-    "baseline_ns": 16126.93,
-    "current_ns": 16045.98,
-    "pct_change": -0.50
+    "baseline_ns": 1357.45,
+    "current_ns": 14908.37,
+    "pct_change": 998.26
   },
   {
     "suite": "Round Trip",
     "operation": "round-trip number array",
     "iteration": 100000, 
-    "baseline_ns": 16133.83,
-    "current_ns": 16045.72,
-    "pct_change": -0.55
+    "baseline_ns": 1365.47,
+    "current_ns": 14889.70,
+    "pct_change": 990.45
   },
   {
     "suite": "Round Trip",
     "operation": "round-trip number array",
     "iteration": 1000000, 
-    "baseline_ns": 16227.58,
-    "current_ns": 16254.61,
-    "pct_change": 0.17
+    "baseline_ns": 1360.60,
+    "current_ns": 14863.45,
+    "pct_change": 992.42
   },
   {
     "suite": "Round Trip",
     "operation": "round-trip nested object",
     "iteration": 10000, 
-    "baseline_ns": 43198.73,
-    "current_ns": 44234.33,
-    "pct_change": 2.40
+    "baseline_ns": 3199.11,
+    "current_ns": 43586.98,
+    "pct_change": 1262.47
   },
   {
     "suite": "Round Trip",
     "operation": "round-trip nested object",
     "iteration": 100000, 
-    "baseline_ns": 43185.65,
-    "current_ns": 44239.45,
-    "pct_change": 2.44
+    "baseline_ns": 3204.78,
+    "current_ns": 68864.93,
+    "pct_change": 2048.82
   },
   {
     "suite": "Round Trip",
     "operation": "round-trip nested object",
     "iteration": 1000000, 
-    "baseline_ns": 38453.94,
-    "current_ns": 36950.82,
-    "pct_change": -3.91
+    "baseline_ns": 3199.43,
+    "current_ns": 40611.53,
+    "pct_change": 1169.34
   },
   {
     "suite": "Round Trip",
     "operation": "round-trip string-heavy object",
     "iteration": 10000, 
-    "baseline_ns": 13403.28,
-    "current_ns": 32828.00,
-    "pct_change": 144.93
+    "baseline_ns": 2466.83,
+    "current_ns": 45648.31,
+    "pct_change": 1750.48
   },
   {
     "suite": "Round Trip",
     "operation": "round-trip string-heavy object",
     "iteration": 100000, 
-    "baseline_ns": 13387.14,
-    "current_ns": 32748.16,
-    "pct_change": 144.62
+    "baseline_ns": 2466.24,
+    "current_ns": 38382.54,
+    "pct_change": 1456.32
   },
   {
     "suite": "Round Trip",
     "operation": "round-trip string-heavy object",
     "iteration": 1000000, 
-    "baseline_ns": 15955.83,
-    "current_ns": 33249.12,
-    "pct_change": 108.38
+    "baseline_ns": 2449.99,
+    "current_ns": 33814.28,
+    "pct_change": 1280.18
   },
   {
     "suite": "Serialization",
     "operation": "dump small object",
     "iteration": 10000, 
-    "baseline_ns": 7668.65,
-    "current_ns": 16665.94,
-    "pct_change": 117.33
+    "baseline_ns": 1260.11,
+    "current_ns": 18160.28,
+    "pct_change": 1341.17
   },
   {
     "suite": "Serialization",
     "operation": "dump small object",
     "iteration": 100000, 
-    "baseline_ns": 7385.80,
-    "current_ns": 16630.87,
-    "pct_change": 125.17
+    "baseline_ns": 1245.82,
+    "current_ns": 18181.80,
+    "pct_change": 1359.42
   },
   {
     "suite": "Serialization",
     "operation": "dump small object",
     "iteration": 1000000, 
-    "baseline_ns": 13803.91,
-    "current_ns": 16747.17,
-    "pct_change": 21.32
+    "baseline_ns": 1252.87,
+    "current_ns": 18265.18,
+    "pct_change": 1357.87
   },
   {
     "suite": "Serialization",
     "operation": "dump number array",
     "iteration": 10000, 
-    "baseline_ns": 11074.49,
-    "current_ns": 9954.70,
-    "pct_change": -10.11
+    "baseline_ns": 1104.64,
+    "current_ns": 10825.65,
+    "pct_change": 880.02
   },
   {
     "suite": "Serialization",
     "operation": "dump number array",
     "iteration": 100000, 
-    "baseline_ns": 11248.58,
-    "current_ns": 9907.38,
-    "pct_change": -11.92
+    "baseline_ns": 900.40,
+    "current_ns": 10871.98,
+    "pct_change": 1107.46
   },
   {
     "suite": "Serialization",
     "operation": "dump number array",
     "iteration": 1000000, 
-    "baseline_ns": 10878.13,
-    "current_ns": 10130.79,
-    "pct_change": -6.87
+    "baseline_ns": 899.31,
+    "current_ns": 10893.82,
+    "pct_change": 1111.35
   },
   {
     "suite": "Serialization",
     "operation": "dump nested object",
     "iteration": 10000, 
-    "baseline_ns": 24305.50,
-    "current_ns": 22462.71,
-    "pct_change": -7.58
+    "baseline_ns": 1448.52,
+    "current_ns": 26676.90,
+    "pct_change": 1741.67
   },
   {
     "suite": "Serialization",
     "operation": "dump nested object",
     "iteration": 100000, 
-    "baseline_ns": 24286.73,
-    "current_ns": 22424.96,
-    "pct_change": -7.67
+    "baseline_ns": 1448.00,
+    "current_ns": 24583.46,
+    "pct_change": 1597.75
   },
   {
     "suite": "Serialization",
     "operation": "dump nested object",
     "iteration": 1000000, 
-    "baseline_ns": 24353.63,
-    "current_ns": 22540.74,
-    "pct_change": -7.44
+    "baseline_ns": 1449.99,
+    "current_ns": 24520.88,
+    "pct_change": 1591.11
   },
   {
     "suite": "Serialization",
     "operation": "dump string-heavy object",
     "iteration": 10000, 
-    "baseline_ns": 20976.52,
-    "current_ns": 19186.16,
-    "pct_change": -8.54
+    "baseline_ns": 1318.72,
+    "current_ns": 20931.20,
+    "pct_change": 1487.24
   },
   {
     "suite": "Serialization",
     "operation": "dump string-heavy object",
     "iteration": 100000, 
-    "baseline_ns": 21374.38,
-    "current_ns": 19120.25,
-    "pct_change": -10.55
+    "baseline_ns": 1300.45,
+    "current_ns": 20834.51,
+    "pct_change": 1502.10
   },
   {
     "suite": "Serialization",
     "operation": "dump string-heavy object",
     "iteration": 1000000, 
-    "baseline_ns": 20861.35,
-    "current_ns": 19285.38,
-    "pct_change": -7.55
+    "baseline_ns": 1300.37,
+    "current_ns": 20911.54,
+    "pct_change": 1508.12
   },
   {
     "suite": "Construction",
     "operation": "default construction",
     "iteration": 10000, 
-    "baseline_ns": 8.77,
-    "current_ns": 8.81,
-    "pct_change": 0.46
+    "baseline_ns": 1.76,
+    "current_ns": 8.06,
+    "pct_change": 357.95
   },
   {
     "suite": "Construction",
     "operation": "default construction",
     "iteration": 100000, 
-    "baseline_ns": 8.62,
-    "current_ns": 9.88,
-    "pct_change": 14.62
+    "baseline_ns": 1.82,
+    "current_ns": 8.67,
+    "pct_change": 376.37
   },
   {
     "suite": "Construction",
     "operation": "default construction",
     "iteration": 1000000, 
-    "baseline_ns": 8.80,
-    "current_ns": 9.46,
-    "pct_change": 7.50
+    "baseline_ns": 1.76,
+    "current_ns": 8.11,
+    "pct_change": 360.80
   },
   {
     "suite": "Construction",
     "operation": "bool construction",
     "iteration": 10000, 
-    "baseline_ns": 10.06,
-    "current_ns": 10.16,
-    "pct_change": 0.99
-  },
-  {
-    "suite": "Construction",
-    "operation": "bool construction",
-    "iteration": 100000, 
-    "baseline_ns": 8.00,
-    "current_ns": 9.00,
-    "pct_change": 12.50
-  },
-  {
-    "suite": "Construction",
-    "operation": "bool construction",
-    "iteration": 1000000, 
-    "baseline_ns": 8.15,
-    "current_ns": 9.09,
-    "pct_change": 11.53
-  },
-  {
-    "suite": "Construction",
-    "operation": "number construction",
-    "iteration": 10000, 
-    "baseline_ns": 8.03,
+    "baseline_ns": 1.75,
     "current_ns": 8.12,
-    "pct_change": 1.12
+    "pct_change": 364.00
+  },
+  {
+    "suite": "Construction",
+    "operation": "bool construction",
+    "iteration": 100000, 
+    "baseline_ns": 1.74,
+    "current_ns": 10.00,
+    "pct_change": 474.71
+  },
+  {
+    "suite": "Construction",
+    "operation": "bool construction",
+    "iteration": 1000000, 
+    "baseline_ns": 1.75,
+    "current_ns": 10.11,
+    "pct_change": 477.71
+  },
+  {
+    "suite": "Construction",
+    "operation": "number construction",
+    "iteration": 10000, 
+    "baseline_ns": 1.75,
+    "current_ns": 10.06,
+    "pct_change": 474.86
   },
   {
     "suite": "Construction",
     "operation": "number construction",
     "iteration": 100000, 
-    "baseline_ns": 10.00,
-    "current_ns": 10.00,
-    "pct_change": 0.00
+    "baseline_ns": 2.09,
+    "current_ns": 8.81,
+    "pct_change": 321.53
   },
   {
     "suite": "Construction",
     "operation": "number construction",
     "iteration": 1000000, 
-    "baseline_ns": 8.11,
-    "current_ns": 8.17,
-    "pct_change": 0.74
+    "baseline_ns": 1.76,
+    "current_ns": 10.14,
+    "pct_change": 476.14
   },
   {
     "suite": "Construction",
     "operation": "short string construction",
     "iteration": 10000, 
-    "baseline_ns": 16.78,
-    "current_ns": 17.12,
-    "pct_change": 2.03
+    "baseline_ns": 5.93,
+    "current_ns": 16.80,
+    "pct_change": 183.31
   },
   {
     "suite": "Construction",
     "operation": "short string construction",
     "iteration": 100000, 
-    "baseline_ns": 16.68,
+    "baseline_ns": 5.92,
     "current_ns": 16.68,
-    "pct_change": 0.00
+    "pct_change": 181.76
   },
   {
     "suite": "Construction",
     "operation": "short string construction",
     "iteration": 1000000, 
-    "baseline_ns": 16.89,
-    "current_ns": 16.86,
-    "pct_change": -0.18
+    "baseline_ns": 6.33,
+    "current_ns": 17.44,
+    "pct_change": 175.51
   },
   {
     "suite": "Construction",
     "operation": "long string construction",
     "iteration": 10000, 
-    "baseline_ns": 427.94,
-    "current_ns": 435.33,
-    "pct_change": 1.73
+    "baseline_ns": 18.87,
+    "current_ns": 429.08,
+    "pct_change": 2173.87
   },
   {
     "suite": "Construction",
     "operation": "long string construction",
     "iteration": 100000, 
-    "baseline_ns": 425.29,
-    "current_ns": 427.03,
-    "pct_change": 0.41
+    "baseline_ns": 20.04,
+    "current_ns": 429.15,
+    "pct_change": 2041.47
   },
   {
     "suite": "Construction",
     "operation": "long string construction",
     "iteration": 1000000, 
-    "baseline_ns": 424.80,
-    "current_ns": 434.65,
-    "pct_change": 2.32
+    "baseline_ns": 19.50,
+    "current_ns": 428.86,
+    "pct_change": 2099.28
   },
   {
     "suite": "Construction",
     "operation": "array construction",
     "iteration": 10000, 
-    "baseline_ns": 582.81,
-    "current_ns": 592.52,
-    "pct_change": 1.67
+    "baseline_ns": 57.35,
+    "current_ns": 922.03,
+    "pct_change": 1507.72
   },
   {
     "suite": "Construction",
     "operation": "array construction",
     "iteration": 100000, 
-    "baseline_ns": 572.86,
-    "current_ns": 610.31,
-    "pct_change": 6.54
+    "baseline_ns": 56.92,
+    "current_ns": 584.66,
+    "pct_change": 927.16
   },
   {
     "suite": "Construction",
     "operation": "array construction",
     "iteration": 1000000, 
-    "baseline_ns": 573.26,
-    "current_ns": 575.28,
-    "pct_change": 0.35
+    "baseline_ns": 56.91,
+    "current_ns": 581.54,
+    "pct_change": 921.86
   },
   {
     "suite": "Construction",
     "operation": "object construction",
     "iteration": 10000, 
-    "baseline_ns": 5797.05,
-    "current_ns": 5972.12,
-    "pct_change": 3.02
+    "baseline_ns": 385.93,
+    "current_ns": 5760.55,
+    "pct_change": 1392.64
   },
   {
     "suite": "Construction",
     "operation": "object construction",
     "iteration": 100000, 
-    "baseline_ns": 5786.78,
-    "current_ns": 5764.44,
-    "pct_change": -0.39
+    "baseline_ns": 364.06,
+    "current_ns": 5687.24,
+    "pct_change": 1462.17
   },
   {
     "suite": "Construction",
     "operation": "object construction",
     "iteration": 1000000, 
-    "baseline_ns": 5805.93,
-    "current_ns": 5892.04,
-    "pct_change": 1.48
+    "baseline_ns": 386.61,
+    "current_ns": 5603.37,
+    "pct_change": 1349.36
   },
   {
     "suite": "Copy",
     "operation": "default copy",
     "iteration": 10000, 
-    "baseline_ns": 13.99,
-    "current_ns": 12.76,
-    "pct_change": -8.79
+    "baseline_ns": 1.80,
+    "current_ns": 12.44,
+    "pct_change": 591.11
   },
   {
     "suite": "Copy",
     "operation": "default copy",
     "iteration": 100000, 
-    "baseline_ns": 13.90,
-    "current_ns": 14.15,
-    "pct_change": 1.80
+    "baseline_ns": 2.09,
+    "current_ns": 11.70,
+    "pct_change": 459.81
   },
   {
     "suite": "Copy",
     "operation": "default copy",
     "iteration": 1000000, 
-    "baseline_ns": 13.97,
-    "current_ns": 13.09,
-    "pct_change": -6.30
+    "baseline_ns": 1.76,
+    "current_ns": 12.45,
+    "pct_change": 607.39
   },
   {
     "suite": "Copy",
     "operation": "bool copy",
     "iteration": 10000, 
-    "baseline_ns": 13.94,
-    "current_ns": 13.42,
-    "pct_change": -3.73
+    "baseline_ns": 1.75,
+    "current_ns": 12.37,
+    "pct_change": 606.86
   },
   {
     "suite": "Copy",
     "operation": "bool copy",
     "iteration": 100000, 
-    "baseline_ns": 14.20,
-    "current_ns": 13.89,
-    "pct_change": -2.18
+    "baseline_ns": 1.75,
+    "current_ns": 12.81,
+    "pct_change": 632.00
   },
   {
     "suite": "Copy",
     "operation": "bool copy",
     "iteration": 1000000, 
-    "baseline_ns": 14.29,
-    "current_ns": 15.01,
-    "pct_change": 5.04
+    "baseline_ns": 1.75,
+    "current_ns": 12.46,
+    "pct_change": 612.00
   },
   {
     "suite": "Copy",
     "operation": "number copy",
     "iteration": 10000, 
-    "baseline_ns": 13.98,
-    "current_ns": 13.42,
-    "pct_change": -4.01
+    "baseline_ns": 2.10,
+    "current_ns": 12.37,
+    "pct_change": 489.05
   },
   {
     "suite": "Copy",
     "operation": "number copy",
     "iteration": 100000, 
-    "baseline_ns": 13.89,
-    "current_ns": 13.34,
-    "pct_change": -3.96
+    "baseline_ns": 2.54,
+    "current_ns": 12.31,
+    "pct_change": 384.65
   },
   {
     "suite": "Copy",
     "operation": "number copy",
     "iteration": 1000000, 
-    "baseline_ns": 14.22,
-    "current_ns": 13.76,
-    "pct_change": -3.23
+    "baseline_ns": 3.31,
+    "current_ns": 12.45,
+    "pct_change": 276.13
   },
   {
     "suite": "Copy",
     "operation": "short string copy",
     "iteration": 10000, 
-    "baseline_ns": 15.05,
-    "current_ns": 18.09,
-    "pct_change": 20.20
+    "baseline_ns": 5.60,
+    "current_ns": 16.68,
+    "pct_change": 197.86
   },
   {
     "suite": "Copy",
     "operation": "short string copy",
     "iteration": 100000, 
-    "baseline_ns": 19.35,
-    "current_ns": 18.01,
-    "pct_change": -6.93
+    "baseline_ns": 5.67,
+    "current_ns": 16.64,
+    "pct_change": 193.47
   },
   {
     "suite": "Copy",
     "operation": "short string copy",
     "iteration": 1000000, 
-    "baseline_ns": 15.12,
-    "current_ns": 18.83,
-    "pct_change": 24.54
+    "baseline_ns": 5.62,
+    "current_ns": 16.81,
+    "pct_change": 199.11
   },
   {
     "suite": "Copy",
     "operation": "long string copy",
     "iteration": 10000, 
-    "baseline_ns": 174.98,
-    "current_ns": 497.78,
-    "pct_change": 184.48
+    "baseline_ns": 19.19,
+    "current_ns": 389.59,
+    "pct_change": 1930.17
   },
   {
     "suite": "Copy",
     "operation": "long string copy",
     "iteration": 100000, 
-    "baseline_ns": 174.78,
-    "current_ns": 421.28,
-    "pct_change": 141.03
+    "baseline_ns": 19.32,
+    "current_ns": 388.87,
+    "pct_change": 1912.78
   },
   {
     "suite": "Copy",
     "operation": "long string copy",
     "iteration": 1000000, 
-    "baseline_ns": 383.93,
-    "current_ns": 418.07,
-    "pct_change": 8.89
+    "baseline_ns": 19.78,
+    "current_ns": 388.70,
+    "pct_change": 1865.12
   },
   {
     "suite": "Copy",
     "operation": "array copy",
     "iteration": 10000, 
-    "baseline_ns": 503.35,
-    "current_ns": 519.64,
-    "pct_change": 3.24
+    "baseline_ns": 43.06,
+    "current_ns": 462.83,
+    "pct_change": 974.85
   },
   {
     "suite": "Copy",
     "operation": "array copy",
     "iteration": 100000, 
-    "baseline_ns": 539.81,
-    "current_ns": 512.30,
-    "pct_change": -5.10
+    "baseline_ns": 41.43,
+    "current_ns": 462.39,
+    "pct_change": 1016.08
   },
   {
     "suite": "Copy",
     "operation": "array copy",
     "iteration": 1000000, 
-    "baseline_ns": 637.82,
-    "current_ns": 508.56,
-    "pct_change": -20.27
+    "baseline_ns": 40.79,
+    "current_ns": 462.47,
+    "pct_change": 1033.78
   },
   {
     "suite": "Copy",
     "operation": "object copy",
     "iteration": 10000, 
-    "baseline_ns": 2230.04,
-    "current_ns": 3085.88,
-    "pct_change": 38.38
+    "baseline_ns": 153.67,
+    "current_ns": 2794.18,
+    "pct_change": 1718.30
   },
   {
     "suite": "Copy",
     "operation": "object copy",
     "iteration": 100000, 
-    "baseline_ns": 1593.56,
-    "current_ns": 3047.15,
-    "pct_change": 91.22
+    "baseline_ns": 146.76,
+    "current_ns": 2790.39,
+    "pct_change": 1801.33
   },
   {
     "suite": "Copy",
     "operation": "object copy",
     "iteration": 1000000, 
-    "baseline_ns": 2119.62,
-    "current_ns": 3113.86,
-    "pct_change": 46.91
+    "baseline_ns": 145.91,
+    "current_ns": 2809.24,
+    "pct_change": 1825.32
   },
   {
     "suite": "Destruction",
     "operation": "default destruction",
     "iteration": 10000, 
-    "baseline_ns": 218.42,
-    "current_ns": 523.55,
-    "pct_change": 139.70
+    "baseline_ns": 56.69,
+    "current_ns": 506.58,
+    "pct_change": 793.60
   },
   {
     "suite": "Destruction",
     "operation": "default destruction",
     "iteration": 100000, 
-    "baseline_ns": 218.70,
-    "current_ns": 540.12,
-    "pct_change": 146.97
+    "baseline_ns": 57.19,
+    "current_ns": 502.33,
+    "pct_change": 778.35
   },
   {
     "suite": "Destruction",
     "operation": "default destruction",
     "iteration": 1000000, 
-    "baseline_ns": 219.07,
-    "current_ns": 525.01,
-    "pct_change": 139.65
+    "baseline_ns": 46.62,
+    "current_ns": 503.40,
+    "pct_change": 979.79
   },
   {
     "suite": "Destruction",
     "operation": "bool destruction",
     "iteration": 10000, 
-    "baseline_ns": 222.55,
-    "current_ns": 557.55,
-    "pct_change": 150.53
+    "baseline_ns": 36.36,
+    "current_ns": 497.60,
+    "pct_change": 1268.54
   },
   {
     "suite": "Destruction",
     "operation": "bool destruction",
     "iteration": 100000, 
-    "baseline_ns": 226.87,
-    "current_ns": 563.68,
-    "pct_change": 148.46
+    "baseline_ns": 57.58,
+    "current_ns": 494.51,
+    "pct_change": 758.82
   },
   {
     "suite": "Destruction",
     "operation": "bool destruction",
     "iteration": 1000000, 
-    "baseline_ns": 224.06,
-    "current_ns": 569.37,
-    "pct_change": 154.11
+    "baseline_ns": 66.33,
+    "current_ns": 494.67,
+    "pct_change": 645.77
   },
   {
     "suite": "Destruction",
     "operation": "number destruction",
     "iteration": 10000, 
-    "baseline_ns": 225.63,
-    "current_ns": 537.35,
-    "pct_change": 138.16
+    "baseline_ns": 60.00,
+    "current_ns": 513.88,
+    "pct_change": 756.47
   },
   {
     "suite": "Destruction",
     "operation": "number destruction",
     "iteration": 100000, 
-    "baseline_ns": 228.15,
-    "current_ns": 538.70,
-    "pct_change": 136.12
+    "baseline_ns": 57.33,
+    "current_ns": 513.74,
+    "pct_change": 796.11
   },
   {
     "suite": "Destruction",
     "operation": "number destruction",
     "iteration": 1000000, 
-    "baseline_ns": 227.52,
-    "current_ns": 552.01,
-    "pct_change": 142.62
+    "baseline_ns": 41.04,
+    "current_ns": 512.83,
+    "pct_change": 1149.59
   },
   {
     "suite": "Destruction",
     "operation": "short string destruction",
     "iteration": 10000, 
-    "baseline_ns": 265.54,
-    "current_ns": 636.37,
-    "pct_change": 139.65
+    "baseline_ns": 122.09,
+    "current_ns": 585.79,
+    "pct_change": 379.80
   },
   {
     "suite": "Destruction",
     "operation": "short string destruction",
     "iteration": 100000, 
-    "baseline_ns": 262.65,
-    "current_ns": 638.96,
-    "pct_change": 143.27
+    "baseline_ns": 119.13,
+    "current_ns": 582.64,
+    "pct_change": 389.08
   },
   {
     "suite": "Destruction",
     "operation": "short string destruction",
     "iteration": 1000000, 
-    "baseline_ns": 262.56,
-    "current_ns": 628.86,
-    "pct_change": 139.51
+    "baseline_ns": 124.08,
+    "current_ns": 586.98,
+    "pct_change": 373.07
   },
   {
     "suite": "Destruction",
     "operation": "long string destruction",
     "iteration": 10000, 
-    "baseline_ns": 1933.44,
-    "current_ns": 4425.91,
-    "pct_change": 128.91
+    "baseline_ns": 292.09,
+    "current_ns": 4067.54,
+    "pct_change": 1292.56
   },
   {
     "suite": "Destruction",
     "operation": "long string destruction",
     "iteration": 100000, 
-    "baseline_ns": 1919.26,
-    "current_ns": 4472.96,
-    "pct_change": 133.06
+    "baseline_ns": 296.95,
+    "current_ns": 4074.98,
+    "pct_change": 1272.28
   },
   {
     "suite": "Destruction",
     "operation": "long string destruction",
     "iteration": 1000000, 
-    "baseline_ns": 2565.81,
-    "current_ns": 4426.20,
-    "pct_change": 72.51
+    "baseline_ns": 302.23,
+    "current_ns": 4088.06,
+    "pct_change": 1252.63
   },
   {
     "suite": "Destruction",
     "operation": "array destruction",
     "iteration": 10000, 
-    "baseline_ns": 5716.76,
-    "current_ns": 5768.48,
-    "pct_change": 0.90
+    "baseline_ns": 582.86,
+    "current_ns": 5409.51,
+    "pct_change": 828.10
   },
   {
     "suite": "Destruction",
     "operation": "array destruction",
     "iteration": 100000, 
-    "baseline_ns": 5732.60,
-    "current_ns": 5751.54,
-    "pct_change": 0.33
+    "baseline_ns": 582.97,
+    "current_ns": 5388.77,
+    "pct_change": 824.36
   },
   {
     "suite": "Destruction",
     "operation": "array destruction",
     "iteration": 1000000, 
-    "baseline_ns": 5721.46,
-    "current_ns": 5782.90,
-    "pct_change": 1.07
+    "baseline_ns": 583.45,
+    "current_ns": 5308.29,
+    "pct_change": 809.81
   },
   {
     "suite": "Destruction",
     "operation": "object destruction",
     "iteration": 10000, 
-    "baseline_ns": 61307.12,
-    "current_ns": 60310.00,
-    "pct_change": -1.63
+    "baseline_ns": 4256.46,
+    "current_ns": 55406.31,
+    "pct_change": 1201.70
   },
   {
     "suite": "Destruction",
     "operation": "object destruction",
     "iteration": 100000, 
-    "baseline_ns": 62052.48,
-    "current_ns": 61025.36,
-    "pct_change": -1.66
+    "baseline_ns": 4307.34,
+    "current_ns": 55801.58,
+    "pct_change": 1195.50
   },
   {
     "suite": "Destruction",
     "operation": "object destruction",
     "iteration": 1000000, 
-    "baseline_ns": 47321.99,
-    "current_ns": 64504.35,
-    "pct_change": 36.31
+    "baseline_ns": 4310.20,
+    "current_ns": 56473.58,
+    "pct_change": 1210.23
   },
   {
     "suite": "Move",
     "operation": "default move",
     "iteration": 10000, 
-    "baseline_ns": 21.85,
-    "current_ns": 30.96,
-    "pct_change": 41.69
+    "baseline_ns": 3.82,
+    "current_ns": 29.19,
+    "pct_change": 664.14
   },
   {
     "suite": "Move",
     "operation": "default move",
     "iteration": 100000, 
-    "baseline_ns": 13.93,
-    "current_ns": 31.02,
-    "pct_change": 122.68
+    "baseline_ns": 6.73,
+    "current_ns": 28.81,
+    "pct_change": 328.08
   },
   {
     "suite": "Move",
     "operation": "default move",
     "iteration": 1000000, 
-    "baseline_ns": 15.65,
-    "current_ns": 31.13,
-    "pct_change": 98.91
+    "baseline_ns": 4.52,
+    "current_ns": 29.24,
+    "pct_change": 546.90
   },
   {
     "suite": "Move",
     "operation": "bool move",
     "iteration": 10000, 
-    "baseline_ns": 19.48,
-    "current_ns": 35.48,
-    "pct_change": 82.14
+    "baseline_ns": 5.26,
+    "current_ns": 38.05,
+    "pct_change": 623.38
   },
   {
     "suite": "Move",
     "operation": "bool move",
     "iteration": 100000, 
-    "baseline_ns": 19.46,
-    "current_ns": 38.37,
-    "pct_change": 97.17
+    "baseline_ns": 5.31,
+    "current_ns": 32.31,
+    "pct_change": 508.47
   },
   {
     "suite": "Move",
     "operation": "bool move",
     "iteration": 1000000, 
-    "baseline_ns": 19.81,
-    "current_ns": 35.68,
-    "pct_change": 80.11
+    "baseline_ns": 5.62,
+    "current_ns": 34.42,
+    "pct_change": 512.46
   },
   {
     "suite": "Move",
     "operation": "number move",
     "iteration": 10000, 
-    "baseline_ns": 20.25,
-    "current_ns": 37.32,
-    "pct_change": 84.30
+    "baseline_ns": 4.88,
+    "current_ns": 32.41,
+    "pct_change": 564.14
   },
   {
     "suite": "Move",
     "operation": "number move",
     "iteration": 100000, 
-    "baseline_ns": 20.03,
-    "current_ns": 35.90,
-    "pct_change": 79.23
+    "baseline_ns": 4.21,
+    "current_ns": 34.58,
+    "pct_change": 721.38
   },
   {
     "suite": "Move",
     "operation": "number move",
     "iteration": 1000000, 
-    "baseline_ns": 20.41,
-    "current_ns": 37.83,
-    "pct_change": 85.35
+    "baseline_ns": 4.09,
+    "current_ns": 32.63,
+    "pct_change": 697.80
   },
   {
     "suite": "Move",
     "operation": "short string move",
     "iteration": 10000, 
-    "baseline_ns": 31.79,
-    "current_ns": 122.43,
-    "pct_change": 285.12
+    "baseline_ns": 16.60,
+    "current_ns": 53.26,
+    "pct_change": 220.84
   },
   {
     "suite": "Move",
     "operation": "short string move",
     "iteration": 100000, 
-    "baseline_ns": 31.84,
-    "current_ns": 63.90,
-    "pct_change": 100.69
+    "baseline_ns": 15.76,
+    "current_ns": 53.90,
+    "pct_change": 242.01
   },
   {
     "suite": "Move",
     "operation": "short string move",
     "iteration": 1000000, 
-    "baseline_ns": 32.79,
-    "current_ns": 58.52,
-    "pct_change": 78.47
+    "baseline_ns": 15.82,
+    "current_ns": 53.58,
+    "pct_change": 238.69
   },
   {
     "suite": "Move",
     "operation": "long string move",
     "iteration": 10000, 
-    "baseline_ns": 430.09,
-    "current_ns": 481.57,
-    "pct_change": 11.97
+    "baseline_ns": 24.07,
+    "current_ns": 436.98,
+    "pct_change": 1715.45
   },
   {
     "suite": "Move",
     "operation": "long string move",
     "iteration": 100000, 
-    "baseline_ns": 418.45,
-    "current_ns": 484.43,
-    "pct_change": 15.77
+    "baseline_ns": 23.17,
+    "current_ns": 432.22,
+    "pct_change": 1765.43
   },
   {
     "suite": "Move",
     "operation": "long string move",
     "iteration": 1000000, 
-    "baseline_ns": 373.96,
-    "current_ns": 480.05,
-    "pct_change": 28.37
+    "baseline_ns": 23.82,
+    "current_ns": 433.16,
+    "pct_change": 1718.47
   },
   {
     "suite": "Move",
     "operation": "array move",
     "iteration": 10000, 
-    "baseline_ns": 529.05,
-    "current_ns": 660.98,
-    "pct_change": 24.94
+    "baseline_ns": 65.08,
+    "current_ns": 580.96,
+    "pct_change": 792.69
   },
   {
     "suite": "Move",
     "operation": "array move",
     "iteration": 100000, 
-    "baseline_ns": 279.52,
-    "current_ns": 644.54,
-    "pct_change": 130.59
+    "baseline_ns": 64.68,
+    "current_ns": 575.40,
+    "pct_change": 789.61
   },
   {
     "suite": "Move",
     "operation": "array move",
     "iteration": 1000000, 
-    "baseline_ns": 379.11,
-    "current_ns": 646.36,
-    "pct_change": 70.49
+    "baseline_ns": 64.77,
+    "current_ns": 576.17,
+    "pct_change": 789.56
   },
   {
     "suite": "Move",
     "operation": "object move",
     "iteration": 10000, 
-    "baseline_ns": 2583.23,
-    "current_ns": 5936.62,
-    "pct_change": 129.81
+    "baseline_ns": 397.87,
+    "current_ns": 5348.98,
+    "pct_change": 1244.40
   },
   {
     "suite": "Move",
     "operation": "object move",
     "iteration": 100000, 
-    "baseline_ns": 3363.35,
-    "current_ns": 5967.73,
-    "pct_change": 77.43
+    "baseline_ns": 410.78,
+    "current_ns": 5344.97,
+    "pct_change": 1201.18
   },
   {
     "suite": "Move",
     "operation": "object move",
     "iteration": 1000000, 
-    "baseline_ns": 3618.91,
-    "current_ns": 6109.87,
-    "pct_change": 68.83
+    "baseline_ns": 408.93,
+    "current_ns": 5327.17,
+    "pct_change": 1202.71
   },
   {
     "suite": "Deep Nesting",
     "operation": "parse deep array",
     "iteration": 1, 
-    "baseline_ns": 1149539.00,
-    "current_ns": 4431000.00,
-    "pct_change": 285.46
+    "baseline_ns": 266370.00,
+    "current_ns": 777000.00,
+    "pct_change": 191.70
   },
   {
     "suite": "Deep Nesting",
     "operation": "parse deep array",
     "iteration": 10, 
-    "baseline_ns": 252492.30,
-    "current_ns": 278177.00,
-    "pct_change": 10.17
+    "baseline_ns": 30083.20,
+    "current_ns": 265969.20,
+    "pct_change": 784.11
   },
   {
     "suite": "Deep Nesting",
     "operation": "parse deep array",
     "iteration": 100, 
-    "baseline_ns": 176344.61,
-    "current_ns": 272965.38,
-    "pct_change": 54.79
+    "baseline_ns": 26296.36,
+    "current_ns": 246593.08,
+    "pct_change": 837.75
   },
   {
     "suite": "Deep Nesting",
     "operation": "dump deep array",
     "iteration": 1, 
-    "baseline_ns": 5067077.00,
-    "current_ns": 4128385.00,
-    "pct_change": -18.53
+    "baseline_ns": 1184863.00,
+    "current_ns": 3801230.00,
+    "pct_change": 220.82
   },
   {
     "suite": "Deep Nesting",
     "operation": "dump deep array",
     "iteration": 10, 
-    "baseline_ns": 2778053.90,
-    "current_ns": 2529607.70,
-    "pct_change": -8.94
+    "baseline_ns": 761358.40,
+    "current_ns": 2280992.30,
+    "pct_change": 199.60
   },
   {
     "suite": "Deep Nesting",
     "operation": "dump deep array",
     "iteration": 100, 
-    "baseline_ns": 2826513.84,
-    "current_ns": 2499969.24,
-    "pct_change": -11.55
+    "baseline_ns": 760627.26,
+    "current_ns": 2230039.23,
+    "pct_change": 193.18
   },
   {
     "suite": "Deep Nesting",
     "operation": "parse deep object",
     "iteration": 1, 
-    "baseline_ns": 2225307.00,
-    "current_ns": 1852539.00,
-    "pct_change": -16.75
+    "baseline_ns": 153741.00,
+    "current_ns": 1631077.00,
+    "pct_change": 960.93
   },
   {
     "suite": "Deep Nesting",
     "operation": "parse deep object",
     "iteration": 10, 
-    "baseline_ns": 1199446.20,
-    "current_ns": 873815.40,
-    "pct_change": -27.15
+    "baseline_ns": 86111.50,
+    "current_ns": 787115.40,
+    "pct_change": 814.07
   },
   {
     "suite": "Deep Nesting",
     "operation": "parse deep object",
     "iteration": 100, 
-    "baseline_ns": 916368.46,
-    "current_ns": 869506.92,
-    "pct_change": -5.11
+    "baseline_ns": 85488.02,
+    "current_ns": 793196.15,
+    "pct_change": 827.84
   },
   {
     "suite": "Large Array",
     "operation": "parse large array",
     "iteration": 1, 
-    "baseline_ns": 9525231.00,
-    "current_ns": 7177615.00,
-    "pct_change": -24.65
+    "baseline_ns": 1631675.00,
+    "current_ns": 6385462.00,
+    "pct_change": 291.34
   },
   {
     "suite": "Large Array",
     "operation": "parse large array",
     "iteration": 10, 
-    "baseline_ns": 13470923.10,
-    "current_ns": 5327607.70,
-    "pct_change": -60.45
+    "baseline_ns": 1383855.00,
+    "current_ns": 5309346.10,
+    "pct_change": 283.66
   },
   {
     "suite": "Large Array",
     "operation": "parse large array",
     "iteration": 100, 
-    "baseline_ns": 6367067.69,
-    "current_ns": 5519036.93,
-    "pct_change": -13.32
+    "baseline_ns": 1397291.02,
+    "current_ns": 5077655.39,
+    "pct_change": 263.39
   },
   {
     "suite": "Large Array",
     "operation": "dump large array",
     "iteration": 1, 
-    "baseline_ns": 8930154.00,
-    "current_ns": 8843693.00,
-    "pct_change": -0.97
+    "baseline_ns": 779162.00,
+    "current_ns": 8167769.00,
+    "pct_change": 948.28
   },
   {
     "suite": "Large Array",
     "operation": "dump large array",
     "iteration": 10, 
-    "baseline_ns": 8461630.80,
-    "current_ns": 8412892.40,
-    "pct_change": -0.58
+    "baseline_ns": 781140.20,
+    "current_ns": 7788100.00,
+    "pct_change": 897.02
   },
   {
     "suite": "Large Array",
     "operation": "dump large array",
     "iteration": 100, 
-    "baseline_ns": 8491485.39,
-    "current_ns": 8436510.00,
-    "pct_change": -0.65
+    "baseline_ns": 771139.08,
+    "current_ns": 7783384.62,
+    "pct_change": 909.34
   },
   {
     "suite": "Large Array",
     "operation": "iterate large array",
     "iteration": 1, 
-    "baseline_ns": 178154.00,
-    "current_ns": 159923.00,
-    "pct_change": -10.23
+    "baseline_ns": 43055.00,
+    "current_ns": 205308.00,
+    "pct_change": 376.85
   },
   {
     "suite": "Large Array",
     "operation": "iterate large array",
     "iteration": 10, 
-    "baseline_ns": 173423.10,
-    "current_ns": 149130.80,
-    "pct_change": -14.01
+    "baseline_ns": 43338.20,
+    "current_ns": 144277.00,
+    "pct_change": 232.91
   },
   {
     "suite": "Large Array",
     "operation": "iterate large array",
     "iteration": 100, 
-    "baseline_ns": 277846.15,
-    "current_ns": 150904.62,
-    "pct_change": -45.69
+    "baseline_ns": 42334.09,
+    "current_ns": 137858.46,
+    "pct_change": 225.64
   },
   {
     "suite": "Large Object",
     "operation": "parse large object",
     "iteration": 1, 
-    "baseline_ns": 20010461.00,
-    "current_ns": 27689307.00,
-    "pct_change": 38.37
+    "baseline_ns": 3730172.00,
+    "current_ns": 22078693.00,
+    "pct_change": 491.89
   },
   {
     "suite": "Large Object",
     "operation": "parse large object",
     "iteration": 10, 
-    "baseline_ns": 24986830.70,
-    "current_ns": 21674000.00,
-    "pct_change": -13.26
+    "baseline_ns": 2200781.10,
+    "current_ns": 18969230.70,
+    "pct_change": 761.93
   },
   {
     "suite": "Large Object",
     "operation": "parse large object",
     "iteration": 100, 
-    "baseline_ns": 12264577.70,
-    "current_ns": 22348812.31,
-    "pct_change": 82.22
+    "baseline_ns": 2117509.29,
+    "current_ns": 18808780.77,
+    "pct_change": 788.25
   },
   {
     "suite": "Large Object",
     "operation": "dump large object",
     "iteration": 1, 
-    "baseline_ns": 7245539.00,
-    "current_ns": 14644846.00,
-    "pct_change": 102.12
+    "baseline_ns": 1015948.00,
+    "current_ns": 13464616.00,
+    "pct_change": 1225.33
   },
   {
     "suite": "Large Object",
     "operation": "dump large object",
     "iteration": 10, 
-    "baseline_ns": 7404584.70,
-    "current_ns": 14412330.80,
-    "pct_change": 94.64
+    "baseline_ns": 991734.00,
+    "current_ns": 13211638.50,
+    "pct_change": 1232.18
   },
   {
     "suite": "Large Object",
     "operation": "dump large object",
     "iteration": 100, 
-    "baseline_ns": 7098236.15,
-    "current_ns": 15572960.00,
-    "pct_change": 119.39
+    "baseline_ns": 994318.55,
+    "current_ns": 13350821.54,
+    "pct_change": 1242.71
   },
   {
     "suite": "Wide Object",
     "operation": "build wide object",
     "iteration": 1, 
-    "baseline_ns": 6844616.00,
-    "current_ns": 14156307.00,
-    "pct_change": 106.82
+    "baseline_ns": 1401979.00,
+    "current_ns": 14096923.00,
+    "pct_change": 905.50
   },
   {
     "suite": "Wide Object",
     "operation": "build wide object",
     "iteration": 10, 
-    "baseline_ns": 6325815.40,
-    "current_ns": 12227084.60,
-    "pct_change": 93.29
+    "baseline_ns": 1406859.70,
+    "current_ns": 12869415.40,
+    "pct_change": 814.76
   },
   {
     "suite": "Wide Object",
     "operation": "build wide object",
     "iteration": 100, 
-    "baseline_ns": 8378276.92,
-    "current_ns": 12813655.38,
-    "pct_change": 52.94
+    "baseline_ns": 1382304.98,
+    "current_ns": 11766190.77,
+    "pct_change": 751.20
   },
   {
     "suite": "Wide Object",
     "operation": "lookup in wide object",
     "iteration": 1, 
-    "baseline_ns": 606769.00,
-    "current_ns": 711077.00,
-    "pct_change": 17.19
+    "baseline_ns": 108193.00,
+    "current_ns": 759385.00,
+    "pct_change": 601.88
   },
   {
     "suite": "Wide Object",
     "operation": "lookup in wide object",
     "iteration": 10, 
-    "baseline_ns": 236007.70,
-    "current_ns": 380669.30,
-    "pct_change": 61.30
+    "baseline_ns": 71935.30,
+    "current_ns": 356769.20,
+    "pct_change": 395.96
   },
   {
     "suite": "Wide Object",
     "operation": "lookup in wide object",
     "iteration": 100, 
-    "baseline_ns": 277414.62,
-    "current_ns": 310723.08,
-    "pct_change": 12.01
+    "baseline_ns": 68169.26,
+    "current_ns": 278743.85,
+    "pct_change": 308.90
   },
   {
     "suite": "Comparison",
     "operation": "Compare Equal Numbers",
-    "iteration": 10000, 
-    "baseline_ns": 6.52,
-    "current_ns": 18.06,
-    "pct_change": 176.99
-  },
-  {
-    "suite": "Comparison",
-    "operation": "Compare Equal Numbers",
-    "iteration": 100000, 
-    "baseline_ns": 8.63,
-    "current_ns": 18.78,
-    "pct_change": 117.61
-  },
-  {
-    "suite": "Comparison",
-    "operation": "Compare Equal Numbers",
-    "iteration": 1000000, 
-    "baseline_ns": 10.14,
-    "current_ns": 18.23,
-    "pct_change": 79.78
-  },
-  {
-    "suite": "Comparison",
-    "operation": "Compare Equal Strings",
-    "iteration": 10000, 
-    "baseline_ns": 15.69,
-    "current_ns": 46.18,
-    "pct_change": 194.33
-  },
-  {
-    "suite": "Comparison",
-    "operation": "Compare Equal Strings",
-    "iteration": 100000, 
-    "baseline_ns": 16.15,
-    "current_ns": 46.94,
-    "pct_change": 190.65
-  },
-  {
-    "suite": "Comparison",
-    "operation": "Compare Equal Strings",
-    "iteration": 1000000, 
-    "baseline_ns": 64.83,
-    "current_ns": 46.53,
-    "pct_change": -28.23
-  },
-  {
-    "suite": "Comparison",
-    "operation": "Compare Equal Arrays",
-    "iteration": 10000, 
-    "baseline_ns": 62.18,
-    "current_ns": 123.57,
-    "pct_change": 98.73
-  },
-  {
-    "suite": "Comparison",
-    "operation": "Compare Equal Arrays",
-    "iteration": 100000, 
-    "baseline_ns": 97.55,
-    "current_ns": 118.00,
-    "pct_change": 20.96
-  },
-  {
-    "suite": "Comparison",
-    "operation": "Compare Equal Arrays",
-    "iteration": 1000000, 
-    "baseline_ns": 52.44,
-    "current_ns": 118.09,
-    "pct_change": 125.19
-  },
-  {
-    "suite": "Comparison",
-    "operation": "Compare Equal Objects",
-    "iteration": 10000, 
-    "baseline_ns": 328.83,
-    "current_ns": 563.15,
-    "pct_change": 71.26
-  },
-  {
-    "suite": "Comparison",
-    "operation": "Compare Equal Objects",
-    "iteration": 100000, 
-    "baseline_ns": 317.60,
-    "current_ns": 557.58,
-    "pct_change": 75.56
-  },
-  {
-    "suite": "Comparison",
-    "operation": "Compare Equal Objects",
-    "iteration": 1000000, 
-    "baseline_ns": 404.33,
-    "current_ns": 557.64,
-    "pct_change": 37.92
-  },
-  {
-    "suite": "Comparison",
-    "operation": "Compare Unequal Objects",
-    "iteration": 10000, 
-    "baseline_ns": 326.00,
-    "current_ns": 562.68,
-    "pct_change": 72.60
-  },
-  {
-    "suite": "Comparison",
-    "operation": "Compare Unequal Objects",
-    "iteration": 100000, 
-    "baseline_ns": 364.12,
-    "current_ns": 558.07,
-    "pct_change": 53.27
-  },
-  {
-    "suite": "Comparison",
-    "operation": "Compare Unequal Objects",
-    "iteration": 1000000, 
-    "baseline_ns": 338.73,
-    "current_ns": 558.05,
-    "pct_change": 64.75
-  },
-  {
-    "suite": "Size And Capacity",
-    "operation": "Array size()",
-    "iteration": 10000, 
-    "baseline_ns": 3.94,
-    "current_ns": 10.71,
-    "pct_change": 171.83
-  },
-  {
-    "suite": "Size And Capacity",
-    "operation": "Array size()",
-    "iteration": 100000, 
-    "baseline_ns": 5.84,
-    "current_ns": 11.31,
-    "pct_change": 93.66
-  },
-  {
-    "suite": "Size And Capacity",
-    "operation": "Array size()",
-    "iteration": 1000000, 
-    "baseline_ns": 4.41,
-    "current_ns": 10.81,
-    "pct_change": 145.12
-  },
-  {
-    "suite": "Size And Capacity",
-    "operation": "Object size()",
-    "iteration": 10000, 
-    "baseline_ns": 3.94,
-    "current_ns": 10.08,
-    "pct_change": 155.84
-  },
-  {
-    "suite": "Size And Capacity",
-    "operation": "Object size()",
-    "iteration": 100000, 
-    "baseline_ns": 3.89,
-    "current_ns": 10.00,
-    "pct_change": 157.07
-  },
-  {
-    "suite": "Size And Capacity",
-    "operation": "Object size()",
-    "iteration": 1000000, 
-    "baseline_ns": 3.37,
-    "current_ns": 10.20,
-    "pct_change": 202.67
-  },
-  {
-    "suite": "Size And Capacity",
-    "operation": "Object empty() (non-empty)",
-    "iteration": 10000, 
-    "baseline_ns": 6.30,
-    "current_ns": 14.71,
-    "pct_change": 133.49
-  },
-  {
-    "suite": "Size And Capacity",
-    "operation": "Object empty() (non-empty)",
-    "iteration": 100000, 
-    "baseline_ns": 6.23,
-    "current_ns": 15.31,
-    "pct_change": 145.75
-  },
-  {
-    "suite": "Size And Capacity",
-    "operation": "Object empty() (non-empty)",
-    "iteration": 1000000, 
-    "baseline_ns": 6.62,
-    "current_ns": 14.91,
-    "pct_change": 125.23
-  },
-  {
-    "suite": "Size And Capacity",
-    "operation": "Object empty() (empty)",
-    "iteration": 10000, 
-    "baseline_ns": 5.33,
-    "current_ns": 14.74,
-    "pct_change": 176.55
-  },
-  {
-    "suite": "Size And Capacity",
-    "operation": "Object empty() (empty)",
-    "iteration": 100000, 
-    "baseline_ns": 5.53,
-    "current_ns": 15.66,
-    "pct_change": 183.18
-  },
-  {
-    "suite": "Size And Capacity",
-    "operation": "Object empty() (empty)",
-    "iteration": 1000000, 
-    "baseline_ns": 5.07,
-    "current_ns": 14.88,
-    "pct_change": 193.49
-  },
-  {
-    "suite": "Type Inspection",
-    "operation": "type()",
-    "iteration": 10000, 
-    "baseline_ns": 1.72,
-    "current_ns": 2.76,
-    "pct_change": 60.47
-  },
-  {
-    "suite": "Type Inspection",
-    "operation": "type()",
-    "iteration": 100000, 
-    "baseline_ns": 1.67,
-    "current_ns": 2.67,
-    "pct_change": 59.88
-  },
-  {
-    "suite": "Type Inspection",
-    "operation": "type()",
-    "iteration": 1000000, 
-    "baseline_ns": 2.24,
-    "current_ns": 3.39,
-    "pct_change": 51.34
-  },
-  {
-    "suite": "Type Inspection",
-    "operation": "isNull()",
-    "iteration": 10000, 
-    "baseline_ns": 3.33,
-    "current_ns": 4.72,
-    "pct_change": 41.74
-  },
-  {
-    "suite": "Type Inspection",
-    "operation": "isNull()",
-    "iteration": 100000, 
-    "baseline_ns": 3.33,
-    "current_ns": 4.67,
-    "pct_change": 40.24
-  },
-  {
-    "suite": "Type Inspection",
-    "operation": "isNull()",
-    "iteration": 1000000, 
-    "baseline_ns": 3.38,
-    "current_ns": 4.74,
-    "pct_change": 40.24
-  },
-  {
-    "suite": "Type Inspection",
-    "operation": "isBool()",
-    "iteration": 10000, 
-    "baseline_ns": 3.35,
-    "current_ns": 4.72,
-    "pct_change": 40.90
-  },
-  {
-    "suite": "Type Inspection",
-    "operation": "isBool()",
-    "iteration": 100000, 
-    "baseline_ns": 3.33,
-    "current_ns": 4.67,
-    "pct_change": 40.24
-  },
-  {
-    "suite": "Type Inspection",
-    "operation": "isBool()",
-    "iteration": 1000000, 
-    "baseline_ns": 3.44,
-    "current_ns": 4.73,
-    "pct_change": 37.50
-  },
-  {
-    "suite": "Type Inspection",
-    "operation": "isNumber()",
-    "iteration": 10000, 
-    "baseline_ns": 3.35,
-    "current_ns": 4.70,
-    "pct_change": 40.30
-  },
-  {
-    "suite": "Type Inspection",
-    "operation": "isNumber()",
-    "iteration": 100000, 
-    "baseline_ns": 2.22,
-    "current_ns": 4.67,
-    "pct_change": 110.36
-  },
-  {
-    "suite": "Type Inspection",
-    "operation": "isNumber()",
-    "iteration": 1000000, 
-    "baseline_ns": 3.38,
-    "current_ns": 4.79,
-    "pct_change": 41.72
-  },
-  {
-    "suite": "Type Inspection",
-    "operation": "isString()",
     "iteration": 10000, 
     "baseline_ns": 2.80,
-    "current_ns": 4.68,
-    "pct_change": 67.14
+    "current_ns": 16.65,
+    "pct_change": 494.64
+  },
+  {
+    "suite": "Comparison",
+    "operation": "Compare Equal Numbers",
+    "iteration": 100000, 
+    "baseline_ns": 2.79,
+    "current_ns": 17.46,
+    "pct_change": 525.81
+  },
+  {
+    "suite": "Comparison",
+    "operation": "Compare Equal Numbers",
+    "iteration": 1000000, 
+    "baseline_ns": 2.82,
+    "current_ns": 16.74,
+    "pct_change": 493.62
+  },
+  {
+    "suite": "Comparison",
+    "operation": "Compare Equal Strings",
+    "iteration": 10000, 
+    "baseline_ns": 7.46,
+    "current_ns": 42.53,
+    "pct_change": 470.11
+  },
+  {
+    "suite": "Comparison",
+    "operation": "Compare Equal Strings",
+    "iteration": 100000, 
+    "baseline_ns": 7.43,
+    "current_ns": 42.88,
+    "pct_change": 477.12
+  },
+  {
+    "suite": "Comparison",
+    "operation": "Compare Equal Strings",
+    "iteration": 1000000, 
+    "baseline_ns": 7.39,
+    "current_ns": 42.80,
+    "pct_change": 479.16
+  },
+  {
+    "suite": "Comparison",
+    "operation": "Compare Equal Arrays",
+    "iteration": 10000, 
+    "baseline_ns": 8.86,
+    "current_ns": 112.12,
+    "pct_change": 1165.46
+  },
+  {
+    "suite": "Comparison",
+    "operation": "Compare Equal Arrays",
+    "iteration": 100000, 
+    "baseline_ns": 8.96,
+    "current_ns": 108.68,
+    "pct_change": 1112.95
+  },
+  {
+    "suite": "Comparison",
+    "operation": "Compare Equal Arrays",
+    "iteration": 1000000, 
+    "baseline_ns": 8.73,
+    "current_ns": 108.51,
+    "pct_change": 1142.96
+  },
+  {
+    "suite": "Comparison",
+    "operation": "Compare Equal Objects",
+    "iteration": 10000, 
+    "baseline_ns": 73.14,
+    "current_ns": 521.78,
+    "pct_change": 613.40
+  },
+  {
+    "suite": "Comparison",
+    "operation": "Compare Equal Objects",
+    "iteration": 100000, 
+    "baseline_ns": 72.11,
+    "current_ns": 513.94,
+    "pct_change": 612.72
+  },
+  {
+    "suite": "Comparison",
+    "operation": "Compare Equal Objects",
+    "iteration": 1000000, 
+    "baseline_ns": 72.03,
+    "current_ns": 513.40,
+    "pct_change": 612.76
+  },
+  {
+    "suite": "Comparison",
+    "operation": "Compare Unequal Objects",
+    "iteration": 10000, 
+    "baseline_ns": 70.79,
+    "current_ns": 515.53,
+    "pct_change": 628.25
+  },
+  {
+    "suite": "Comparison",
+    "operation": "Compare Unequal Objects",
+    "iteration": 100000, 
+    "baseline_ns": 71.80,
+    "current_ns": 512.98,
+    "pct_change": 614.46
+  },
+  {
+    "suite": "Comparison",
+    "operation": "Compare Unequal Objects",
+    "iteration": 1000000, 
+    "baseline_ns": 72.93,
+    "current_ns": 513.44,
+    "pct_change": 604.02
+  },
+  {
+    "suite": "Size And Capacity",
+    "operation": "Array size()",
+    "iteration": 10000, 
+    "baseline_ns": 1.76,
+    "current_ns": 9.91,
+    "pct_change": 463.07
+  },
+  {
+    "suite": "Size And Capacity",
+    "operation": "Array size()",
+    "iteration": 100000, 
+    "baseline_ns": 2.50,
+    "current_ns": 9.85,
+    "pct_change": 294.00
+  },
+  {
+    "suite": "Size And Capacity",
+    "operation": "Array size()",
+    "iteration": 1000000, 
+    "baseline_ns": 2.80,
+    "current_ns": 9.95,
+    "pct_change": 255.36
+  },
+  {
+    "suite": "Size And Capacity",
+    "operation": "Object size()",
+    "iteration": 10000, 
+    "baseline_ns": 2.48,
+    "current_ns": 9.26,
+    "pct_change": 273.39
+  },
+  {
+    "suite": "Size And Capacity",
+    "operation": "Object size()",
+    "iteration": 100000, 
+    "baseline_ns": 2.44,
+    "current_ns": 9.24,
+    "pct_change": 278.69
+  },
+  {
+    "suite": "Size And Capacity",
+    "operation": "Object size()",
+    "iteration": 1000000, 
+    "baseline_ns": 2.45,
+    "current_ns": 9.33,
+    "pct_change": 280.82
+  },
+  {
+    "suite": "Size And Capacity",
+    "operation": "Object empty() (non-empty)",
+    "iteration": 10000, 
+    "baseline_ns": 3.50,
+    "current_ns": 13.88,
+    "pct_change": 296.57
+  },
+  {
+    "suite": "Size And Capacity",
+    "operation": "Object empty() (non-empty)",
+    "iteration": 100000, 
+    "baseline_ns": 3.49,
+    "current_ns": 13.54,
+    "pct_change": 287.97
+  },
+  {
+    "suite": "Size And Capacity",
+    "operation": "Object empty() (non-empty)",
+    "iteration": 1000000, 
+    "baseline_ns": 3.17,
+    "current_ns": 13.84,
+    "pct_change": 336.59
+  },
+  {
+    "suite": "Size And Capacity",
+    "operation": "Object empty() (empty)",
+    "iteration": 10000, 
+    "baseline_ns": 3.49,
+    "current_ns": 13.57,
+    "pct_change": 288.83
+  },
+  {
+    "suite": "Size And Capacity",
+    "operation": "Object empty() (empty)",
+    "iteration": 100000, 
+    "baseline_ns": 3.48,
+    "current_ns": 14.08,
+    "pct_change": 304.60
+  },
+  {
+    "suite": "Size And Capacity",
+    "operation": "Object empty() (empty)",
+    "iteration": 1000000, 
+    "baseline_ns": 3.16,
+    "current_ns": 13.83,
+    "pct_change": 337.66
+  },
+  {
+    "suite": "Type Inspection",
+    "operation": "type()",
+    "iteration": 10000, 
+    "baseline_ns": 1.76,
+    "current_ns": 2.55,
+    "pct_change": 44.89
+  },
+  {
+    "suite": "Type Inspection",
+    "operation": "type()",
+    "iteration": 100000, 
+    "baseline_ns": 1.74,
+    "current_ns": 2.46,
+    "pct_change": 41.38
+  },
+  {
+    "suite": "Type Inspection",
+    "operation": "type()",
+    "iteration": 1000000, 
+    "baseline_ns": 1.76,
+    "current_ns": 3.12,
+    "pct_change": 77.27
+  },
+  {
+    "suite": "Type Inspection",
+    "operation": "isNull()",
+    "iteration": 10000, 
+    "baseline_ns": 1.75,
+    "current_ns": 4.33,
+    "pct_change": 147.43
+  },
+  {
+    "suite": "Type Inspection",
+    "operation": "isNull()",
+    "iteration": 100000, 
+    "baseline_ns": 1.74,
+    "current_ns": 4.70,
+    "pct_change": 170.11
+  },
+  {
+    "suite": "Type Inspection",
+    "operation": "isNull()",
+    "iteration": 1000000, 
+    "baseline_ns": 1.76,
+    "current_ns": 4.36,
+    "pct_change": 147.73
+  },
+  {
+    "suite": "Type Inspection",
+    "operation": "isBool()",
+    "iteration": 10000, 
+    "baseline_ns": 1.75,
+    "current_ns": 4.34,
+    "pct_change": 148.00
+  },
+  {
+    "suite": "Type Inspection",
+    "operation": "isBool()",
+    "iteration": 100000, 
+    "baseline_ns": 1.74,
+    "current_ns": 4.31,
+    "pct_change": 147.70
+  },
+  {
+    "suite": "Type Inspection",
+    "operation": "isBool()",
+    "iteration": 1000000, 
+    "baseline_ns": 1.76,
+    "current_ns": 4.35,
+    "pct_change": 147.16
+  },
+  {
+    "suite": "Type Inspection",
+    "operation": "isNumber()",
+    "iteration": 10000, 
+    "baseline_ns": 1.75,
+    "current_ns": 4.32,
+    "pct_change": 146.86
+  },
+  {
+    "suite": "Type Inspection",
+    "operation": "isNumber()",
+    "iteration": 100000, 
+    "baseline_ns": 1.74,
+    "current_ns": 4.31,
+    "pct_change": 147.70
+  },
+  {
+    "suite": "Type Inspection",
+    "operation": "isNumber()",
+    "iteration": 1000000, 
+    "baseline_ns": 1.76,
+    "current_ns": 4.37,
+    "pct_change": 148.30
+  },
+  {
+    "suite": "Type Inspection",
+    "operation": "isString()",
+    "iteration": 10000, 
+    "baseline_ns": 1.75,
+    "current_ns": 4.31,
+    "pct_change": 146.29
   },
   {
     "suite": "Type Inspection",
     "operation": "isString()",
     "iteration": 100000, 
-    "baseline_ns": 2.22,
-    "current_ns": 5.34,
-    "pct_change": 140.54
+    "baseline_ns": 1.74,
+    "current_ns": 4.72,
+    "pct_change": 171.26
   },
   {
     "suite": "Type Inspection",
     "operation": "isString()",
     "iteration": 1000000, 
-    "baseline_ns": 2.26,
-    "current_ns": 4.74,
-    "pct_change": 109.73
+    "baseline_ns": 1.76,
+    "current_ns": 4.34,
+    "pct_change": 146.59
   },
   {
     "suite": "Type Inspection",
     "operation": "isArray()",
     "iteration": 10000, 
-    "baseline_ns": 3.35,
-    "current_ns": 4.71,
-    "pct_change": 40.60
+    "baseline_ns": 1.76,
+    "current_ns": 4.33,
+    "pct_change": 146.02
   },
   {
     "suite": "Type Inspection",
     "operation": "isArray()",
     "iteration": 100000, 
-    "baseline_ns": 2.78,
-    "current_ns": 4.67,
-    "pct_change": 67.99
+    "baseline_ns": 1.74,
+    "current_ns": 4.31,
+    "pct_change": 147.70
   },
   {
     "suite": "Type Inspection",
     "operation": "isArray()",
     "iteration": 1000000, 
-    "baseline_ns": 3.36,
-    "current_ns": 4.73,
-    "pct_change": 40.77
+    "baseline_ns": 1.75,
+    "current_ns": 4.35,
+    "pct_change": 148.57
   },
   {
     "suite": "Type Inspection",
     "operation": "isObject()",
     "iteration": 10000, 
-    "baseline_ns": 2.24,
-    "current_ns": 4.71,
-    "pct_change": 110.27
+    "baseline_ns": 1.75,
+    "current_ns": 4.32,
+    "pct_change": 146.86
   },
   {
     "suite": "Type Inspection",
     "operation": "isObject()",
     "iteration": 100000, 
-    "baseline_ns": 2.78,
-    "current_ns": 4.67,
-    "pct_change": 67.99
+    "baseline_ns": 1.74,
+    "current_ns": 4.31,
+    "pct_change": 147.70
   },
   {
     "suite": "Type Inspection",
     "operation": "isObject()",
     "iteration": 1000000, 
-    "baseline_ns": 2.22,
-    "current_ns": 4.74,
-    "pct_change": 113.51
+    "baseline_ns": 1.76,
+    "current_ns": 4.34,
+    "pct_change": 146.59
   }
 ]

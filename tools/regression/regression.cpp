@@ -3,40 +3,37 @@
 #include "helper.h" // loadResults, setHeader, printComparisonRow, convertIter, getCns, BenchmarkResult
 // clang-format on
 
-// Iterates baseline results, printing/recording a comparison row against
-// current results for each entry, grouped and re-headered by suite.
-static void printRegression(const std::vector<BenchmarkResult>& baseline,
-                            const std::vector<BenchmarkResult>& current) {
-    std::string currentSuite = " ";
-
-    for (std::size_t i = 0; i < baseline.size(); ++i) {
-        std::string suite = baseline[i].suite;
-
-        if (currentSuite != suite) {
-            std::cout << "\n";
-            setHeader(suite);
-            currentSuite = suite;
-        }
-
-        std::string op = baseline[i].operation;
-        std::size_t iter = baseline[i].iterations;
-        std::string citer = convertIter(iter);
-        double bns = baseline[i].ns_per_op;
-        double cns = getCns(current, op, iter);
-
-        printComparisonRow(suite, op, iter, citer, bns, cns);
-
-        if (citer == "1M")
-            std::cout << "\n";
-    }
-}
-
 // Loads baseline + current benchmark snapshots, prints the regression
 // comparison, and exports the results as JSON and markdown reports.
-int main() {
+int main(int argc, char* argv[]) {
+    std::string baselineFile;
+    std::string currentFile;
+
     try {
-        auto baselineResults = loadResults("benchmarks/baselines/v1.0.0.json");
-        auto currentResults = loadResults("benchmarks/results/benchmark_results.json");
+        if (argc == 1) {
+            baselineFile = latestBaseline();
+            currentFile = "benchmarks/results/benchmark_results.json";
+        } else if (argc == 2) {
+            if (std::string_view(argv[1]) == "list") {
+                printList();
+                return 0;
+            }
+            baselineFile = "benchmarks/baselines/" + std::string(argv[1]) + ".json";
+            currentFile = "benchmarks/results/benchmark_results.json";
+        } else if (argc == 3) {
+            baselineFile = "benchmarks/baselines/" + std::string(argv[1]) + ".json";
+            currentFile = "benchmarks/baselines/" + std::string(argv[2]) + ".json";
+        } else {
+            std::cerr
+                << "Usage:\n"
+                << "  regression\n"
+                << "  regression <baseline>\n"
+                << "  regression <baseline> <current>\n";
+            return 1;
+        }
+
+        auto baselineResults = loadResults(baselineFile);
+        auto currentResults = loadResults(currentFile);
 
         printRegression(baselineResults, currentResults);
 

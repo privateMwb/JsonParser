@@ -1,0 +1,65 @@
+name: Update Package Recipes
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  update-packages:
+    runs-on: ubuntu-latest
+
+    env:
+      PACKAGE_NAME: jsonpro
+      REPOSITORY: privateMwb/JsonParser
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract version
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Download source archive
+        run: |
+          curl -L \
+            -o source.tar.gz \
+            https://github.com/${{ env.REPOSITORY }}/archive/refs/tags/v${{ steps.version.outputs.version }}.tar.gz
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Update package files
+        run: |
+          python scripts/update_package_files.py \
+            --package ${{ env.PACKAGE_NAME }} \
+            --repo ${{ env.REPOSITORY }} \
+            --version ${{ steps.version.outputs.version }} \
+            --archive source.tar.gz
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            ports/${{ env.PACKAGE_NAME }}/portfile.cmake \
+            ports/${{ env.PACKAGE_NAME }}/vcpkg.json \
+            recipes/${{ env.PACKAGE_NAME }}/all/conanfile.py \
+            recipes/${{ env.PACKAGE_NAME }}/all/conandata.yml
+
+          if git diff --cached --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+
+          git commit -m "Update package recipes for v${{ steps.version.outputs.version }}"
+          git push

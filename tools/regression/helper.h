@@ -12,6 +12,10 @@
 #include <sstream>             // std::ostringstream (printComparisonRow)
 #include <string>              // std::string, std::string_view
 #include <vector>              // std::vector
+#include <filesystem>          //
+#include <algorithm>           //
+#include <stdexcept>           //
+#include <tuple>               //
 // clang-format on
 
 using json = nlohmann::json;
@@ -146,14 +150,126 @@ inline void printComparisonRow(std::string_view suite, std::string_view name, st
 
     std::ostringstream snsStream;
     snsStream << cNs << " ns";
-
-    std::cout << std::left << std::setw(30) << name << std::setw(15) << iteration << std::setw(15)
-              << cnsStream.str() << std::setw(15) << snsStream.str() << deltaColor
-              << deltaStream.str() << RESET << "\n";
-
+    
+    // clang-format off
+    std::cout << std::left 
+              << std::setw(30) << name 
+              << std::setw(15) << iteration 
+              << std::setw(15) << cnsStream.str() 
+              << std::setw(15) << snsStream.str() 
+              << deltaColor << deltaStream.str() 
+              << RESET << "\n";
+    // clang-format on
+    
     markdown_buffer() += "| " + std::string(name) + " | " + std::string(iteration) + " | " +
                          cnsStream.str() + " | " + snsStream.str() + " | " + deltaStream.str() +
                          " |\n";
 
     regression_results().push_back({std::string(suite), std::string(name), iter, bNs, cNs, pct});
+}
+
+// Iterates baseline results, printing/recording a comparison row against
+// current results for each entry, grouped and re-headered by suite.
+static void printRegression(const std::vector<BenchmarkResult>& baseline,
+                            const std::vector<BenchmarkResult>& current) {
+    std::string currentSuite = " ";
+
+    for (std::size_t i = 0; i < baseline.size(); ++i) {
+        std::string suite = baseline[i].suite;
+
+        if (currentSuite != suite) {
+            std::cout << "\n";
+            setHeader(suite);
+            currentSuite = suite;
+        }
+
+        std::string op = baseline[i].operation;
+        std::size_t iter = baseline[i].iterations;
+        std::string citer = convertIter(iter);
+        double bns = baseline[i].ns_per_op;
+        double cns = getCns(current, op, iter);
+
+        printComparisonRow(suite, op, iter, citer, bns, cns);
+
+        if (citer == "1M")
+            std::cout << "\n";
+    }
+}
+
+namespace fs = std::filesystem;
+
+struct Baseline {
+    int major{};
+    int minor{};
+    int patch{};
+    std::string name;
+
+    auto operator<=>(const Baseline&) const = default;
+};
+
+static Baseline parseBaseline(const fs::path& path) {
+    std::string name = path.stem().string();
+
+    std::string version = name;
+    if (!version.empty() && (version.front() == 'v' || version.front() == 'V'))
+        version.erase(0, 1);
+
+    Baseline baseline;
+    baseline.name = name;
+
+    char dot1, dot2;
+    std::stringstream ss(version);
+
+    if (!(ss >> baseline.major >> dot1 >> baseline.minor >> dot2 >> baseline.patch)
+        || dot1 != '.' || dot2 != '.') {
+        throw std::runtime_error("Invalid version: " + name);
+    }
+
+    return baseline;
+}
+
+// Returns the path to the newest baseline snapshot.
+static std::string latestBaseline() {
+    namespace fs = std::filesystem;
+
+    bool found = false;
+    Baseline latest;
+    fs::path latestPath;
+
+    for (const auto& entry : fs::directory_iterator("benchmarks/baselines")) {
+        if (!entry.is_regular_file() || entry.path().extension() != ".json")
+            continue;
+
+        Baseline current = parseBaseline(entry.path());
+
+        if (!found || current > latest) {
+            latest = current;
+            latestPath = entry.path();
+            found = true;
+        }
+    }
+
+    if (!found)
+        throw std::runtime_error("No baseline snapshots found.");
+
+    return latestPath.string();
+}
+
+
+static void printList() {
+    std::vector<Baseline> baselines;
+
+    for (const auto& entry : fs::directory_iterator("benchmarks/baselines")) {
+        if (!entry.is_regular_file() || entry.path().extension() != ".json")
+            continue;
+
+        baselines.push_back(parseBaseline(entry.path()));
+    }
+
+    std::sort(baselines.begin(), baselines.end());
+
+    std::cout << "Available baselines:\n\n";
+
+    for (const auto& baseline : baselines)
+        std::cout << "  " << baseline.name << '\n';
 }
