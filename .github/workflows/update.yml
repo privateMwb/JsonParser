@@ -15,6 +15,8 @@ jobs:
     env:
       PACKAGE_NAME: jsonpro
       REPOSITORY: privateMwb/JsonParser
+      CONAN_RECIPE_DIR: recipes/${{ env.PACKAGE_NAME }}/all
+      VCPKG_PORT_DIR: vcpkg/ports/${{ env.PACKAGE_NAME }}
 
     steps:
       - name: Checkout
@@ -51,10 +53,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add \
-            ports/${{ env.PACKAGE_NAME }}/portfile.cmake \
-            ports/${{ env.PACKAGE_NAME }}/vcpkg.json \
-            recipes/${{ env.PACKAGE_NAME }}/all/conanfile.py \
-            recipes/${{ env.PACKAGE_NAME }}/all/conandata.yml
+            "$VCPKG_PORT_DIR/portfile.cmake" \
+            "$VCPKG_PORT_DIR/vcpkg.json" \
+            "$CONAN_RECIPE_DIR/conanfile.py" \
+            "$CONAN_RECIPE_DIR/conandata.yml"
 
           if git diff --cached --quiet; then
             echo "No changes."

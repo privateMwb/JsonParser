@@ -75,7 +75,7 @@ print("✓ Updated conandata.yml")
 # vcpkg
 # ---------------------------------------------------------------------
 
-port_dir = pathlib.Path("ports") / package
+port_dir = pathlib.Path("vcpkg") / "ports" / package
 
 # portfile.cmake
 
@@ -113,6 +113,3 @@ vcpkg_json.write_text(
 )
 
 print("✓ Updated vcpkg.json")
-
-print()
-print("Done.")
