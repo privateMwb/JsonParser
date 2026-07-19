@@ -14,7 +14,7 @@ on:
   pull_request:
     paths:
       - "recipes/**"
-      - "ports/**"
+      - "vcpkg/ports/**"
       - "CMakeLists.txt"
       - "conandata.yml"
   workflow_dispatch:
@@ -107,7 +107,7 @@ jobs:
           /tmp/vcpkg/bootstrap-vcpkg.sh
 
       - name: vcpkg install (overlay port)
-        run: /tmp/vcpkg/vcpkg install jsonpro --overlay-ports=./ports
+        run: /tmp/vcpkg/vcpkg install jsonpro --overlay-ports=./vcpkg/ports
 
       - name: Build and run consumer project
         run: |
