@@ -7,12 +7,37 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/packaging.yml">
-    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/packaging.yml/badge.svg" alt="Packaging">
+  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/build.yml">
+    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/build.yml/badge.svg" alt="Build and Test">
   </a>
-  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/update-package-recipes.yml">
-    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/update-package-recipes.yml/badge.svg" alt="Update Package Recipes">
+  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/benchmark.yml">
+    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/benchmark.yml/badge.svg" alt="Benchmarks">
   </a>
+  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/coverage.yml">
+    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/coverage.yml/badge.svg" alt="Coverage">
+  </a>
+  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/sanitizers.yml">
+    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/sanitizers.yml/badge.svg" alt="Sanitizers">
+  </a>
+  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/clang-tidy.yml">
+    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/clang-tidy.yml/badge.svg" alt="Clang Tidy">
+  </a>
+  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/clang-format.yml">
+    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/clang-format.yml/badge.svg" alt="Clang Format">
+  </a>
+  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/docs.yml">
+    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/docs.yml/badge.svg" alt="Documentation">
+  </a>
+  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/release.yml">
+    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/release.yml/badge.svg" alt="Release">
+  </a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/GCC-support-B46F1B?style=flat&logo=gnu" alt="GCC - support">
+  <img src="https://img.shields.io/badge/Clang-support-045891?style=flat&logo=llvm" alt="Clang - support">
+  <img src="https://img.shields.io/badge/MSVC-support-5C2D91?style=flat" alt="MSVC - support">
+  <img src="https://img.shields.io/badge/AppleClang-support-000000?style=flat&logo=apple" alt="AppleClang - support">
 </p>
 
 <!--
