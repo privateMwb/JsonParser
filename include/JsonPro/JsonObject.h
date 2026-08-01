@@ -189,9 +189,3 @@ class JsonObject {
 };
 
 } // namespace JsonPro
-
-/// @brief Short alias so this library can be used as `rain::JsonObject`,
-/// while its true namespace (and all internal diagnostics) remains
-/// `JsonPro`. See Json.h, Parser.h, and JsonException.h for the same
-/// alias applied to `rain::Json`, `rain::Parser`, and the exception types.
-namespace rain = JsonPro;
