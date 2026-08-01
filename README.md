@@ -43,7 +43,7 @@
   <img src="https://img.shields.io/badge/AppleClang-support-000000?style=flat&logo=apple" alt="AppleClang - support">
 </p>
 
-JsonPro is an RFC 8259–compliant JSON library for modern C++ — a single-pass recursive-descent parser, an insertion-order-preserving object type backed by a vector plus a transparent-hash index instead of a key-ordered tree, and lossless, round-trip-exact number serialization via `std::to_chars`.
+JsonParser is an RFC 8259–compliant JSON library for modern C++ — a single-pass recursive-descent parser, an insertion-order-preserving object type backed by a vector plus a transparent-hash index instead of a key-ordered tree, and lossless, round-trip-exact number serialization via `std::to_chars`.
 
 ## 📑 Table of Contents
 
