@@ -531,9 +531,3 @@ std::string Json::dump(int indent) const {
 }
 
 } // namespace JsonPro
-
-/// @brief Short alias so this library can be used as `rain::Json`, while
-/// its true namespace (and all internal diagnostics) remains `JsonPro`.
-/// See JsonObject.cpp, Parser.cpp, and JsonException.h for the same alias
-/// applied to `rain::JsonObject`, `rain::Parser`, and the exception types.
-namespace rain = JsonPro;

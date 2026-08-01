@@ -85,9 +85,14 @@ class JsonOutOfRange : public JsonException {
 
 } // namespace JsonPro
 
-/// @brief Short alias so this library can be used as `rain::JsonException`
-/// (and its derived types), while the true namespace (and all internal
-/// diagnostics) remains `JsonPro`. See Json.h, JsonObject.h, and Parser.h
-/// for the same alias applied to `rain::Json`, `rain::JsonObject`, and
-/// `rain::Parser`.
-namespace rain = JsonPro;
+/// @brief Umbrella alias so this library's types are reachable as
+/// `rain::JsonException` (and its derived types: `JsonParseError`,
+/// `JsonTypeError`, `JsonOutOfRange`), while the true namespace remains
+/// `JsonPro`. Reopens `rain` rather than aliasing it, for the same reason
+/// as Json.h. Declared here separately because Json.h does NOT include
+/// JsonException.h, despite documenting these exact types as what its own
+/// methods throw -- callers who only include Json.h still need this header
+/// directly to catch them by name.
+namespace rain {
+using namespace JsonPro;
+}

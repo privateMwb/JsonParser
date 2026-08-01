@@ -482,9 +482,3 @@ Json Parser::parse() {
 }
 
 } // namespace JsonPro
-
-/// @brief Short alias so this library can be used as `rain::Parser`, while
-/// its true namespace (and all internal diagnostics) remains `JsonPro`.
-/// See Json.cpp, JsonObject.cpp, and JsonException.h for the same alias
-/// applied to `rain::Json`, `rain::JsonObject`, and the exception types.
-namespace rain = JsonPro;
