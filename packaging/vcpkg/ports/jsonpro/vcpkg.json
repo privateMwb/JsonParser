@@ -1,7 +1,7 @@
 {
   "name": "jsonpro",
   "version": "1.0.0",
-  "description": "RFC 8259–compliant JSON library for C++17: single-pass recursive-descent parser, insertion-order-preserving objects (JsonObject), and lossless round-trip serialization via std::to_chars.",
+  "description": "RFC 8259\u2013compliant JSON library for C++17: single-pass recursive-descent parser, insertion-order-preserving objects (JsonObject), and lossless round-trip serialization via std::to_chars.",
   "homepage": "https://github.com/privateMwb/JsonParser",
   "license": "MIT",
   "dependencies": [
