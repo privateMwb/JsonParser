@@ -9,7 +9,7 @@
 // - dump() output is stable across a second parse/dump cycle (idempotent)
 // - Escaped / Unicode string content survives a round-trip
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 

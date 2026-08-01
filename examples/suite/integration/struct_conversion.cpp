@@ -6,7 +6,7 @@
 // - Composing conversions for nested user-defined types
 // - Round-tripping a struct through serialized JSON text
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 

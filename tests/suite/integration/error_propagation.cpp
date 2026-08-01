@@ -12,7 +12,7 @@
 
 #include <JsonPro/JsonException.h>
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 

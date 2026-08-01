@@ -15,7 +15,7 @@
 // - Erasing the same key twice is a no-op the second time
 // - A longer interleaved erase/insert/find sequence stays internally consistent
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 

@@ -6,7 +6,7 @@
 // - Using that position to build a precise diagnostic message
 // - Distinguishing JsonParseError from JsonTypeError
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 

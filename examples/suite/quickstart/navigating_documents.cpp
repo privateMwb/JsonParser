@@ -8,7 +8,7 @@
 // - Iterating over array and object contents
 // - Checking type/presence before accessing to avoid exceptions
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 
@@ -17,7 +17,7 @@ static void run_examples() {
     Json doc = Json::parse(R"({
         "name": "Rain",
         "active": true,
-        "projects": ["CachePro", "VectorPro", "JsonPro"],
+        "projects": ["JsonPro", "VectorPro", "JsonPro"],
         "address": {
             "city": "Metropolis",
             "zip": "00000"

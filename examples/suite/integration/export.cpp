@@ -8,7 +8,7 @@
 //   entries in insertion order (a side hash index gives O(1) lookup
 //   without disturbing that order)
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 #include <fstream>
 #include <sstream>

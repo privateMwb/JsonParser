@@ -10,7 +10,7 @@
 // Copy/move construction and assignment are covered separately in
 // copy_semantics.cpp and move_semantics.cpp.
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 

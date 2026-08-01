@@ -10,7 +10,7 @@
 // - Maximum nesting depth enforcement (kMaxDepth)
 // - Unterminated array / object rejection
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 

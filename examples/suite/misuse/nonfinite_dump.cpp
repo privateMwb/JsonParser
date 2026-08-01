@@ -6,7 +6,7 @@
 // - Why JSON has no representation for non-finite numbers, and how to
 //   sanitize a value before serializing it
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 #include <cmath>
 #include <limits>

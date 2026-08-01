@@ -7,7 +7,7 @@
 // - Value access with asX()
 // - Serialization with dump()
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 

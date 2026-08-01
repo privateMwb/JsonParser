@@ -17,9 +17,9 @@ on:
       - "v*"
   pull_request:
     paths:
-      - "recipes/**"
-      - "vcpkg/ports/**"
-      - "vcpkg-smoke-test/**"
+      - "packaging/recipes/**"
+      - "packaging/vcpkg/ports/**"
+      - "packaging/vcpkg-smoke-test/**"
       - "CMakeLists.txt"
       - "conandata.yml"
   workflow_dispatch:
@@ -58,7 +58,7 @@ jobs:
 
       - name: conan create (builds package + runs test_package)
         run: |
-          conan create recipes/jsonpro/all --version ${{ steps.version.outputs.version }} \
+          conan create packaging/recipes/jsonpro/all --version ${{ steps.version.outputs.version }} \
             -s compiler.cppstd=23 --build=missing
 
   # ------------------------------------------------------------
@@ -79,11 +79,11 @@ jobs:
           /tmp/vcpkg/bootstrap-vcpkg.sh -disableMetrics
 
       - name: Configure and build the smoke test
-        working-directory: vcpkg-smoke-test
+        working-directory: packaging/vcpkg-smoke-test
         run: |
           cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake
           cmake --build build
 
       - name: Run the smoke test
-        working-directory: vcpkg-smoke-test
+        working-directory: packaging/vcpkg-smoke-test
         run: ./build/smoke_test

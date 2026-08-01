@@ -12,7 +12,7 @@
 // - Trailing non-whitespace garbage after a complete object
 // - (Control) trailing whitespace alone remains valid
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 

@@ -8,7 +8,7 @@
 // - Wrong-type access throws std::runtime_error
 // - Out-of-range / missing-key access throws std::runtime_error (JsonOutOfRange)
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 

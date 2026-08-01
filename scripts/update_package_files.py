@@ -13,6 +13,7 @@ parser.add_argument("--package", required=True)
 parser.add_argument("--repo", required=True)
 parser.add_argument("--version", required=True)
 parser.add_argument("--archive", required=True)
+parser.add_argument("--root-dir", required=True)
 parser.add_argument("--conan-dir", required=True)
 parser.add_argument("--vcpkg-dir", required=True)
 
@@ -35,6 +36,42 @@ sha512 = hashlib.sha512(data).hexdigest()
 print(f"Version : {version}")
 print(f"SHA256  : {sha256}")
 print(f"SHA512  : {sha512}")
+
+# ---------------------------------------------------------------------
+# Root CMakeLists.txt
+# ---------------------------------------------------------------------
+
+root_cmakelists = pathlib.Path(args.root_dir) / "CMakeLists.txt"
+
+text = root_cmakelists.read_text(encoding="utf-8")
+
+
+def _bump_project_version(match: re.Match) -> str:
+    # Substitute only within the matched project(...) call, so this
+    # can't touch an unrelated VERSION elsewhere in the file (e.g.
+    # cmake_minimum_required(VERSION ...)).
+    return re.sub(
+        r"VERSION\s+[0-9A-Za-z.\-_]+",
+        f"VERSION {version}",
+        match.group(0),
+        count=1,
+    )
+
+
+new_text, count = re.subn(
+    r"project\s*\([^)]*\)",
+    _bump_project_version,
+    text,
+    count=1,
+    flags=re.DOTALL,
+)
+
+if count == 0:
+    sys.exit(f"No project() call found in {root_cmakelists}")
+
+root_cmakelists.write_text(new_text, encoding="utf-8")
+
+print("✓ Updated CMakeLists.txt")
 
 # ---------------------------------------------------------------------
 # Conan

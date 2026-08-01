@@ -6,7 +6,7 @@
 // - Invalid escape sequences and malformed numbers
 // - Unexpected trailing content after a complete value
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 

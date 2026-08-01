@@ -1,24 +1,11 @@
 # ============================================================
 # benchmarks/CMakeLists.txt
-# Build configuration for the JsonPro benchmark suite.
+# Build configuration for the project benchmark suite.
 # ============================================================
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
-
-# Fetch nlohmann::json — the baseline every benchmark case compares
-# JsonPro against. FetchContent_MakeAvailable is a no-op if some outer
-# scope (e.g. the top-level CMakeLists.txt) has already made it available.
-include(FetchContent)
-
-FetchContent_Declare(
-    nlohmann_json
-    GIT_REPOSITORY https://github.com/nlohmann/json.git
-    GIT_TAG v3.11.3
-)
-
-FetchContent_MakeAvailable(nlohmann_json)
 
 # Collect all benchmark suite source files.
 file(GLOB_RECURSE BENCH_SOURCES CONFIGURE_DEPENDS
@@ -29,7 +16,7 @@ file(GLOB_RECURSE BENCH_SOURCES CONFIGURE_DEPENDS
 add_executable(
     benchmarks
     ${BENCH_SOURCES}
-    ${CMAKE_CURRENT_SOURCE_DIR}/bench_all.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/bench_main.cpp
 )
 
 # Allow simple benchmark includes.
@@ -41,13 +28,9 @@ target_include_directories(
         ${CMAKE_SOURCE_DIR}/include
 )
 
-# Link JsonPro and nlohmann::json to the benchmark executable.
-# nlohmann_json::nlohmann_json carries its own include directory as an
-# INTERFACE property, so no separate target_include_directories() entry
-# for it is needed.
+# Link the library under test into the benchmark executable.
 target_link_libraries(
     benchmarks
     PRIVATE
-        JsonPro
-        nlohmann_json::nlohmann_json
+        ${PROJECT_NAME}
 )

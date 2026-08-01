@@ -14,7 +14,7 @@
 // - A high surrogate followed by a second high surrogate is rejected
 // - A high surrogate followed by a non-\u escape is rejected
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 

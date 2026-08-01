@@ -6,7 +6,7 @@
 // - Failing loudly on a required setting that's missing
 // - A small typed Config struct assembled from the parsed document
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 #include <fstream>
 #include <sstream>

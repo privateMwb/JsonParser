@@ -5,7 +5,7 @@
 // - isNull / isBool / isNumber / isString / isArray / isObject
 // - Each predicate is false for every other constructed type
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 

@@ -6,7 +6,7 @@
 // - Self copy assignment leaves the value unchanged
 // - Copies of nested (mixed Array/Object) structures are fully independent
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 

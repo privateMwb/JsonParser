@@ -5,7 +5,7 @@
 // - Composing those fragments into a larger document
 // - Keeping construction code readable as documents grow in complexity
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 

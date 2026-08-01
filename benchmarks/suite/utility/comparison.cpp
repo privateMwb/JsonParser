@@ -11,7 +11,7 @@
 // - equal objects
 // - unequal objects (mismatch found early vs. late)
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 #include <nlohmann/json.hpp>
 

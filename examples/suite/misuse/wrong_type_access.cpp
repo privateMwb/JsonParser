@@ -5,7 +5,7 @@
 // - Every asX() accessor rejecting a mismatched type the same way
 // - Checking type()/isX() first as the idiomatic way to avoid the error
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 

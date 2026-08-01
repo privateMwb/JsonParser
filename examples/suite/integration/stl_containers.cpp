@@ -5,7 +5,7 @@
 // - Converting a std::map<std::string, T> to a Json object and back
 // - Nesting STL conversions inside one another
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 #include <map>
 #include <vector>

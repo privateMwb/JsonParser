@@ -4,7 +4,7 @@
 // - size() on arrays, objects, and non-container types
 // - contains() on objects, including absent keys and non-object types
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace JsonPro;
 
