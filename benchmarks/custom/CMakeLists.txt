@@ -7,6 +7,17 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
 
+# Fetch nlohmann/json — the reference implementation every benchmark
+# compares JsonPro against. Benchmark-only dependency; not required to
+# build or install the library itself.
+include(FetchContent)
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.11.3
+)
+FetchContent_MakeAvailable(nlohmann_json)
+
 # Collect all benchmark suite source files.
 file(GLOB_RECURSE BENCH_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/suite/*.cpp"
@@ -33,4 +44,5 @@ target_link_libraries(
     benchmarks
     PRIVATE
         ${PROJECT_NAME}
+        nlohmann_json::nlohmann_json
 )
