@@ -11,8 +11,10 @@
 // - Threads independently building their own document concurrently
 // - Threads independently mutating (insert/erase) their own JsonObject
 // - Sustained concurrent construction/destruction of unrelated documents
-// - Per-thread documents are backed by genuinely distinct memory, never shared
+// - Per-thread documents are backed by genuinely distinct, simultaneously-
+//   live heap memory, never shared or address-aliased across threads
 
+#include <memory>
 #include <string>
 #include <thread>
 #include <vector>
@@ -110,17 +112,27 @@ TEST(IndependentInstances, ConcurrentConstructionAndDestructionOfUnrelatedDocume
 
 // Verifies each thread's document is backed by genuinely distinct memory --
 // never accidentally shared or aliased across threads.
+//
+// Each document is heap-allocated and kept alive (via the unique_ptr vector
+// living outside the thread lambdas) until every thread has finished and
+// every address has been compared. Taking the address of a *stack-local*
+// Json here would be meaningless: a thread's stack frame is freed the
+// moment its lambda returns, so a later thread starting after an earlier
+// one has already exited can legitimately be allocated the very same
+// stack address -- that's normal stack reuse, not aliasing, and comparing
+// those addresses produces false failures unrelated to JsonPro itself.
 TEST(IndependentInstances, ThreadLocalDocumentsRemainIsolated) {
     constexpr int kThreads = 8;
+    std::vector<std::unique_ptr<Json>> docs(kThreads);
     std::vector<const void*> addresses(kThreads, nullptr);
     std::vector<double> values(kThreads, 0.0);
     std::vector<std::thread> threads;
 
     for (int t = 0; t < kThreads; ++t) {
         threads.emplace_back([&, t]() {
-            Json j(static_cast<double>(t));
-            addresses[t] = static_cast<const void*>(&j);
-            values[t] = j.asNumber();
+            docs[t] = std::make_unique<Json>(static_cast<double>(t));
+            addresses[t] = static_cast<const void*>(docs[t].get());
+            values[t] = docs[t]->asNumber();
         });
     }
 
