@@ -5,7 +5,7 @@
  *
  * @version         1.0.0
  *
- * @copyright       Copyright (c) 2026 Your Name
+ * @copyright       Copyright (c) 2026 privateMwb
  *                  All rights reserved.
  *                  https://github.com/privateMwb/JsonParser
  *
@@ -24,6 +24,7 @@
 #include <variant>     // std::variant
 #include <vector>      // std::vector
 
+#include <JsonPro/JsonException.h>
 #include <JsonPro/JsonObject.h>
 // clang-format on
 
