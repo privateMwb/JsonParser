@@ -29,7 +29,7 @@
 using namespace JsonPro;
 
 // Measures default (null) destruction performance.
-static void BM_DefaultDestruction_JsonPro(benchmark::State& state) {
+static void DefaultDestruction_JsonPro(benchmark::State& state) {
     for (auto _ : state) {
         std::vector<Json> batch;
         batch.reserve(10);
@@ -40,9 +40,9 @@ static void BM_DefaultDestruction_JsonPro(benchmark::State& state) {
         batch.clear();
     }
 }
-BENCHMARK(BM_DefaultDestruction_JsonPro);
+BENCHMARK(DefaultDestruction_JsonPro);
 
-static void BM_DefaultDestruction_Nlohmann(benchmark::State& state) {
+static void DefaultDestruction_Nlohmann(benchmark::State& state) {
     for (auto _ : state) {
         std::vector<nlohmann::json> batch;
         batch.reserve(10);
@@ -53,10 +53,10 @@ static void BM_DefaultDestruction_Nlohmann(benchmark::State& state) {
         batch.clear();
     }
 }
-BENCHMARK(BM_DefaultDestruction_Nlohmann);
+BENCHMARK(DefaultDestruction_Nlohmann);
 
 // Measures bool destruction performance.
-static void BM_BoolDestruction_JsonPro(benchmark::State& state) {
+static void BoolDestruction_JsonPro(benchmark::State& state) {
     for (auto _ : state) {
         std::vector<Json> batch;
         batch.reserve(10);
@@ -67,9 +67,9 @@ static void BM_BoolDestruction_JsonPro(benchmark::State& state) {
         batch.clear();
     }
 }
-BENCHMARK(BM_BoolDestruction_JsonPro);
+BENCHMARK(BoolDestruction_JsonPro);
 
-static void BM_BoolDestruction_Nlohmann(benchmark::State& state) {
+static void BoolDestruction_Nlohmann(benchmark::State& state) {
     for (auto _ : state) {
         std::vector<nlohmann::json> batch;
         batch.reserve(10);
@@ -80,10 +80,10 @@ static void BM_BoolDestruction_Nlohmann(benchmark::State& state) {
         batch.clear();
     }
 }
-BENCHMARK(BM_BoolDestruction_Nlohmann);
+BENCHMARK(BoolDestruction_Nlohmann);
 
 // Measures number destruction performance.
-static void BM_NumberDestruction_JsonPro(benchmark::State& state) {
+static void NumberDestruction_JsonPro(benchmark::State& state) {
     for (auto _ : state) {
         std::vector<Json> batch;
         batch.reserve(10);
@@ -94,9 +94,9 @@ static void BM_NumberDestruction_JsonPro(benchmark::State& state) {
         batch.clear();
     }
 }
-BENCHMARK(BM_NumberDestruction_JsonPro);
+BENCHMARK(NumberDestruction_JsonPro);
 
-static void BM_NumberDestruction_Nlohmann(benchmark::State& state) {
+static void NumberDestruction_Nlohmann(benchmark::State& state) {
     for (auto _ : state) {
         std::vector<nlohmann::json> batch;
         batch.reserve(10);
@@ -107,10 +107,10 @@ static void BM_NumberDestruction_Nlohmann(benchmark::State& state) {
         batch.clear();
     }
 }
-BENCHMARK(BM_NumberDestruction_Nlohmann);
+BENCHMARK(NumberDestruction_Nlohmann);
 
 // Measures string destruction performance for a short (SSO-sized) string.
-static void BM_ShortStringDestruction_JsonPro(benchmark::State& state) {
+static void ShortStringDestruction_JsonPro(benchmark::State& state) {
     const std::string s = "short";
 
     for (auto _ : state) {
@@ -123,9 +123,9 @@ static void BM_ShortStringDestruction_JsonPro(benchmark::State& state) {
         batch.clear();
     }
 }
-BENCHMARK(BM_ShortStringDestruction_JsonPro);
+BENCHMARK(ShortStringDestruction_JsonPro);
 
-static void BM_ShortStringDestruction_Nlohmann(benchmark::State& state) {
+static void ShortStringDestruction_Nlohmann(benchmark::State& state) {
     const std::string s = "short";
 
     for (auto _ : state) {
@@ -138,11 +138,11 @@ static void BM_ShortStringDestruction_Nlohmann(benchmark::State& state) {
         batch.clear();
     }
 }
-BENCHMARK(BM_ShortStringDestruction_Nlohmann);
+BENCHMARK(ShortStringDestruction_Nlohmann);
 
 // Measures string destruction performance for a long string that forced a
 // heap allocation on construction.
-static void BM_LongStringDestruction_JsonPro(benchmark::State& state) {
+static void LongStringDestruction_JsonPro(benchmark::State& state) {
     const std::string s(256, 'x');
 
     for (auto _ : state) {
@@ -155,9 +155,9 @@ static void BM_LongStringDestruction_JsonPro(benchmark::State& state) {
         batch.clear();
     }
 }
-BENCHMARK(BM_LongStringDestruction_JsonPro);
+BENCHMARK(LongStringDestruction_JsonPro);
 
-static void BM_LongStringDestruction_Nlohmann(benchmark::State& state) {
+static void LongStringDestruction_Nlohmann(benchmark::State& state) {
     const std::string s(256, 'x');
 
     for (auto _ : state) {
@@ -170,10 +170,10 @@ static void BM_LongStringDestruction_Nlohmann(benchmark::State& state) {
         batch.clear();
     }
 }
-BENCHMARK(BM_LongStringDestruction_Nlohmann);
+BENCHMARK(LongStringDestruction_Nlohmann);
 
 // Measures destruction performance for a small array (5 elements).
-static void BM_ArrayDestruction_JsonPro(benchmark::State& state) {
+static void ArrayDestruction_JsonPro(benchmark::State& state) {
     for (auto _ : state) {
         std::vector<Json> batch;
         batch.reserve(10);
@@ -184,9 +184,9 @@ static void BM_ArrayDestruction_JsonPro(benchmark::State& state) {
         batch.clear();
     }
 }
-BENCHMARK(BM_ArrayDestruction_JsonPro);
+BENCHMARK(ArrayDestruction_JsonPro);
 
-static void BM_ArrayDestruction_Nlohmann(benchmark::State& state) {
+static void ArrayDestruction_Nlohmann(benchmark::State& state) {
     for (auto _ : state) {
         std::vector<nlohmann::json> batch;
         batch.reserve(10);
@@ -197,10 +197,10 @@ static void BM_ArrayDestruction_Nlohmann(benchmark::State& state) {
         batch.clear();
     }
 }
-BENCHMARK(BM_ArrayDestruction_Nlohmann);
+BENCHMARK(ArrayDestruction_Nlohmann);
 
 // Measures destruction performance for a small object (5 members).
-static void BM_ObjectDestruction_JsonPro(benchmark::State& state) {
+static void ObjectDestruction_JsonPro(benchmark::State& state) {
     for (auto _ : state) {
         std::vector<Json> batch;
         batch.reserve(10);
@@ -218,9 +218,9 @@ static void BM_ObjectDestruction_JsonPro(benchmark::State& state) {
         batch.clear();
     }
 }
-BENCHMARK(BM_ObjectDestruction_JsonPro);
+BENCHMARK(ObjectDestruction_JsonPro);
 
-static void BM_ObjectDestruction_Nlohmann(benchmark::State& state) {
+static void ObjectDestruction_Nlohmann(benchmark::State& state) {
     for (auto _ : state) {
         std::vector<nlohmann::json> batch;
         batch.reserve(10);
@@ -233,4 +233,4 @@ static void BM_ObjectDestruction_Nlohmann(benchmark::State& state) {
         batch.clear();
     }
 }
-BENCHMARK(BM_ObjectDestruction_Nlohmann);
+BENCHMARK(ObjectDestruction_Nlohmann);
