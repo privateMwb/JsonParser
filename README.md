@@ -1,11 +1,18 @@
-# JsonParser
-
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/privateMwb/JsonParser?style=for-the-badge&logo=github&color=yellow" alt="Version">
-  <img src="https://img.shields.io/badge/License-MIT-orange?style=for-the-badge" alt="License - MIT">
-  <img src="https://img.shields.io/badge/C%2B%2B-23-blue?style=for-the-badge&logo=c%2B%2B" alt="C++ - 23">
+  <img src=".github/assets/banner.svg" alt="JsonParser" width="100%">
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/github/v/release/privateMwb/JsonParser?style=for-the-badge&logo=github&color=1B7A3D&labelColor=05100A" alt="Version">
+  <img src="https://img.shields.io/badge/License-MIT-2ECC71?style=for-the-badge&labelColor=05100A" alt="License - MIT">
+  <img src="https://img.shields.io/badge/C%2B%2B-23-A8F0C6?style=for-the-badge&logo=c%2B%2B&labelColor=05100A" alt="C++ - 23">
+</p>
+
+<p align="center">
+  <img src=".github/assets/divider.svg" alt="" width="100%">
+</p>
+
+<p align="center"><sub><b>CI / CD</b></sub></p>
 <p align="center">
   <a href="https://github.com/privateMwb/JsonParser/actions/workflows/build.yml">
     <img src="https://github.com/privateMwb/JsonParser/actions/workflows/build.yml/badge.svg" alt="Build and Test">
@@ -13,6 +20,16 @@
   <a href="https://github.com/privateMwb/JsonParser/actions/workflows/benchmark.yml">
     <img src="https://github.com/privateMwb/JsonParser/actions/workflows/benchmark.yml/badge.svg" alt="Benchmarks">
   </a>
+  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/packaging.yml">
+    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/packaging.yml/badge.svg" alt="Packaging">
+  </a>
+  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/release.yml">
+    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/release.yml/badge.svg" alt="Release">
+  </a>
+</p>
+
+<p align="center"><sub><b>Code Quality &amp; Safety</b></sub></p>
+<p align="center">
   <a href="https://github.com/privateMwb/JsonParser/actions/workflows/coverage.yml">
     <img src="https://github.com/privateMwb/JsonParser/actions/workflows/coverage.yml/badge.svg" alt="Coverage">
   </a>
@@ -25,17 +42,29 @@
   <a href="https://github.com/privateMwb/JsonParser/actions/workflows/clang-format.yml">
     <img src="https://github.com/privateMwb/JsonParser/actions/workflows/clang-format.yml/badge.svg" alt="Clang Format">
   </a>
-  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/docs.yml">
-    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/docs.yml/badge.svg" alt="Documentation">
+  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/codeql.yml">
+    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/codeql.yml/badge.svg" alt="CodeQL">
   </a>
-  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/release.yml">
-    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/release.yml/badge.svg" alt="Release">
+  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/cflite_pr.yml">
+    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/cflite_pr.yml/badge.svg" alt="Fuzzing">
   </a>
-  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/packaging.yml">
-    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/packaging.yml/badge.svg" alt="Packaging">
+  <a href="https://www.bestpractices.dev/projects/14647">
+    <img src="https://www.bestpractices.dev/projects/14647/badge" alt="OpenSSF Best Practices">
   </a>
 </p>
 
+<p align="center"><sub><b>Documentation</b></sub></p>
+<p align="center">
+  <a href="https://github.com/privateMwb/JsonParser/actions/workflows/docs.yml">
+    <img src="https://github.com/privateMwb/JsonParser/actions/workflows/docs.yml/badge.svg" alt="Documentation">
+  </a>
+</p>
+
+<p align="center">
+  <img src=".github/assets/divider.svg" alt="" width="100%">
+</p>
+
+<p align="center"><sub><b>Compiler Support</b></sub></p>
 <p align="center">
   <img src="https://img.shields.io/badge/GCC-support-B46F1B?style=flat&logo=gnu" alt="GCC - support">
   <img src="https://img.shields.io/badge/Clang-support-045891?style=flat&logo=llvm" alt="Clang - support">
@@ -43,7 +72,13 @@
   <img src="https://img.shields.io/badge/AppleClang-support-000000?style=flat&logo=apple" alt="AppleClang - support">
 </p>
 
-JsonParser is an RFC 8259–compliant JSON library for modern C++ — a single-pass recursive-descent parser, an insertion-order-preserving object type backed by a vector plus a transparent-hash index instead of a key-ordered tree, and lossless, round-trip-exact number serialization via `std::to_chars`.
+<p align="center">
+  <img src=".github/assets/divider.svg" alt="" width="100%">
+</p>
+
+<p align="center">JsonParser is an RFC 8259–compliant JSON library for modern C++ — a single-pass recursive-descent parser, an insertion-order-preserving object type backed by a vector plus a transparent-hash index instead of a key-ordered tree, and lossless, round-trip-exact number serialization via <code>std::to_chars</code>.</p>
+
+<br>
 
 ## 📑 Table of Contents
 
@@ -54,10 +89,14 @@ JsonParser is an RFC 8259–compliant JSON library for modern C++ — a single-p
 - [Project Structure](#project-structure)
 - [Development](#development)
 - [Benchmarks](#benchmarks)
+- [Fuzzing](#fuzzing)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
 - [Changelog](#changelog)
+- [Security](#security)
 - [License](#license)
+
+<br>
 
 ## <a id="features"></a>✨ Features
 
@@ -69,10 +108,14 @@ JsonParser is an RFC 8259–compliant JSON library for modern C++ — a single-p
 - **Bounds-checked and unchecked access, on purpose** — `at()` throws on a missing key or out-of-range index; `operator[]` auto-vivifies a missing object key (matching `std::map`'s convention) or is left unchecked for arrays.
 - **Thread-safe for concurrent const access** — no internal synchronization, since no read-only operation touches any mutable state; a single shared value can be read from many threads at once with no external locking required.
 
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
+
 ## <a id="requirements"></a>📋 Requirements
 
 - A C++23-conformant compiler (tested: GCC, Clang, MSVC, AppleClang)
 - CMake 3.20+
+
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
 
 ## <a id="installation"></a>📦 Installation
 
@@ -100,6 +143,8 @@ target_link_libraries(your_target PRIVATE JsonPro::JsonPro)
 > `packaging/recipes/jsonpro/`, port in `packaging/vcpkg/ports/jsonpro/`),
 > but not yet published to the public registries. This section will be
 > updated once they are.
+
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
 
 ## <a id="quick-start"></a>🚀 Quick Start
 
@@ -138,6 +183,8 @@ try {
     std::cerr << "line " << e.line() << ", col " << e.column() << ": " << e.what() << '\n';
 }
 ```
+
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
 
 ## <a id="project-structure"></a>🗂️ Project Structure
 
@@ -180,19 +227,27 @@ JsonParser/
 │   ├── regression_main.cpp
 │   └── CMakeLists.txt
 │
+├── fuzz/
+│   └── fuzz_json.cpp
+│
+├── .clusterfuzzlite/
+│   ├── Dockerfile
+│   ├── build.sh
+│   └── project.yaml
+│
 ├── packaging/
 │   ├── README.md
+│   ├── requirements.in
+│   ├── requirements.txt
 │   ├── recipes/
-│   │   └── jsonpro/
 │   ├── vcpkg/
-│   │   └── ports/
-│   │       └── jsonpro/
 │   └── vcpkg-smoke-test/
 │
 ├── scripts/
 │   └── update_package_files.py
 │
 ├── .github/
+│   ├── assets/
 │   ├── releases/
 │   └── workflows/
 │
@@ -203,11 +258,19 @@ JsonParser/
 │   ├── Doxyfile
 │   └── README.md
 │
+├── .clang-format
+├── .clang-tidy
 ├── .gitignore
 ├── CMakeLists.txt
 ├── README.md
+├── CONTRIBUTING.md
+├── CHANGELOG.md
+├── SECURITY.md
+├── FUZZING.md
 └── LICENSE
 ```
+
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
 
 ## <a id="development"></a>🛠️ Development
 
@@ -242,6 +305,8 @@ auto-names its output (`regression_v1.2.0_vs_current.md`/`.json`, etc.).
 See [packaging/README.md](packaging/README.md) for notes on verifying the vcpkg
 port and Conan recipe locally.
 
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
+
 ## <a id="benchmarks"></a>📊 Benchmarks
 
 Measured against `nlohmann::json`, same build, at 10K / 100K / 1M
@@ -273,11 +338,37 @@ call than `nlohmann::json`'s storage on trivial scalar operations
 (`operator[]`, `type()`, `asBool()`), so those benchmarks favor
 `nlohmann::json` instead.
 
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
+
+## <a id="fuzzing"></a>🐛 Fuzzing
+
+`Json::parse()`/`dump()` are continuously fuzzed via
+[ClusterFuzzLite](https://google.github.io/clusterfuzzlite/): a
+round-trip fuzzer (`parse(dump(parse(text))) == parse(text)`) under
+AddressSanitizer and UndefinedBehaviorSanitizer. A short pass runs on
+every PR touching the parser or object implementation; a longer pass
+runs nightly.
+
+This covers `parse()`'s exception contract (only `JsonParseError` for
+malformed input), `dump()` always producing text `parse()` itself
+accepts, structural equality surviving the round trip across every
+indent width and JSON type, the recursive-descent parser's nesting
+depth cap, and string escaping/unescaping fidelity including `\uXXXX`
+surrogate pairs. `JsonObject` and `Parser` exercised directly (rather
+than through `Json`), exception message content, and
+performance/complexity regressions aren't covered yet — see
+[FUZZING.md](FUZZING.md) for full scope, running locally, and
+reproducing a failing input.
+
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
+
 ## <a id="documentation"></a>📖 Documentation
 
 Full API reference, generated with Doxygen from `docs/Doxyfile`:
 
 **https://privateMwb.github.io/JsonParser/**
+
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
 
 ## <a id="contributing"></a>🤝 Contributing
 
@@ -287,11 +378,32 @@ Issues and pull requests are welcome. Before submitting a PR:
 - If you're changing a hot path, run `./build/regression` and mention
   the results in your PR description
 
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
+
 ## <a id="changelog"></a>📝 Changelog
 
-See the [Releases](https://github.com/privateMwb/JsonParser/releases)
-page for version history and release notes.
+See [CHANGELOG.md](CHANGELOG.md) for a curated, per-release summary of
+changes, or the [Releases](https://github.com/privateMwb/JsonParser/releases)
+page for the full release notes.
+
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
+
+## <a id="security"></a>🔒 Security
+
+See [SECURITY.md](SECURITY.md) for the supported versions, how to report
+a vulnerability (including privately, via GitHub Security Advisories),
+and the disclosure timeline.
+
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
 
 ## <a id="license"></a>📄 License
 
 MIT — see [LICENSE](LICENSE) for details.
+
+<p align="center">
+  <sub>Built with C++23</sub>
+</p>
+
+<p align="center">
+  <a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a>
+</p>

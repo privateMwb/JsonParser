@@ -1,9 +1,17 @@
 /**
- * @file Parser.h
- * @brief Internal recursive-descent JSON parser used by Json::parse().
+ * @file            Parser.h
  *
- * Contains the single-pass parser Json uses internally to convert raw
- * JSON text into a Json value tree, strictly conforming to RFC 8259.
+ * @date            2026-17-7
+ *
+ * @version         1.0.0
+ *
+ * @copyright       Copyright (c) 2026 privateMwb
+ *                  All rights reserved.
+ *                  https://github.com/privateMwb/JsonParser
+ *
+ * @attention       This source is released under the MIT license
+ *                  SPDX-License-Identifier: MIT
+ *                  <http://opensource.org/licenses/MIT>
  */
 
 #pragma once
@@ -91,13 +99,3 @@ class Parser {
 };
 
 } // namespace JsonPro
-
-/// @brief Umbrella alias so this library's types are reachable as
-/// `rain::Parser`, alongside every other project library, while its true
-/// namespace remains `JsonPro`. Reopens `rain` rather than aliasing it, for
-/// the same reason as Json.h. Declared here separately because Json.h does
-/// NOT include Parser.h (it's the other way around -- Parser.h includes
-/// Json.h), so this file is not covered by Json.h's declaration.
-namespace rain {
-using namespace JsonPro;
-}

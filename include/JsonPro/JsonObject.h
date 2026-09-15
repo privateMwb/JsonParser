@@ -1,10 +1,17 @@
 /**
- * @file JsonObject.h
- * @brief Insertion-order-preserving associative container used internally by Json.
+ * @file            JsonObject.h
  *
- * Contains the internal storage container backing Json's object type: a
- * vector of key/value entries plus a transparent-hash index for O(1)
- * average lookup without disturbing insertion order.
+ * @date            2026-17-7
+ *
+ * @version         1.0.0
+ *
+ * @copyright       Copyright (c) 2026 privateMwb
+ *                  All rights reserved.
+ *                  https://github.com/privateMwb/JsonParser
+ *
+ * @attention       This source is released under the MIT license
+ *                  SPDX-License-Identifier: MIT
+ *                  <http://opensource.org/licenses/MIT>
  */
 
 #pragma once

@@ -1,9 +1,17 @@
 /**
- * @file JsonException.h
- * @brief Exception types thrown by JsonPro.
+ * @file            JsonException.h
  *
- * Contains the exception hierarchy JsonPro throws on parse failures and
- * invalid type access, all derived from a common JsonException base.
+ * @date            2026-17-7
+ *
+ * @version         1.0.0
+ *
+ * @copyright       Copyright (c) 2026 privateMwb
+ *                  All rights reserved.
+ *                  https://github.com/privateMwb/JsonParser
+ *
+ * @attention       This source is released under the MIT license
+ *                  SPDX-License-Identifier: MIT
+ *                  <http://opensource.org/licenses/MIT>
  */
 
 #pragma once
@@ -84,15 +92,3 @@ class JsonOutOfRange : public JsonException {
 };
 
 } // namespace JsonPro
-
-/// @brief Umbrella alias so this library's types are reachable as
-/// `rain::JsonException` (and its derived types: `JsonParseError`,
-/// `JsonTypeError`, `JsonOutOfRange`), while the true namespace remains
-/// `JsonPro`. Reopens `rain` rather than aliasing it, for the same reason
-/// as Json.h. Declared here separately because Json.h does NOT include
-/// JsonException.h, despite documenting these exact types as what its own
-/// methods throw -- callers who only include Json.h still need this header
-/// directly to catch them by name.
-namespace rain {
-using namespace JsonPro;
-}
