@@ -13,7 +13,7 @@
 using namespace JsonPro;
 
 // Verifies a flat object can be built key-by-key via operator[].
-static void build_flat_object_via_index_operator() {
+static void build_flat_object_index_op() {
     Json j = Json(Json::ObjectType{});
     j["name"] = Json("Rain");
     j["age"] = Json(5);
@@ -27,7 +27,7 @@ static void build_flat_object_via_index_operator() {
 
 // Verifies nested structure requires each intermediate level to be
 // explicitly typed as an object before it can be indexed into further.
-static void build_nested_document_with_explicit_intermediate_objects() {
+static void build_nested_explicit_objects() {
     Json j = Json(Json::ObjectType{});
     j["address"] = Json(Json::ObjectType{});
     j["address"]["city"] = Json("Metro City");
@@ -39,7 +39,7 @@ static void build_nested_document_with_explicit_intermediate_objects() {
 }
 
 // Verifies an array can be built incrementally via asArray().push_back().
-static void build_array_via_asArray_pushback() {
+static void build_array_asarray_pushback() {
     Json j = Json(Json::ArrayType{});
     j.asArray().push_back(Json(1));
     j.asArray().push_back(Json(2));
@@ -51,7 +51,7 @@ static void build_array_via_asArray_pushback() {
 }
 
 // Verifies an array of objects can be assembled one entry at a time.
-static void build_array_of_objects_incrementally() {
+static void build_array_of_objects() {
     Json j = Json(Json::ArrayType{});
 
     for (int i = 0; i < 3; ++i) {
@@ -67,7 +67,7 @@ static void build_array_of_objects_incrementally() {
 
 // Verifies a document can be built via JsonObject directly, then wrapped
 // into a Json value.
-static void build_document_via_jsonobject_then_wrap() {
+static void build_document_wrap_jsonobject() {
     JsonObject obj;
     obj.insert_or_assign("title", Json("Report"));
     obj.insert_or_assign("pages", Json(12));
@@ -81,7 +81,7 @@ static void build_document_via_jsonobject_then_wrap() {
 
 // Verifies a hand-built document round-trips through dump() and parse()
 // and compares equal to the original.
-static void built_document_round_trips_through_dump_and_parse() {
+static void document_round_trips_dump_parse() {
     Json j = Json(Json::ObjectType{});
     j["name"] = Json("Widget");
     j["count"] = Json(3);
@@ -96,12 +96,12 @@ static void built_document_round_trips_through_dump_and_parse() {
 
 // Executes all document building test cases.
 static void run_tests() {
-    RUN(build_flat_object_via_index_operator);
-    RUN(build_nested_document_with_explicit_intermediate_objects);
-    RUN(build_array_via_asArray_pushback);
-    RUN(build_array_of_objects_incrementally);
-    RUN(build_document_via_jsonobject_then_wrap);
-    RUN(built_document_round_trips_through_dump_and_parse);
+    RUN(build_flat_object_index_op);
+    RUN(build_nested_explicit_objects);
+    RUN(build_array_asarray_pushback);
+    RUN(build_array_of_objects);
+    RUN(build_document_wrap_jsonobject);
+    RUN(document_round_trips_dump_parse);
 }
 
 REGISTER_TEST_SUITE();

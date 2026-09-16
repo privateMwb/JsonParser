@@ -26,7 +26,7 @@ using namespace JsonPro;
 
 // Verifies many threads reading scalar and container values from one
 // shared document concurrently all observe correct, consistent results.
-static void concurrent_scalar_and_container_access() {
+static void concurrent_scalar_container_access() {
     const Json j = Json::parse(R"({"a": 1, "b": "two", "c": [1, 2, 3], "d": {"e": true}})");
 
     constexpr int kThreads = 8;
@@ -55,7 +55,7 @@ static void concurrent_scalar_and_container_access() {
 
 // Verifies concurrent chained navigation (mixing operator[] and at())
 // through a shared nested document is safe and consistent.
-static void concurrent_nested_navigation_through_shared_document() {
+static void concurrent_nested_navigation() {
     const Json j = Json::parse(R"({
         "users": [
             {"name": "Alice", "roles": ["admin", "editor"]},
@@ -88,7 +88,7 @@ static void concurrent_nested_navigation_through_shared_document() {
 
 // Verifies concurrent dump() calls on the same shared document all produce
 // byte-identical output.
-static void concurrent_dump_produces_identical_output() {
+static void concurrent_dump_identical_output() {
     const Json j = Json::parse(R"({"id": 1, "tags": ["a", "b", "c"], "nested": {"x": 1.5}})");
     const std::string expected = j.dump();
 
@@ -109,7 +109,7 @@ static void concurrent_dump_produces_identical_output() {
 
 // Verifies concurrent size()/contains() checks on a shared object are safe
 // and consistently correct.
-static void concurrent_contains_and_size_checks() {
+static void concurrent_contains_size_checks() {
     const Json j = Json::parse(R"({"x": 1, "y": 2, "z": 3})");
 
     constexpr int kThreads = 8;
@@ -138,10 +138,10 @@ static void concurrent_contains_and_size_checks() {
 
 // Executes all concurrent read test cases.
 static void run_tests() {
-    RUN(concurrent_scalar_and_container_access);
-    RUN(concurrent_nested_navigation_through_shared_document);
-    RUN(concurrent_dump_produces_identical_output);
-    RUN(concurrent_contains_and_size_checks);
+    RUN(concurrent_scalar_container_access);
+    RUN(concurrent_nested_navigation);
+    RUN(concurrent_dump_identical_output);
+    RUN(concurrent_contains_size_checks);
 }
 
 REGISTER_TEST_SUITE();

@@ -14,7 +14,7 @@
 using namespace JsonPro;
 
 // Verifies a failed asBool() call leaves the underlying value unmodified.
-static void failed_asBool_does_not_modify_value() {
+static void failed_asbool_no_modify() {
     Json j(3.14);
 
     CHK_THROWS(j.asBool(), std::runtime_error);
@@ -24,7 +24,7 @@ static void failed_asBool_does_not_modify_value() {
 }
 
 // Verifies a failed asString() call leaves the underlying value unmodified.
-static void failed_asString_does_not_modify_value() {
+static void failed_asstring_no_modify() {
     Json j(Json::ArrayType{Json(1), Json(2)});
 
     CHK_THROWS(j.asString(), std::runtime_error);
@@ -34,7 +34,7 @@ static void failed_asString_does_not_modify_value() {
 }
 
 // Verifies a failed array at() (out of range) leaves the array unmodified.
-static void failed_array_at_out_of_range_leaves_container_unchanged() {
+static void failed_array_at_out_of_range() {
     Json j(Json::ArrayType{Json(1), Json(2), Json(3)});
 
     CHK_THROWS(j.at(99), std::runtime_error);
@@ -45,7 +45,7 @@ static void failed_array_at_out_of_range_leaves_container_unchanged() {
 
 // Verifies a failed object at() (missing key) leaves the object unmodified,
 // and -- unlike operator[] -- does not auto-vivify the missing key.
-static void failed_object_at_missing_key_leaves_container_unchanged() {
+static void failed_object_at_missing_key() {
     Json::ObjectType obj;
     obj.emplace("present", Json(1));
 
@@ -60,7 +60,7 @@ static void failed_object_at_missing_key_leaves_container_unchanged() {
 // Verifies an assignment target is left unchanged when the right-hand side
 // throws during evaluation: the rhs must fully complete (or throw) before
 // the assignment operator ever runs.
-static void assignment_target_unchanged_when_rhs_parse_throws() {
+static void assignment_target_unchanged_on_throw() {
     Json j("original");
 
     try {
@@ -75,7 +75,7 @@ static void assignment_target_unchanged_when_rhs_parse_throws() {
 
 // Verifies JsonObject::find() never mutates the object, even when the key
 // is absent (contrast with operator[], which auto-vivifies).
-static void jsonobject_find_on_missing_key_does_not_insert() {
+static void jsonobject_find_missing_no_insert() {
     JsonObject obj;
     obj.emplace("a", Json(1));
 
@@ -88,7 +88,7 @@ static void jsonobject_find_on_missing_key_does_not_insert() {
 
 // Verifies a large, deeply nested document tears down cleanly (no crash,
 // no leak-detector trip) when it goes out of scope.
-static void nested_document_destructs_cleanly_without_crash() {
+static void nested_document_destructs_cleanly() {
     {
         Json j = Json(Json::ArrayType{});
 
@@ -106,13 +106,13 @@ static void nested_document_destructs_cleanly_without_crash() {
 
 // Executes all exception safety test cases.
 static void run_tests() {
-    RUN(failed_asBool_does_not_modify_value);
-    RUN(failed_asString_does_not_modify_value);
-    RUN(failed_array_at_out_of_range_leaves_container_unchanged);
-    RUN(failed_object_at_missing_key_leaves_container_unchanged);
-    RUN(assignment_target_unchanged_when_rhs_parse_throws);
-    RUN(jsonobject_find_on_missing_key_does_not_insert);
-    RUN(nested_document_destructs_cleanly_without_crash);
+    RUN(failed_asbool_no_modify);
+    RUN(failed_asstring_no_modify);
+    RUN(failed_array_at_out_of_range);
+    RUN(failed_object_at_missing_key);
+    RUN(assignment_target_unchanged_on_throw);
+    RUN(jsonobject_find_missing_no_insert);
+    RUN(nested_document_destructs_cleanly);
 }
 
 REGISTER_TEST_SUITE();

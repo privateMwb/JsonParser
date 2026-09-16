@@ -16,7 +16,7 @@
 using namespace JsonPro;
 
 // Verifies operator[](key) inserts a Null entry when the key is absent.
-static void index_operator_inserts_default_null() {
+static void index_op_inserts_default_null() {
     JsonObject obj;
     Json& v = obj["k"];
 
@@ -25,7 +25,7 @@ static void index_operator_inserts_default_null() {
 }
 
 // Verifies operator[](key) returns the existing entry without duplicating it.
-static void index_operator_returns_existing_entry() {
+static void index_op_returns_existing() {
     JsonObject obj;
     obj["k"] = Json(1);
 
@@ -46,7 +46,7 @@ static void insert_or_assign_new_key() {
 
 // Verifies insert_or_assign() overwrites an existing key's value in place,
 // preserving its original position in entries().
-static void insert_or_assign_existing_key_updates_in_place() {
+static void insert_or_assign_updates_inplace() {
     JsonObject obj;
     obj.insert_or_assign("a", Json(1));
     obj.insert_or_assign("b", Json(2));
@@ -222,10 +222,10 @@ static void inequality_detects_differences() {
 
 // Executes all JsonObject storage test cases.
 static void run_tests() {
-    RUN(index_operator_inserts_default_null);
-    RUN(index_operator_returns_existing_entry);
+    RUN(index_op_inserts_default_null);
+    RUN(index_op_returns_existing);
     RUN(insert_or_assign_new_key);
-    RUN(insert_or_assign_existing_key_updates_in_place);
+    RUN(insert_or_assign_updates_inplace);
     RUN(emplace_inserts_new_key);
     RUN(emplace_existing_key_is_no_op);
     RUN(find_returns_existing_value);

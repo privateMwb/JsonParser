@@ -14,7 +14,7 @@
 using namespace JsonPro;
 
 // Verifies that move construction leaves the source as Null.
-static void move_construction_leaves_source_null() {
+static void move_construction_leaves_null() {
     Json source("movable");
     Json moved(std::move(source));
 
@@ -26,7 +26,7 @@ static void move_construction_leaves_source_null() {
 }
 
 // Verifies move construction correctly transfers Object contents.
-static void move_construction_transfers_object_contents() {
+static void move_construction_transfers_contents() {
     Json::ObjectType obj;
     obj.emplace("a", Json(1));
     obj.emplace("b", Json(2));
@@ -90,8 +90,8 @@ static void move_operations_are_noexcept() {
 
 // Executes all move semantics test cases.
 static void run_tests() {
-    RUN(move_construction_leaves_source_null);
-    RUN(move_construction_transfers_object_contents);
+    RUN(move_construction_leaves_null);
+    RUN(move_construction_transfers_contents);
     RUN(move_assignment_overwrites_target);
     RUN(self_move_assignment);
     RUN(moved_from_value_is_safely_reassignable);

@@ -18,7 +18,7 @@
 using namespace JsonPro;
 
 // Verifies the last occurrence wins even when its type differs from earlier ones.
-static void last_value_wins_across_differing_types() {
+static void last_value_wins_differing_types() {
     Json j = Json::parse(R"({"k": 1, "k": "text", "k": true})");
 
     CHK(j.size() == 1);
@@ -27,7 +27,7 @@ static void last_value_wins_across_differing_types() {
 }
 
 // Verifies the last of three or more repetitions of the same key wins.
-static void last_value_wins_across_many_repetitions() {
+static void last_value_wins_many_repeats() {
     Json j = Json::parse(R"({"k": 1, "k": 2, "k": 3, "k": 4, "k": 5})");
 
     CHK(j.size() == 1);
@@ -36,7 +36,7 @@ static void last_value_wins_across_many_repetitions() {
 
 // Verifies a repeated key retains its original position rather than moving
 // to where its last occurrence was written.
-static void repeated_key_keeps_original_position() {
+static void repeated_key_keeps_position() {
     Json j = Json::parse(R"({"a": 1, "b": 2, "a": 99, "c": 3})");
 
     CHK(j.size() == 3);
@@ -48,7 +48,7 @@ static void repeated_key_keeps_original_position() {
 
 // Verifies duplicate keys interleaved with distinct keys preserve every
 // key's first-seen order.
-static void interleaved_duplicates_preserve_first_seen_order() {
+static void interleaved_duplicates_first_seen() {
     Json j = Json::parse(R"({"x": 1, "y": 2, "x": 3, "z": 4, "y": 5})");
 
     const auto& entries = j.asObject().entries();
@@ -63,10 +63,10 @@ static void interleaved_duplicates_preserve_first_seen_order() {
 
 // Executes all duplicate object key regression test cases.
 static void run_tests() {
-    RUN(last_value_wins_across_differing_types);
-    RUN(last_value_wins_across_many_repetitions);
-    RUN(repeated_key_keeps_original_position);
-    RUN(interleaved_duplicates_preserve_first_seen_order);
+    RUN(last_value_wins_differing_types);
+    RUN(last_value_wins_many_repeats);
+    RUN(repeated_key_keeps_position);
+    RUN(interleaved_duplicates_first_seen);
 }
 
 REGISTER_TEST_SUITE();

@@ -20,7 +20,7 @@ using namespace JsonPro;
 
 // Verifies the lowest combinable surrogate pair (U+10000) decodes to the
 // correct 4-byte UTF-8 sequence: F0 90 80 80.
-static void lowest_astral_codepoint_decodes_correctly() {
+static void lowest_astral_codepoint_decodes() {
     Json j = Json::parse(R"("\uD800\uDC00")");
     const std::string& s = j.asString();
 
@@ -33,7 +33,7 @@ static void lowest_astral_codepoint_decodes_correctly() {
 
 // Verifies the highest combinable surrogate pair (U+10FFFF) decodes to the
 // correct 4-byte UTF-8 sequence: F4 8F BF BF.
-static void highest_astral_codepoint_decodes_correctly() {
+static void highest_astral_codepoint_decodes() {
     Json j = Json::parse(R"("\uDBFF\uDFFF")");
     const std::string& s = j.asString();
 
@@ -46,7 +46,7 @@ static void highest_astral_codepoint_decodes_correctly() {
 
 // Verifies a surrogate pair embedded between literal text segments decodes
 // correctly and the surrounding text survives intact.
-static void surrogate_pair_embedded_in_literal_text() {
+static void surrogate_pair_in_literal_text() {
     Json j = Json::parse(R"("before \uD83D\uDE00 after")");
     const std::string& s = j.asString();
 
@@ -69,7 +69,7 @@ static void two_consecutive_surrogate_pairs() {
 
 // Verifies U+D7FF, the codepoint immediately below the surrogate range,
 // decodes as a standalone 3-byte BMP character (not treated as a surrogate).
-static void codepoint_just_below_surrogate_range() {
+static void codepoint_below_surrogate_range() {
     Json j = Json::parse(R"("\uD7FF")");
     const std::string& s = j.asString();
 
@@ -81,7 +81,7 @@ static void codepoint_just_below_surrogate_range() {
 
 // Verifies U+E000, the codepoint immediately above the surrogate range,
 // decodes as a standalone 3-byte BMP character (not treated as a surrogate).
-static void codepoint_just_above_surrogate_range() {
+static void codepoint_above_surrogate_range() {
     Json j = Json::parse(R"("\uE000")");
     const std::string& s = j.asString();
 
@@ -93,25 +93,25 @@ static void codepoint_just_above_surrogate_range() {
 
 // Verifies a high surrogate immediately followed by a second high surrogate
 // (instead of a low surrogate) is rejected.
-static void high_surrogate_followed_by_another_high_surrogate_rejected() {
+static void high_surrogate_then_high_rejected() {
     CHK_THROWS(Json::parse(R"("\uD800\uD800")"), std::runtime_error);
 }
 
 // Verifies a high surrogate followed by an escape that isn't \u at all is rejected.
-static void high_surrogate_followed_by_non_unicode_escape_rejected() {
+static void high_surrogate_then_non_unicode_rejected() {
     CHK_THROWS(Json::parse(R"("\uD83D\n")"), std::runtime_error);
 }
 
 // Executes all surrogate pair regression test cases.
 static void run_tests() {
-    RUN(lowest_astral_codepoint_decodes_correctly);
-    RUN(highest_astral_codepoint_decodes_correctly);
-    RUN(surrogate_pair_embedded_in_literal_text);
+    RUN(lowest_astral_codepoint_decodes);
+    RUN(highest_astral_codepoint_decodes);
+    RUN(surrogate_pair_in_literal_text);
     RUN(two_consecutive_surrogate_pairs);
-    RUN(codepoint_just_below_surrogate_range);
-    RUN(codepoint_just_above_surrogate_range);
-    RUN(high_surrogate_followed_by_another_high_surrogate_rejected);
-    RUN(high_surrogate_followed_by_non_unicode_escape_rejected);
+    RUN(codepoint_below_surrogate_range);
+    RUN(codepoint_above_surrogate_range);
+    RUN(high_surrogate_then_high_rejected);
+    RUN(high_surrogate_then_non_unicode_rejected);
 }
 
 REGISTER_TEST_SUITE();

@@ -55,14 +55,14 @@ static void dump_to_stream_throws_for_non_finite() {
 
 // Verifies a non-finite value nested inside an array still throws when the
 // enclosing array is serialized.
-static void nested_non_finite_value_in_array_throws() {
+static void nested_nonfinite_array_throws() {
     Json j(Json::ArrayType{Json(1), Json(std::numeric_limits<double>::quiet_NaN()), Json(3)});
     CHK_THROWS(j.dump(), std::runtime_error);
 }
 
 // Verifies a non-finite value nested inside an object still throws when the
 // enclosing object is serialized.
-static void nested_non_finite_value_in_object_throws() {
+static void nested_nonfinite_object_throws() {
     Json::ObjectType obj;
     obj.emplace("value", Json(-std::numeric_limits<double>::infinity()));
 
@@ -72,7 +72,7 @@ static void nested_non_finite_value_in_object_throws() {
 
 // Verifies construction and numeric access work normally for non-finite
 // values -- only serialization is rejected.
-static void construction_and_access_unaffected_by_non_finite_value() {
+static void construction_unaffected_by_nonfinite() {
     Json j(std::numeric_limits<double>::quiet_NaN());
 
     CHK(j.isNumber() == true);
@@ -85,9 +85,9 @@ static void run_tests() {
     RUN(dump_throws_for_infinity);
     RUN(dump_with_indent_throws_for_non_finite);
     RUN(dump_to_stream_throws_for_non_finite);
-    RUN(nested_non_finite_value_in_array_throws);
-    RUN(nested_non_finite_value_in_object_throws);
-    RUN(construction_and_access_unaffected_by_non_finite_value);
+    RUN(nested_nonfinite_array_throws);
+    RUN(nested_nonfinite_object_throws);
+    RUN(construction_unaffected_by_nonfinite);
 }
 
 REGISTER_TEST_SUITE();
