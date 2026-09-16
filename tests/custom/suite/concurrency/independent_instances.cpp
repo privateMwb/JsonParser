@@ -23,7 +23,7 @@ using namespace JsonPro;
 
 // Verifies each thread can build its own private document concurrently
 // with no interference from any other thread's document.
-static void independent_documents_built_concurrently() {
+static void independent_documents_concurrent() {
     constexpr int kThreads = 8;
     std::vector<int> ok(kThreads, 0);
     std::vector<std::thread> threads;
@@ -53,7 +53,7 @@ static void independent_documents_built_concurrently() {
 
 // Verifies each thread can freely insert into and erase from its own
 // private JsonObject concurrently with other threads doing the same.
-static void independent_jsonobject_mutation_across_threads() {
+static void independent_jsonobject_mutation() {
     constexpr int kThreads = 8;
     std::vector<int> ok(kThreads, 0);
     std::vector<std::thread> threads;
@@ -82,7 +82,7 @@ static void independent_jsonobject_mutation_across_threads() {
 
 // Verifies sustained, high-volume concurrent construction and destruction
 // of unrelated documents across threads completes without incident.
-static void concurrent_construction_and_destruction_of_unrelated_documents() {
+static void concurrent_construct_destruct_unrelated() {
     constexpr int kThreads = 8;
     constexpr int kIterations = 200;
 
@@ -108,7 +108,7 @@ static void concurrent_construction_and_destruction_of_unrelated_documents() {
 
 // Verifies each thread's document is backed by genuinely distinct memory --
 // never accidentally shared or aliased across threads.
-static void thread_local_documents_remain_isolated() {
+static void thread_local_documents_isolated() {
     constexpr int kThreads = 8;
     std::vector<const void*> addresses(kThreads, nullptr);
     std::vector<double> values(kThreads, 0.0);
@@ -134,10 +134,10 @@ static void thread_local_documents_remain_isolated() {
 
 // Executes all independent instances test cases.
 static void run_tests() {
-    RUN(independent_documents_built_concurrently);
-    RUN(independent_jsonobject_mutation_across_threads);
-    RUN(concurrent_construction_and_destruction_of_unrelated_documents);
-    RUN(thread_local_documents_remain_isolated);
+    RUN(independent_documents_concurrent);
+    RUN(independent_jsonobject_mutation);
+    RUN(concurrent_construct_destruct_unrelated);
+    RUN(thread_local_documents_isolated);
 }
 
 REGISTER_TEST_SUITE();

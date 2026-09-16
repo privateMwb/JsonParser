@@ -20,7 +20,7 @@
 using namespace JsonPro;
 
 // Verifies erasing the first entry leaves all remaining keys correctly findable.
-static void erase_first_entry_keeps_remainder_findable() {
+static void erase_first_keeps_findable() {
     JsonObject obj;
     obj.emplace("a", Json(1));
     obj.emplace("b", Json(2));
@@ -35,7 +35,7 @@ static void erase_first_entry_keeps_remainder_findable() {
 }
 
 // Verifies erasing the last entry (no reindexing required) stays consistent.
-static void erase_last_entry_stays_consistent() {
+static void erase_last_stays_consistent() {
     JsonObject obj;
     obj.emplace("a", Json(1));
     obj.emplace("b", Json(2));
@@ -52,7 +52,7 @@ static void erase_last_entry_stays_consistent() {
 // Verifies erasing a middle entry, then inserting a new key, appends the
 // new entry correctly rather than colliding with a stale index left behind
 // by the erase.
-static void erase_middle_then_insert_appends_correctly() {
+static void erase_middle_insert_appends() {
     JsonObject obj;
     obj.emplace("a", Json(1));
     obj.emplace("b", Json(2));
@@ -72,7 +72,7 @@ static void erase_middle_then_insert_appends_correctly() {
 
 // Verifies erasing every entry one at a time empties the object and leaves
 // it in a fully reusable state.
-static void erase_all_entries_leaves_object_reusable() {
+static void erase_all_leaves_reusable() {
     JsonObject obj;
     obj.emplace("a", Json(1));
     obj.emplace("b", Json(2));
@@ -91,7 +91,7 @@ static void erase_all_entries_leaves_object_reusable() {
 }
 
 // Verifies erasing the same key a second time is a safe no-op.
-static void erase_same_key_twice_is_no_op_second_time() {
+static void erase_same_key_twice_noop() {
     JsonObject obj;
     obj.emplace("a", Json(1));
     obj.emplace("b", Json(2));
@@ -105,7 +105,7 @@ static void erase_same_key_twice_is_no_op_second_time() {
 
 // Verifies a longer interleaved sequence of erase/insert/find operations
 // leaves the vector and index map mutually consistent throughout.
-static void interleaved_erase_insert_find_stays_consistent() {
+static void interleaved_erase_insert_find() {
     JsonObject obj;
     obj.emplace("a", Json(1));
     obj.emplace("b", Json(2));
@@ -132,12 +132,12 @@ static void interleaved_erase_insert_find_stays_consistent() {
 
 // Executes all erase-reindex regression test cases.
 static void run_tests() {
-    RUN(erase_first_entry_keeps_remainder_findable);
-    RUN(erase_last_entry_stays_consistent);
-    RUN(erase_middle_then_insert_appends_correctly);
-    RUN(erase_all_entries_leaves_object_reusable);
-    RUN(erase_same_key_twice_is_no_op_second_time);
-    RUN(interleaved_erase_insert_find_stays_consistent);
+    RUN(erase_first_keeps_findable);
+    RUN(erase_last_stays_consistent);
+    RUN(erase_middle_insert_appends);
+    RUN(erase_all_leaves_reusable);
+    RUN(erase_same_key_twice_noop);
+    RUN(interleaved_erase_insert_find);
 }
 
 REGISTER_TEST_SUITE();

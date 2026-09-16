@@ -17,7 +17,7 @@
 using namespace JsonPro;
 
 // Verifies JsonParseError reports the exact line and column of the failure.
-static void parse_error_carries_line_and_column() {
+static void parse_error_line_column() {
     const std::string bad = "{\n"
                             "  \"a\": 1,\n"
                             "  \"b\": @\n"
@@ -33,7 +33,7 @@ static void parse_error_carries_line_and_column() {
 }
 
 // Verifies a parse failure can be caught generically via the JsonException base class.
-static void catch_parse_error_as_base_exception() {
+static void catch_parse_error_base_exception() {
     bool caught = false;
 
     try {
@@ -47,7 +47,7 @@ static void catch_parse_error_as_base_exception() {
 }
 
 // Verifies a type mismatch partway through a navigation chain throws JsonTypeError.
-static void type_error_thrown_mid_navigation_chain() {
+static void type_error_mid_navigation() {
     Json j = Json::parse(R"({"list": [1, 2, 3]})");
 
     bool caught = false;
@@ -61,7 +61,7 @@ static void type_error_thrown_mid_navigation_chain() {
 }
 
 // Verifies an out-of-range access partway through a navigation chain throws JsonOutOfRange.
-static void out_of_range_thrown_mid_navigation_chain() {
+static void out_of_range_mid_navigation() {
     Json j = Json::parse(R"({"items": [1, 2]})");
 
     bool caught = false;
@@ -76,7 +76,7 @@ static void out_of_range_thrown_mid_navigation_chain() {
 
 // Verifies a caller can recover from a parse failure by falling back to a
 // known-good document.
-static void recover_from_parse_failure_with_fallback_document() {
+static void recover_parse_failure_fallback() {
     const std::string userInput = "{ this is not valid json";
     Json result;
 
@@ -92,7 +92,7 @@ static void recover_from_parse_failure_with_fallback_document() {
 
 // Verifies parse errors, type errors, and out-of-range errors are all
 // catchable uniformly via the JsonException base class.
-static void catch_all_json_exceptions_via_base_class() {
+static void catch_all_json_exceptions() {
     int caughtCount = 0;
 
     auto tryCatch = [&](auto&& fn) {
@@ -118,12 +118,12 @@ static void catch_all_json_exceptions_via_base_class() {
 
 // Executes all error propagation test cases.
 static void run_tests() {
-    RUN(parse_error_carries_line_and_column);
-    RUN(catch_parse_error_as_base_exception);
-    RUN(type_error_thrown_mid_navigation_chain);
-    RUN(out_of_range_thrown_mid_navigation_chain);
-    RUN(recover_from_parse_failure_with_fallback_document);
-    RUN(catch_all_json_exceptions_via_base_class);
+    RUN(parse_error_line_column);
+    RUN(catch_parse_error_base_exception);
+    RUN(type_error_mid_navigation);
+    RUN(out_of_range_mid_navigation);
+    RUN(recover_parse_failure_fallback);
+    RUN(catch_all_json_exceptions);
 }
 
 REGISTER_TEST_SUITE();

@@ -17,28 +17,28 @@
 using namespace JsonPro;
 
 // Verifies two whitespace-separated scalar values are rejected as trailing input.
-static void two_scalars_separated_by_whitespace_rejected() {
+static void two_scalars_whitespace_rejected() {
     CHK_THROWS(Json::parse("42 43"), std::runtime_error);
 }
 
 // Verifies two adjacent string literals with no separator are rejected.
-static void two_strings_with_no_separator_rejected() {
+static void two_strings_no_separator_rejected() {
     CHK_THROWS(Json::parse(R"("a""b")"), std::runtime_error);
 }
 
 // Verifies two adjacent structures with no separator are rejected.
-static void two_structures_with_no_separator_rejected() {
+static void two_structures_no_separator_rejected() {
     CHK_THROWS(Json::parse("{}[]"), std::runtime_error);
     CHK_THROWS(Json::parse("[1,2][3]"), std::runtime_error);
 }
 
 // Verifies a stray closing bracket left over after a complete array is rejected.
-static void stray_closing_bracket_after_complete_array_rejected() {
+static void stray_closing_bracket_rejected() {
     CHK_THROWS(Json::parse("[1,2]]"), std::runtime_error);
 }
 
 // Verifies a stray closing brace left over after a complete object is rejected.
-static void stray_closing_brace_after_complete_object_rejected() {
+static void stray_closing_brace_rejected() {
     CHK_THROWS(Json::parse("{}}"), std::runtime_error);
 }
 
@@ -48,26 +48,26 @@ static void stray_trailing_comma_rejected() {
 }
 
 // Verifies non-whitespace garbage after a complete object is rejected.
-static void trailing_garbage_after_complete_object_rejected() {
+static void trailing_garbage_object_rejected() {
     CHK_THROWS(Json::parse(R"({"a": 1} garbage)"), std::runtime_error);
 }
 
 // Control case: trailing whitespace alone (no extra tokens) remains valid.
-static void trailing_whitespace_alone_accepted() {
+static void trailing_whitespace_accepted() {
     Json j = Json::parse("  {\"a\": 1}  \n\t");
     CHK(j["a"].asNumber() == 1.0);
 }
 
 // Executes all trailing input regression test cases.
 static void run_tests() {
-    RUN(two_scalars_separated_by_whitespace_rejected);
-    RUN(two_strings_with_no_separator_rejected);
-    RUN(two_structures_with_no_separator_rejected);
-    RUN(stray_closing_bracket_after_complete_array_rejected);
-    RUN(stray_closing_brace_after_complete_object_rejected);
+    RUN(two_scalars_whitespace_rejected);
+    RUN(two_strings_no_separator_rejected);
+    RUN(two_structures_no_separator_rejected);
+    RUN(stray_closing_bracket_rejected);
+    RUN(stray_closing_brace_rejected);
     RUN(stray_trailing_comma_rejected);
-    RUN(trailing_garbage_after_complete_object_rejected);
-    RUN(trailing_whitespace_alone_accepted);
+    RUN(trailing_garbage_object_rejected);
+    RUN(trailing_whitespace_accepted);
 }
 
 REGISTER_TEST_SUITE();

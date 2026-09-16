@@ -24,7 +24,7 @@ using namespace JsonPro;
 
 // Verifies threads parsing distinct input concurrently each produce their
 // own correct, independent result.
-static void parallel_parsing_produces_correct_independent_results() {
+static void parallel_parsing_independent_results() {
     constexpr int kThreads = 8;
     std::vector<double> results(kThreads);
     std::vector<std::thread> threads;
@@ -46,7 +46,7 @@ static void parallel_parsing_produces_correct_independent_results() {
 
 // Verifies many threads parsing the exact same input concurrently all
 // produce equal results.
-static void parallel_parsing_of_identical_input_is_deterministic() {
+static void parallel_parsing_deterministic() {
     const std::string text = R"({"a": [1, 2, 3], "b": {"c": "hello"}, "d": 3.14})";
     Json expected = Json::parse(text);
 
@@ -70,7 +70,7 @@ static void parallel_parsing_of_identical_input_is_deterministic() {
 
 // Verifies a parse failure (and exception) on one thread has no effect on
 // other threads parsing valid input concurrently.
-static void parallel_parsing_errors_do_not_affect_other_threads() {
+static void concurrent_construct_destruct_unrelated() {
     constexpr int kThreads = 8;
     std::vector<int> ok(kThreads, 0);
     std::vector<std::thread> threads;
@@ -101,7 +101,7 @@ static void parallel_parsing_errors_do_not_affect_other_threads() {
 
 // Verifies sustained per-thread parsing volume (many sequential parses per
 // thread, running concurrently with other threads) remains correct throughout.
-static void parallel_parsing_high_volume_per_thread() {
+static void thread_local_documents_isolated() {
     constexpr int kThreads = 4;
     constexpr int kIterations = 500;
 
@@ -129,10 +129,10 @@ static void parallel_parsing_high_volume_per_thread() {
 
 // Executes all parallel parsing test cases.
 static void run_tests() {
-    RUN(parallel_parsing_produces_correct_independent_results);
-    RUN(parallel_parsing_of_identical_input_is_deterministic);
-    RUN(parallel_parsing_errors_do_not_affect_other_threads);
-    RUN(parallel_parsing_high_volume_per_thread);
+    RUN(parallel_parsing_independent_results);
+    RUN(parallel_parsing_deterministic);
+    RUN(concurrent_construct_destruct_unrelated);
+    RUN(thread_local_documents_isolated);
 }
 
 REGISTER_TEST_SUITE();

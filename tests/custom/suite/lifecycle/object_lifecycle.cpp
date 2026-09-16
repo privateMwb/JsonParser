@@ -18,7 +18,7 @@
 using namespace JsonPro;
 
 // Verifies default construction produces an empty object.
-static void default_construction_is_empty() {
+static void default_construction_empty() {
     JsonObject obj;
     CHK(obj.empty() == true);
     CHK(obj.size() == 0);
@@ -38,7 +38,7 @@ static void copy_constructor_deep_copy() {
 
 // Verifies move construction transfers contents and leaves the source empty,
 // per the documented "left empty" contract.
-static void move_constructor_leaves_source_empty() {
+static void move_constructor_empties_source() {
     JsonObject source;
     source.emplace("k", Json(1));
 
@@ -67,7 +67,7 @@ static void copy_assignment_replaces_contents() {
 }
 
 // Verifies move assignment replaces the target's contents and empties the source.
-static void move_assignment_replaces_contents_and_empties_source() {
+static void move_assignment_replaces_empties() {
     JsonObject source;
     source.emplace("x", Json(1));
 
@@ -84,7 +84,7 @@ static void move_assignment_replaces_contents_and_empties_source() {
 }
 
 // Verifies self copy assignment leaves contents unchanged.
-static void self_copy_assignment_leaves_contents_unchanged() {
+static void self_copy_assignment_unchanged() {
     JsonObject obj;
     obj.emplace("k", Json(1));
 
@@ -98,7 +98,7 @@ static void self_copy_assignment_leaves_contents_unchanged() {
 // valid, reusable state. Unlike Json::operator=(Json&&), JsonObject's move
 // assignment is defaulted with no explicit self-check, so only a valid
 // post-state is guaranteed -- not that prior contents survive.
-static void self_move_assignment_leaves_object_in_valid_state() {
+static void self_move_assignment_valid_state() {
     JsonObject obj;
     obj.emplace("k", Json(1));
 
@@ -110,13 +110,13 @@ static void self_move_assignment_leaves_object_in_valid_state() {
 
 // Executes all JsonObject lifecycle test cases.
 static void run_tests() {
-    RUN(default_construction_is_empty);
+    RUN(default_construction_empty);
     RUN(copy_constructor_deep_copy);
-    RUN(move_constructor_leaves_source_empty);
+    RUN(move_constructor_empties_source);
     RUN(copy_assignment_replaces_contents);
-    RUN(move_assignment_replaces_contents_and_empties_source);
-    RUN(self_copy_assignment_leaves_contents_unchanged);
-    RUN(self_move_assignment_leaves_object_in_valid_state);
+    RUN(move_assignment_replaces_empties);
+    RUN(self_copy_assignment_unchanged);
+    RUN(self_move_assignment_valid_state);
 }
 
 REGISTER_TEST_SUITE();
